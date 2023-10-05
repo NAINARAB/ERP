@@ -1,0 +1,17 @@
+*{
+    box-sizing: border-box !important;
+}
+.card{
+    padding: 1em !important;
+    margin: 1em !important;
+
+}
+
+.card h4{
+    font-size: 1em;
+    color: rgba(0, 0, 255, 0.863)
+}
+
+.card p{
+    font-size: 0.80em;
+}

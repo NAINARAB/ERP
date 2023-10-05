@@ -1,0 +1,33 @@
+.active{
+    width: 100%;
+    text-align: left;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 0.7em;
+    background-color: #f2f2f2;
+    color: blue;
+}
+.in{
+    background-color: transparent !important;
+    color: black;
+}
+.menuhide{
+    position: absolute;
+    top: 27px;
+    left: 27px;
+    display: none;
+    z-index: 101;
+}
+
+@media only screen and (max-width: 767px) {
+    .menuhide{
+        display: block;
+    }
+    .hideside{
+        display: none;
+    }
+    .smain, .linkbut{
+        font-size: 1rem !important;
+    }
+}
