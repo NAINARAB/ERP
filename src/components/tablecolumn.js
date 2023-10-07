@@ -26,6 +26,34 @@ const users = [
     },
 ];
 
+const prodetails = [
+    {
+        name: 'Product Name',
+        selector: (row) => row.productName,
+        sortable: true,
+    },
+    {
+        name: 'Rate',
+        selector: (row) => row.rate,
+        sortable: true,
+    },
+    {
+        name: 'Billed Quantity',
+        selector: (row) => row.billedQty,
+        sortable: true,
+    },
+    {
+        name: 'Unit of Measure',
+        selector: (row) => row.umo,
+        sortable: true,
+    },
+    {
+        name: 'Amount',
+        selector: (row) => row.amount,
+        sortable: true,
+    }
+]
+
 const products = [
     {
         name: 'actualQty',
@@ -93,6 +121,11 @@ const products = [
         sortable: true,
     },
     {
+        name: 'rate',
+        selector: (row) => row.rate,
+        sortable: true,
+    },
+    {
         name: 'shippingAddress',
         selector: (row) => row.shippingAddress,
         sortable: true,
@@ -109,4 +142,4 @@ const products = [
     },
 ];
 
-export {users, products};
+export {users, products, prodetails};

@@ -7,7 +7,6 @@ const Header = () => {
       <div className='heddiv'>
         <h2>ERP</h2>
       </div>
-      <br /><br /><br /><br />
     </>
   );
 }
