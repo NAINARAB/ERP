@@ -53,21 +53,37 @@ const User = () => {
     const [open, setOpen] = useState(false);
     const [branch, setBranch] = useState([]);
     const [userType, setUserType] = useState([]);
+    const token = sessionStorage.getItem('userToken');
 
     useEffect(() => {
-        fetch(`${apihost}/api/users`)
+        fetch(`${apihost}/api/users`,
+        {
+            headers: {
+                'Authorization': token
+            }
+        })
             .then((res) => { return res.json() })
             .then((data) => {
                 setData(data);
             })
             .catch((e) => { console.log(e) })
-        fetch(`${apihost}/api/usertype`)
+        fetch(`${apihost}/api/usertype`,
+        {
+            headers: {
+                'Authorization': token
+            }
+        })
             .then((res) => { return res.json() })
             .then((data) => {
                 setUserType(data)
             })
             .catch((e) => { console.log(e) });
-        fetch(`${apihost}/api/branch`)
+        fetch(`${apihost}/api/branch`,
+        {
+            headers: {
+                'Authorization': token
+            }
+        })
             .then((res) => { return res.json() })
             .then((data) => {
                 setBranch(data)

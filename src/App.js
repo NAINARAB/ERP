@@ -7,14 +7,14 @@ import Login from './components/login/login';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route exact path='/' element={<Login />} />
-        <Route path='/saleordersync' element={<Product />} />
-        <Route path='/users' element={<User />} />
-        <Route path='/saleorder' element={<SaleOrderList />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path='/' element={<Login />} />
+          <Route path='/saleordersync' element={<Product />} />
+          <Route path='/users' element={<User />} />
+          <Route path='/saleorder' element={<SaleOrderList />} />
+        </Routes>
+      </BrowserRouter>
   );
 }
 

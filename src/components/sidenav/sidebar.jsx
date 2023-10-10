@@ -1,12 +1,27 @@
 import { useNavigate } from 'react-router-dom';
 import './sidebar.css';
 import { IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
+import { apihost } from '../../env';
 
 const Sidebar = ({ page }) => {
     const nav = useNavigate();
     const [opncond, setopencond] = useState(false);
+    const token = localStorage.getItem('userToken')
+
+    useEffect(() => {
+        fetch(`${apihost}/api/sidebar`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+            .then((res) => { return res.json() })
+            .then((data) => {
+                console.log(data)
+            })
+            .catch((e) => { console.log(e) })
+    }, [])
 
     const pages = [
         {
