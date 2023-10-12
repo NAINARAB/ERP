@@ -5,19 +5,49 @@
     cursor: pointer;
     background-color: transparent;
     padding: 0.7em;
-    background-color: #f2f2f2;
+    background-color: #f1f1f1;
     color: blue;
+    border-radius: 10px;
 }
 .in{
     background-color: transparent !important;
     color: black;
 }
+
 .menuhide{
     position: absolute;
     top: 27px;
     left: 27px;
     display: none;
     z-index: 101;
+}
+.subMenu {
+    font-size: 0.82em;
+}
+
+.childMenu{
+    font-size: 0.79em;
+    background-color: transparent;
+}
+
+.usrinfo{
+    padding: 0.7em;
+    background-color: #f8f6f6;
+}
+.usrinfo i{
+    font-size: 30px;
+    display: inline;
+    margin-right: 0.5em;
+    color: #000 !important;
+}
+.usrinfo h5{
+    margin: 0px;
+    font-size:20px;
+    color:rgb(15, 11, 42) !important;
+}
+.usrinfo p{
+    margin: 0px;
+    font-size: 14px;
 }
 
 @media only screen and (max-width: 767px) {

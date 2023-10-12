@@ -63,7 +63,7 @@ const SaleOrderList = () => {
           <Header />
         </div>
         <div className="col-md-2">
-          <Sidebar page={3} />
+          <Sidebar mainMenuId={4} subMenuId={7} />
         </div>
         <div className="col-md-10">
           <div className="m-3">

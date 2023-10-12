@@ -8,14 +8,15 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, IconButton, MenuItem } from "@mui/material";
 import { useFormik } from 'formik';
 import { AccountCircle, MailOutline, LockOutlined, LocationOn, ManageAccounts } from '@mui/icons-material';
+import { useNavigate } from "react-router-dom";
 
 
 const initialValues = {
     name: '',
     email: '',
     password: '',
-    branch:'',
-    usertype:''
+    branch: '',
+    usertype: ''
 };
 
 const validate = (values) => {
@@ -53,42 +54,32 @@ const User = () => {
     const [open, setOpen] = useState(false);
     const [branch, setBranch] = useState([]);
     const [userType, setUserType] = useState([]);
-    const token = sessionStorage.getItem('userToken');
+    const token = localStorage.getItem('userToken');
+    const nav = useNavigate()
 
     useEffect(() => {
-        fetch(`${apihost}/api/users`,
-        {
-            headers: {
-                'Authorization': token
-            }
-        })
-            .then((res) => { return res.json() })
-            .then((data) => {
-                setData(data);
-            })
-            .catch((e) => { console.log(e) })
-        fetch(`${apihost}/api/usertype`,
-        {
-            headers: {
-                'Authorization': token
-            }
-        })
-            .then((res) => { return res.json() })
-            .then((data) => {
-                setUserType(data)
-            })
-            .catch((e) => { console.log(e) });
-        fetch(`${apihost}/api/branch`,
-        {
-            headers: {
-                'Authorization': token
-            }
-        })
-            .then((res) => { return res.json() })
-            .then((data) => {
-                setBranch(data)
-            })
-            .catch((e) => { console.log(e) });
+        if (token) {
+            fetch(`${apihost}/api/users`,{headers: {'Authorization': token}})
+                .then((res) => { return res.json() })
+                .then((data) => {
+                    setData(data);
+                })
+                .catch((e) => { console.log(e) })
+            fetch(`${apihost}/api/usertype`,{headers: {'Authorization': token}})
+                .then((res) => { return res.json() })
+                .then((data) => {
+                    setUserType(data)
+                })
+                .catch((e) => { console.log(e) });
+            fetch(`${apihost}/api/branch`,{headers: {'Authorization': token}})
+                .then((res) => { return res.json() })
+                .then((data) => {
+                    setBranch(data)
+                })
+                .catch((e) => { console.log(e) });
+        } else {
+            nav('/')
+        }
     }, []);
 
     const formik = useFormik({
@@ -108,7 +99,7 @@ const User = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar page={1} />
+                    <Sidebar mainMenuId={2} subMenuId={3} />
                 </div>
                 <div className="col-md-10">
                     <div className="m-3">
@@ -175,7 +166,7 @@ const User = () => {
                                 </div>
                                 <div className="col-md-4 p-3">
                                     <TextField fullWidth id="branch" name="branch" select label="Branch" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} 
+                                        onChange={formik.handleChange} onBlur={formik.handleBlur}
                                         error={formik.touched.branch && Boolean(formik.errors.branch)}
                                         helperText={
                                             formik.touched.branch && formik.errors.branch
@@ -196,7 +187,7 @@ const User = () => {
                                 </div>
                                 <div className="col-md-4 p-3">
                                     <TextField fullWidth id="usertype" name="usertype" select label="User Type" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} 
+                                        onChange={formik.handleChange} onBlur={formik.handleBlur}
                                         error={formik.touched.usertype && Boolean(formik.errors.usertype)}
                                         helperText={
                                             formik.touched.usertype && formik.errors.usertype

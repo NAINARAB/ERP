@@ -10,9 +10,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path='/' element={<Login />} />
-          <Route path='/saleordersync' element={<Product />} />
+          <Route path='/saleorder' element={<Product />} />
           <Route path='/users' element={<User />} />
-          <Route path='/saleorder' element={<SaleOrderList />} />
+          <Route path='/sales' element={<SaleOrderList />} />
         </Routes>
       </BrowserRouter>
   );

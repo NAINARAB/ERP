@@ -13,15 +13,22 @@ const Product = () => {
     const todaydate = today.toISOString().split('T')[0];
     const [data, setData] = useState([]);
     const [date, setDate] = useState(todaydate)
-    const [searchTerm, setSearchTerm] = useState('')
+    const token = localStorage.getItem('userToken')
 
     useEffect(() => {
-        fetch(`${apihost}/api/productinfo?date=${date}`)
-            .then((res) => { return res.json() })
-            .then((data) => {
-                setData(data)
-            })
-            .catch((e) => { console.log(e) });
+        if (token) {
+            fetch(`${apihost}/api/productinfo?date=${date}`,
+                {
+                    headers: {
+                        'Authorization': token
+                    }
+                })
+                .then((res) => { return res.json() })
+                .then((data) => {
+                    setData(data)
+                })
+                .catch((e) => { console.log(e) });
+        }
     }, [date]);
 
     const syncData = () => {
@@ -29,7 +36,8 @@ const Product = () => {
             fetch(`${apihost}/api/syncsalesorder`, {
                 method: 'POST',
                 headers: {
-                    "Content-type": "application/json; charset=UTF-8"
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Authorization': token
                 },
                 body: JSON.stringify({
                     data: data,
@@ -46,7 +54,7 @@ const Product = () => {
                 })
                 .catch((e) => { console.log(e) });
         } else {
-            toast.warn("No data for this Date");
+            toast.warn("No Data");
         }
     }
 
@@ -58,7 +66,7 @@ const Product = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar page={2} />
+                    <Sidebar mainMenuId={4} subMenuId={6} />
                 </div>
                 <div className="col-md-10">
                     <h3 className="m-3">Sale Order Sync</h3>
@@ -80,34 +88,10 @@ const Product = () => {
                                 disabled={date >= todaydate ? true : false}
                             ><Sync /> &nbsp;Sync Data </button>
                         </div><br />
-                        <div className="row"><div className="col-sm-8"></div>
-                            <div className="col-sm-4">
-                                Search<input type='search' className="form-control" onChange={e => setSearchTerm(e.target.value)} />
-                            </div>
-                        </div>
                         <DataTable
                             title="Sale Orders"
                             columns={products}
-                            data={data.filter((item) => {
-                                if (searchTerm === "") {
-                                    return true; // Return true to include all items when no search term is provided
-                                } else {
-                                    // Check if any of the columns' values match the search term
-                                    return products.some((obj) => {
-                                        const columnValue = item[obj.selector];
-                                        if (columnValue && typeof columnValue === "string") {
-                                            // Ensure columnValue is a string and not undefined
-                                            const lowercaseColumnValue = columnValue.toLowerCase();
-                                            const lowercaseSearchTerm = searchTerm.toLowerCase();
-                                            console.log("Column Value:", lowercaseColumnValue);
-                                            console.log("Search Term:", lowercaseSearchTerm);
-                                            return lowercaseColumnValue.includes(lowercaseSearchTerm);
-                                        }
-                                        return false; // Exclude items with undefined or non-string column values
-                                    });
-                                }
-                            })}
-                            
+                            data={data}
                             pagination
                             highlightOnHover={true}
                             fixedHeader={true}

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -13,14 +13,19 @@ function Login() {
     const [password, setpassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    useEffect(() => {
+        localStorage.clear();
+    }, [])
+
     const getLogin = async () => {
         fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
             .then((res) => { return res.json() })
             .then((data) => {
-                console.log(data)
                 setIsLoading(false);
                 localStorage.setItem('userToken',data[0].Autheticate_Id)
-                navigate('/users')
+                localStorage.setItem('Name', data[0].UserName)
+                localStorage.setItem('UserType', data[0].UserType)
+                navigate('users')
             })
             .catch((e) => { console.log(e) });
     };
