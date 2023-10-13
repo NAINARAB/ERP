@@ -8,10 +8,16 @@
     background-color: #f1f1f1;
     color: blue;
     border-radius: 10px;
+    transition: all 0.4s;
 }
 .in{
     background-color: transparent !important;
     color: black;
+}
+
+.active:hover{
+    background-color: #f1f1f1 !important;
+    color: blue;
 }
 
 .menuhide{
@@ -22,7 +28,7 @@
     z-index: 101;
 }
 .subMenu {
-    font-size: 0.82em;
+    font-size: 0.75em;
 }
 
 .childMenu{

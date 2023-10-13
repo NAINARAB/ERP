@@ -9,12 +9,13 @@ import Header from "../header/header";
 import Sidebar from "../sidenav/sidebar";
 import moment from 'moment';
 import './com.css';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide, IconButton } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide, IconButton, Card } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 import { products } from "../tablecolumn";
 import { prodetails } from "../tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../loader/loader";
+import { useNavigate } from "react-router-dom";
 
 const SaleOrderList = () => {
   const [data, setData] = useState([]);
@@ -25,16 +26,21 @@ const SaleOrderList = () => {
   const [start, setStart] = useState(initialStartDate);
   const [end, setEnd] = useState(initialEndDate);
   const [popupdetails, setPopupdetails] = useState({});
+  const token = localStorage.getItem('userToken'); const nav = useNavigate()
 
   useEffect(() => {
-    fetchrange()
+    if (token) {
+      fetchrange()
+    } else {
+      nav('/')
+    }
   }, []);
 
   const fetchrange = () => {
     if (start > end) {
       toast.warn("Select valid date")
     } else {
-      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`)
+      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token } })
         .then((res) => { return res.json() })
         .then((data) => {
           setData(data.data)

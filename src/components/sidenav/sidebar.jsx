@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../env';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.Main_Menu_Id ? true : false);
@@ -43,7 +43,8 @@ const SubMenu = (props) => {
                         ? () => setOpen(!open)
                         : () => nav(props.SubMenuData.PageUrl)
                 }>
-                &nbsp;{'- ' + props.SubMenuData.SubMenuName}
+                <ArrowRight />
+                {props.SubMenuData.SubMenuName}
                 {props.SubMenuData.PageUrl === ""
                     ? <>
                         {open
@@ -53,19 +54,17 @@ const SubMenu = (props) => {
                     : null
                 }
             </button>
-            <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0em 1em'}}>
-                {props.SubMenuData.PageUrl === ""
-                    ? 
-                    <>
-                        {props.ChildMenuData.map(obj => (
-                            props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id 
-                            ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
-                            : null
-                        ))}
-                    </>
-                    : null
-                }
-            </Collapse>
+            {props.SubMenuData.PageUrl === ""
+                ? 
+                <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0em 1em'}}>
+                    {props.ChildMenuData.map(obj => (
+                        props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id 
+                        ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
+                        : null
+                    ))}
+                </Collapse>
+                : null
+            }
         </>
     );
 }

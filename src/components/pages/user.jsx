@@ -103,9 +103,15 @@ const User = () => {
                 </div>
                 <div className="col-md-10">
                     <div className="m-3">
-                        <button className="btn btn-outline-primary" onClick={() => setOpen(true)}><PersonAddIcon /> Create User</button><br />
+                        <h2>Users</h2>
+                        <div className="text-end">
+                            <button 
+                                className="btn btn-outline-primary" 
+                                onClick={() => setOpen(true)}>
+                                    <PersonAddIcon /> Create User
+                            </button><br /><br />
+                        </div>
                         <DataTable
-                            title="Users"
                             columns={users}
                             data={data}
                             pagination
