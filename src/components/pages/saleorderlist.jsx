@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import DateRangePicker from 'react-bootstrap-daterangepicker';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-daterangepicker/daterangepicker.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
@@ -11,7 +8,6 @@ import moment from 'moment';
 import './com.css';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide, IconButton, Card } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
-import { products } from "../tablecolumn";
 import { prodetails } from "../tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../loader/loader";
@@ -52,7 +48,7 @@ const SaleOrderList = () => {
   const fetchorderinfo = (num, all) => {
     setOrderDetails([]);
     setPopupdetails(all);
-    fetch(`${apihost}/api/orderinfo?orderno=${num}`)
+    fetch(`${apihost}/api/orderinfo?orderno=${num}`, { headers: { 'Authorization': token } })
       .then((res) => { return res.json() })
       .then((data) => {
         setOrderDetails(data.data)

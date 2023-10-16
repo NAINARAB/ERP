@@ -173,6 +173,10 @@ const MainMenu = [
     {
         id: 7,
         headname: 'Print Rights'
+    },
+    {
+        id: 8,
+        headname: 'Action'
     }
 ]
 

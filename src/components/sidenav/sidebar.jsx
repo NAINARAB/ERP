@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../env';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.Main_Menu_Id ? true : false);
@@ -21,7 +21,7 @@ const MainMenu = (props) => {
             </button>
             <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0.2em 0.4em'}}>
                 {props.SubMenuData.map(obj => (
-                    props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id
+                    props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
                         ? <SubMenu key={obj.Sub_Menu_Id} SubMenuData={obj} ChildMenuData={props.ChildMenuData} subMenuId={props.subMenuId} childMenuId={props.childMenuId} />
                         : null
                 ))}
@@ -43,22 +43,15 @@ const SubMenu = (props) => {
                         ? () => setOpen(!open)
                         : () => nav(props.SubMenuData.PageUrl)
                 }>
-                <ArrowRight />
+                {props.SubMenuData.PageUrl === "" ? <>{open === false ? <ArrowRight /> : <ArrowDropDown />}</> : null}
+                
                 {props.SubMenuData.SubMenuName}
-                {props.SubMenuData.PageUrl === ""
-                    ? <>
-                        {open
-                            ? <><KeyboardArrowDown sx={{ float: 'right' }} /></>
-                            : <><KeyboardArrowRight sx={{ float: 'right' }} /></>}
-                    </>
-                    : null
-                }
             </button>
             {props.SubMenuData.PageUrl === ""
                 ? 
                 <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0em 1em'}}>
                     {props.ChildMenuData.map(obj => (
-                        props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id 
+                        props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id && obj.Read_Rights === 1
                         ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
                         : null
                     ))}
@@ -134,12 +127,14 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     </div>
                 </div>
                 {mainMenu.map(obj => (
-                    <MainMenu
+                    obj.Read_Rights === 1 
+                    ? <MainMenu
                         key={obj.Main_Menu_Id}
                         mainMenuId={mainMenuId} subMenuId={subMenuId} childMenuId={childMenuId}
                         MainMenuData={obj}
                         SubMenuData={subMenu}
                         ChildMenuData={childMenu} />
+                    : null 
                 ))}
             </div>
         </>

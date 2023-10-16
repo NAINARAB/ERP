@@ -14,7 +14,9 @@ function Login() {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        localStorage.clear();
+        if(localStorage.getItem('userToken')){
+            navigate('/users')
+        } 
     }, [])
 
     const getLogin = async () => {
