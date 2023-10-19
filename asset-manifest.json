@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/NAINARAB/ERP/static/css/main.ce2a0619.css",
-    "main.js": "/NAINARAB/ERP/static/js/main.d679ec9d.js",
-    "static/js/787.f56a55be.chunk.js": "/NAINARAB/ERP/static/js/787.f56a55be.chunk.js",
-    "index.html": "/NAINARAB/ERP/index.html",
-    "main.ce2a0619.css.map": "/NAINARAB/ERP/static/css/main.ce2a0619.css.map",
-    "main.d679ec9d.js.map": "/NAINARAB/ERP/static/js/main.d679ec9d.js.map",
-    "787.f56a55be.chunk.js.map": "/NAINARAB/ERP/static/js/787.f56a55be.chunk.js.map"
+    "main.css": "/ERP/static/css/main.ce2a0619.css",
+    "main.js": "/ERP/static/js/main.2b477b39.js",
+    "static/js/787.f56a55be.chunk.js": "/ERP/static/js/787.f56a55be.chunk.js",
+    "index.html": "/ERP/index.html",
+    "main.ce2a0619.css.map": "/ERP/static/css/main.ce2a0619.css.map",
+    "main.2b477b39.js.map": "/ERP/static/js/main.2b477b39.js.map",
+    "787.f56a55be.chunk.js.map": "/ERP/static/js/787.f56a55be.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ce2a0619.css",
-    "static/js/main.d679ec9d.js"
+    "static/js/main.2b477b39.js"
   ]
 }
