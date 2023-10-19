@@ -5,20 +5,31 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../env';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.Main_Menu_Id ? true : false);
     return (
         <>
             <button
-                className={open ? 'active' : 'in active'}
-                onClick={() => setOpen(!open)}>
-                {props.MainMenuData.MenuName}
-                {open
-                    ? <KeyboardArrowDown sx={{ float: 'right' }} />
-                    : <KeyboardArrowRight sx={{ float: 'right' }} />}
+              className={open ? 'active' : 'in active'}
+              onClick={() => setOpen(!open)}
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
+            >
+              <span style={{ textAlign: 'left' }}>
+                {props.MainMenuData.Main_Menu_Id === 1 && <GridView sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 2 && <Tune sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 3 && <ShoppingCart sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 4 && <Toll sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 5 && <Grading sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 6 && <SwitchAccount sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {' ' + props.MainMenuData.MenuName}
+              </span>
+              <div style={{ textAlign: 'right' }}>
+                {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+              </div>
             </button>
+
             <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0.2em 0.4em'}}>
                 {props.SubMenuData.map(obj => (
                     props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
@@ -43,7 +54,7 @@ const SubMenu = (props) => {
                         ? () => setOpen(!open)
                         : () => nav(props.SubMenuData.PageUrl)
                 }>
-                {props.SubMenuData.PageUrl === "" ? <>{open === false ? <ArrowRight /> : <ArrowDropDown />}</> : null}
+                {props.SubMenuData.PageUrl === "" ? <>{open === false ? <ArrowRight sx={{color:'green'}} /> : <ArrowDropDown sx={{color:'green'}} />}</> : null}
                 
                 {props.SubMenuData.SubMenuName}
             </button>
@@ -99,10 +110,14 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
     
                 })
                 .catch((e) => { console.log(e) })
-        } else {
-            nav('/')
-        }
+        } 
     }, [])
+
+    // useEffect(() => {
+    //     if(!token){
+    //         nav('/')
+    //     }
+    // },[token])
 
     return (
         <>
@@ -120,10 +135,10 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     <AccountCircle sx={{fontSize: '2.7em', marginRight:'0.2em'}} />
                     <div>
                         <h5 style={{ color: 'rgb(64, 38, 236)' }}>{
-                            // localStorage.getItem('Name')
+                            // localStorage.getItem('Name') ||
                             'Raj Nainaar'
                         }</h5>
-                        <p style={{ color: 'rgb(64, 38, 236)' }}>{localStorage.getItem('UserType')}</p>
+                        <p style={{ color: 'rgb(64, 38, 236)' }}>{localStorage.getItem('UserType') || "Null"}</p>
                     </div>
                 </div>
                 {mainMenu.map(obj => (

@@ -6,9 +6,10 @@
     background-color: transparent;
     padding: 0.7em;
     background-color: #f1f1f1;
-    color: blue;
+    color: green;
     border-radius: 10px;
     transition: all 0.4s;
+    font-weight: 470;
 }
 .in{
     background-color: transparent !important;
@@ -17,12 +18,12 @@
 
 .active:hover{
     background-color: #f1f1f1 !important;
-    color: blue;
+    color: green;
 }
 
 .menuhide{
     position: absolute;
-    top: 27px;
+    top: 22px;
     left: 27px;
     display: none;
     z-index: 101;

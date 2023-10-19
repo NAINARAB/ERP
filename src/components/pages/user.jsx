@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { apihost } from "../../env";
-import { users } from "../tablecolumn";
+import { users, customStyles } from "../tablecolumn";
 import Header from "../header/header";
 import Sidebar from "../sidenav/sidebar";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, IconButton, MenuItem } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from "@mui/material";
 import { useFormik } from 'formik';
-import { AccountCircle, MailOutline, LockOutlined, LocationOn, ManageAccounts } from '@mui/icons-material';
-import { useNavigate } from "react-router-dom";
+import { AccountCircle, MailOutline, LockOutlined, LocationOn, ManageAccounts, NavigateNext } from '@mui/icons-material';
 
 
 const initialValues = {
     name: '',
     email: '',
-    password: '',
+    password: '',   
     branch: '',
     usertype: ''
 };
@@ -55,7 +53,6 @@ const User = () => {
     const [branch, setBranch] = useState([]);
     const [userType, setUserType] = useState([]);
     const token = localStorage.getItem('userToken');
-    const nav = useNavigate()
 
     useEffect(() => {
         if (token) {
@@ -77,8 +74,6 @@ const User = () => {
                     setBranch(data)
                 })
                 .catch((e) => { console.log(e) });
-        } else {
-            nav('/')
         }
     }, []);
 
@@ -90,8 +85,6 @@ const User = () => {
         },
     });
 
-
-
     return (
         <>
             <div className="row">
@@ -102,22 +95,23 @@ const User = () => {
                     <Sidebar mainMenuId={2} subMenuId={3} />
                 </div>
                 <div className="col-md-10">
-                    <div className="m-3">
-                        <h2>Users</h2>
-                        <div className="text-end">
-                            <button 
-                                className="btn btn-outline-primary" 
-                                onClick={() => setOpen(true)}>
-                                    <PersonAddIcon /> Create User
-                            </button><br /><br />
-                        </div>
-                        <DataTable
+                    <div className="comhed">
+                        <button className="comadbtn" onClick={() => setOpen(true)}>Add User</button>
+                        <h5>Users</h5>
+                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER MASTERS</h6>
+                    </div>
+                    <div className="m-4">
+                        <div style={{ borderRadius: '5px', overflow: 'hidden' }}>
+                          <DataTable
                             columns={users}
                             data={data}
                             pagination
                             highlightOnHover={true}
-                            fixedHeader={true} fixedHeaderScrollHeight={'50vh'}
-                        />
+                            fixedHeader={true}
+                            fixedHeaderScrollHeight={'50vh'}
+                            customStyles={customStyles}
+                          />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,85 +129,83 @@ const User = () => {
                 </DialogTitle>
                 <form onSubmit={formik.handleSubmit}>
                     <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            <div className="row">
-                                <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="name" name="name" label="Name" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name}
-                                        error={formik.touched.name && Boolean(formik.errors.name)}
-                                        helperText={formik.touched.name && formik.errors.name}
-                                        InputProps={{
-                                            startAdornment: (<AccountCircle color="action" style={{ marginRight: '8px' }} />),
-                                            inputProps: { style: { padding: '26px' } }
-                                        }}
-                                    />
-                                </div>
-                                <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="email" name="email" label="Email" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email}
-                                        error={formik.touched.email && Boolean(formik.errors.email)}
-                                        helperText={formik.touched.email && formik.errors.email}
-                                        InputProps={{
-                                            startAdornment: (<MailOutline color="action" style={{ marginRight: '8px' }} />),
-                                            inputProps: { style: { padding: '26px' } }
-                                        }}
-                                    />
-                                </div>
-                                <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="password" name="password" label="Password" type="password" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password}
-                                        error={formik.touched.password && Boolean(formik.errors.password)}
-                                        helperText={formik.touched.password && formik.errors.password}
-                                        InputProps={{
-                                            startAdornment: (<LockOutlined color="action" style={{ marginRight: '8px' }} />),
-                                            inputProps: { style: { padding: '26px' } }
-                                        }}
-                                    />
-                                </div>
-                                <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="branch" name="branch" select label="Branch" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur}
-                                        error={formik.touched.branch && Boolean(formik.errors.branch)}
-                                        helperText={
-                                            formik.touched.branch && formik.errors.branch
-                                                ? formik.errors.branch
-                                                : 'Please select your branch'
-                                        }
-                                        InputProps={{
-                                            startAdornment: (<LocationOn color="action" style={{ marginRight: '8px' }} />),
-                                            inputProps: { style: { padding: '26px' } }
-                                        }}
-                                    >
-                                        {branch.map((branch) => (
-                                            <MenuItem key={branch.BranchId} value={branch.BranchId}>
-                                                {branch.BranchName}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-                                </div>
-                                <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="usertype" name="usertype" select label="User Type" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur}
-                                        error={formik.touched.usertype && Boolean(formik.errors.usertype)}
-                                        helperText={
-                                            formik.touched.usertype && formik.errors.usertype
-                                                ? formik.errors.usertype
-                                                : 'Please select your user type'
-                                        }
-                                        InputProps={{
-                                            startAdornment: (<ManageAccounts color="action" style={{ marginRight: '8px' }} />),
-                                            inputProps: { style: { padding: '26px' } }
-                                        }}
-                                    >
-                                        {userType.map((userType) => (
-                                            <MenuItem key={userType.Id} value={userType.Id}>
-                                                {userType.UserType}
-                                            </MenuItem>
-                                        ))}
-                                    </TextField>
-                                </div>
+                        <div className="row">
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="name" name="name" label="Name" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name}
+                                    error={formik.touched.name && Boolean(formik.errors.name)}
+                                    helperText={formik.touched.name && formik.errors.name}
+                                    InputProps={{
+                                        startAdornment: (<AccountCircle color="action" style={{ marginRight: '8px' }} />),
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                />
                             </div>
-                        </DialogContentText>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="email" name="email" label="Email" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email}
+                                    error={formik.touched.email && Boolean(formik.errors.email)}
+                                    helperText={formik.touched.email && formik.errors.email}
+                                    InputProps={{
+                                        startAdornment: (<MailOutline color="action" style={{ marginRight: '8px' }} />),
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                />
+                            </div>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="password" name="password" label="Password" type="password" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password}
+                                    error={formik.touched.password && Boolean(formik.errors.password)}
+                                    helperText={formik.touched.password && formik.errors.password}
+                                    InputProps={{
+                                        startAdornment: (<LockOutlined color="action" style={{ marginRight: '8px' }} />),
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                />
+                            </div>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="branch" name="branch" select label="Branch" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                    error={formik.touched.branch && Boolean(formik.errors.branch)}
+                                    helperText={
+                                        formik.touched.branch && formik.errors.branch
+                                            ? formik.errors.branch
+                                            : 'Please select your branch'
+                                    }
+                                    InputProps={{
+                                        startAdornment: (<LocationOn color="action" style={{ marginRight: '8px' }} />),
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                >
+                                    {branch.map((branch) => (
+                                        <MenuItem key={branch.BranchId} value={branch.BranchId}>
+                                            {branch.BranchName}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </div>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="usertype" name="usertype" select label="User Type" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur}
+                                    error={formik.touched.usertype && Boolean(formik.errors.usertype)}
+                                    helperText={
+                                        formik.touched.usertype && formik.errors.usertype
+                                            ? formik.errors.usertype
+                                            : 'Please select your user type'
+                                    }
+                                    InputProps={{
+                                        startAdornment: (<ManageAccounts color="action" style={{ marginRight: '8px' }} />),
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                >
+                                    {userType.map((userType) => (
+                                        <MenuItem key={userType.Id} value={userType.Id}>
+                                            {userType.UserType}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </div>
+                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => { setOpen(false) }}>Close</Button>

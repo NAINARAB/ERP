@@ -6,7 +6,7 @@ import { apihost } from "../../env";
 import { products } from "../tablecolumn";
 import Header from "../header/header";
 import Sidebar from "../sidenav/sidebar";
-import { Sync } from '@mui/icons-material';
+import { Sync, NavigateNext } from '@mui/icons-material';
 
 const Product = () => {
     const today = new Date();
@@ -61,6 +61,7 @@ const Product = () => {
 
     return (
         <>
+            <ToastContainer />
             <div className="row">
                 <div className="col-md-12">
                     <Header />
@@ -69,10 +70,13 @@ const Product = () => {
                     <Sidebar mainMenuId={4} subMenuId={6} />
                 </div>
                 <div className="col-md-10">
-                    <h3 className="m-3">Sale Order Sync</h3>
-                    <ToastContainer />
+                <div className="comhed">
+                    <h5>SYNC SALE ORDER</h5>
+                    <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SYNC SALE ORDER</h6>
+                </div>
                     <div className="m-3">
                         <div className="col-sm-4">
+                            <label>Order Date</label><br />
                             <input
                                 className="form-control"
                                 type='date'

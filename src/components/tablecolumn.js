@@ -1,3 +1,19 @@
+const customStyles = {
+    rows: {
+        style: {
+            minHeight: '4.6em',
+        },
+    },
+    headCells: {
+        style: {
+            paddingLeft: '8px',
+            paddingRight: '8px',
+            backgroundColor: 'rgb(15, 11, 42)',
+            color: 'white'
+        },
+    },
+};
+
 const users = [
     {
       name: 'UserId',
@@ -145,7 +161,7 @@ const products = [
 const MainMenu = [
     {
         id: 1,
-        headname : 'SNo',
+        headname : 'Menu ID',
         variant : 'head',
         align : 'left',
         width : 100
@@ -180,4 +196,4 @@ const MainMenu = [
     }
 ]
 
-export {users, products, prodetails, MainMenu};
+export {users, products, prodetails, MainMenu, customStyles};

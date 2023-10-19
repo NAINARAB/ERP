@@ -1,23 +1,43 @@
 import { apihost } from "../env";
 
-const pageRights = (page, pageType, user) => {
-    const token = localStorage.getItem('userToken');
-    if (token) {
-        return fetch(`${apihost}/api/pagerights?menuid=${page}&menutype=${pageType}&user=${user}`, {
+const pageRights = (pageType, page) => {
+    return new Promise((resolve, reject) => {
+        const token = localStorage.getItem('userToken');
+        let res = {};
+        if (!token) {
+            reject(new Error('Token not available'));
+        }
+        fetch(`${apihost}/api/userid`, { 
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
                 'Authorization': token
             }
-        })
-        .then(res => res.json())
-        .then(data => {
-            return data;
-        })
-        .catch(e => console.log(e));
-    } else {
-        return Promise.reject(new Error('Token not available'));
-    }
+         })
+            .then((res) => res.json())
+            .then((data) => {
+                res.UserId = data.User_Id
+            })
+            .then(() => {
+                return fetch(`${apihost}/api/pagerights?menuid=${page}&menutype=${pageType}&user=${res.UserId}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        'Authorization': token
+                    }
+                })
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                res.token = token;
+                res.status = "success";
+                res.permissions = data;
+                resolve(res);
+            })
+            .catch((e) => {
+                reject(e);
+            });
+    });
 }
 
 export { pageRights };

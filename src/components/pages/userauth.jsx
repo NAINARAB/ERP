@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { apihost } from "../../env";
 import Header from "../header/header";
 import Sidebar from "../sidenav/sidebar";
-import { useNavigate } from "react-router-dom";
-import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, IconButton, Checkbox } from "@mui/material";
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, IconButton, Checkbox, TextField, MenuItem } from "@mui/material";
 import { MainMenu } from "../tablecolumn";
-import { UnfoldMore } from '@mui/icons-material';
-import { Dialog, DialogContent, DialogActions, Button } from '@mui/material/';
+import { UnfoldMore, NavigateNext } from '@mui/icons-material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material/';
+import { useFormik } from 'formik';
+import { ToastContainer, toast } from 'react-toastify';
+import { pageRights } from "../rightsCheck";
 
 
 const token = localStorage.getItem('userToken')
@@ -32,29 +34,34 @@ const postCheck = (param, Menu_id, Menu_Type, UserId) => {
         .then(data => console.log(data))
 }
 
-const TRow = (props) => {
+const TRow = ({UserId, subMenu, childMenu, data}) => {
     const [open, setOpen] = useState(false);
-    const UserId = props.UserId;
-    const [readRights, setReadRights] = useState(props.data.Read_Rights === 1)
-    const [addRights, setAddRights] = useState(props.data.Add_Rights === 1)
-    const [editRights, setEditRights] = useState(props.data.Edit_Rights === 1)
-    const [deleteRights, setDeleteRights] = useState(props.data.Delete_Rights === 1)
-    const [printRights, setPrintRights] = useState(props.data.Print_Rights === 1)
+    const [readRights, setReadRights] = useState(data.Read_Rights === 1)
+    const [addRights, setAddRights] = useState(data.Add_Rights === 1)
+    const [editRights, setEditRights] = useState(data.Edit_Rights === 1)
+    const [deleteRights, setDeleteRights] = useState(data.Delete_Rights === 1)
+    const [printRights, setPrintRights] = useState(data.Print_Rights === 1)
     const [pflag, setpFlag] = useState(false); 
-    console.log(props.data)
 
     useEffect(() => {
-        console.log('useEffect in TRow called'); 
+        setReadRights(data.Read_Rights === 1);
+        setAddRights(data.Add_Rights === 1);
+        setEditRights(data.Edit_Rights === 1);
+        setDeleteRights(data.Delete_Rights === 1);
+        setPrintRights(data.Print_Rights === 1);
+    }, [data])
+
+    useEffect(() => {
         if(pflag === true){
-            postCheck({readRights, addRights, editRights, deleteRights, printRights}, props.props.Main_Menu_Id, 1, UserId)
+            postCheck({readRights, addRights, editRights, deleteRights, printRights}, data.Main_Menu_Id, 1, UserId)
         }
     }, [readRights, addRights, editRights, deleteRights, printRights])
 
     return(
         <>
-            <TableRow key={props.data.Main_Menu_Id} hover={true}>
-                <TableCell>{props.data.Main_Menu_Id}</TableCell>
-                <TableCell>{props.data.MenuName}</TableCell>
+            <TableRow key={data.Main_Menu_Id} hover={true}>
+                <TableCell>{data.Main_Menu_Id}</TableCell>
+                <TableCell>{data.MenuName}</TableCell>
                 <TableCell>
                     <Checkbox 
                         sx={{'& .MuiSvgIcon-root':{fontSize: 28}}} 
@@ -113,9 +120,9 @@ const TRow = (props) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {props.subMenu.map(obj => (
-                                    obj.Main_Menu_Id === props.data.Main_Menu_Id 
-                                    ? <STrow key={obj.Sub_Menu_Id} props={obj}  UserId={UserId} childMenu={props.childMenu} />
+                                {subMenu.map(obj => (
+                                    obj.Main_Menu_Id === data.Main_Menu_Id 
+                                    ? <STrow key={obj.Sub_Menu_Id} data={obj}  UserId={UserId} childMenu={childMenu} />
                                     : null
                                 ))}
                             </TableBody>
@@ -133,27 +140,27 @@ const TRow = (props) => {
 }
 
 const STrow = (props) => {
-    const UserId = props.UserId;
     const [open, setOpen] = useState(false);
-    const [readRights, setReadRights] = useState(props.props.Read_Rights === 1)
-    const [addRights, setAddRights] = useState(props.props.Add_Rights === 1)
-    const [editRights, setEditRights] = useState(props.props.Edit_Rights === 1)
-    const [deleteRights, setDeleteRights] = useState(props.props.Delete_Rights === 1)
-    const [printRights, setPrintRights] = useState(props.props.Print_Rights === 1)
+    const { data, UserId, childMenu } = props;
+    const [readRights, setReadRights] = useState(data.Read_Rights === 1)
+    const [addRights, setAddRights] = useState(data.Add_Rights === 1)
+    const [editRights, setEditRights] = useState(data.Edit_Rights === 1)
+    const [deleteRights, setDeleteRights] = useState(data.Delete_Rights === 1)
+    const [printRights, setPrintRights] = useState(data.Print_Rights === 1)
     const [pflag, setpFlag] = useState(false);
     console.log(props)
 
     useEffect(() => {
         if(pflag === true){
-            postCheck({readRights, addRights, editRights, deleteRights, printRights}, props.props.Sub_Menu_Id, 2, UserId)
+            postCheck({readRights, addRights, editRights, deleteRights, printRights}, data.Sub_Menu_Id, 2, UserId)
         }
     }, [readRights, addRights, editRights, deleteRights, printRights])
 
     return(
         <>
-            <TableRow key={props.props.Sub_Menu_Id} hover={true}>
-                <TableCell>{props.props.Sub_Menu_Id}</TableCell>
-                <TableCell>{props.props.SubMenuName}</TableCell>
+            <TableRow key={data.Sub_Menu_Id} hover={true}>
+                <TableCell>{data.Sub_Menu_Id}</TableCell>
+                <TableCell>{data.SubMenuName}</TableCell>
                 <TableCell>
                     <Checkbox 
                         sx={{'& .MuiSvgIcon-root':{fontSize: 28}}} 
@@ -213,9 +220,9 @@ const STrow = (props) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {props.childMenu.map(obj => (
-                                    obj.Sub_Menu_Id === props.props.Sub_Menu_Id 
-                                    ? <CTrow key={obj.Child_Menu_Id} props={obj} UserId={UserId} /> 
+                                {childMenu.map(obj => (
+                                    obj.Sub_Menu_Id === data.Sub_Menu_Id 
+                                    ? <CTrow key={obj.Child_Menu_Id} data={obj} UserId={UserId} /> 
                                     : null
                                 ))}
                             </TableBody>
@@ -233,25 +240,25 @@ const STrow = (props) => {
 }
 
 const CTrow = (props) => {
-    const UserId = props.UserId;
-    const [readRights, setReadRights] = useState(props.props.Read_Rights === 1)
-    const [addRights, setAddRights] = useState(props.props.Add_Rights === 1)
-    const [editRights, setEditRights] = useState(props.props.Edit_Rights === 1)
-    const [deleteRights, setDeleteRights] = useState(props.props.Delete_Rights === 1)
-    const [printRights, setPrintRights] = useState(props.props.Print_Rights === 1)
+    const { UserId, data } = props;
+    const [readRights, setReadRights] = useState(data.Read_Rights === 1)
+    const [addRights, setAddRights] = useState(data.Add_Rights === 1)
+    const [editRights, setEditRights] = useState(data.Edit_Rights === 1)
+    const [deleteRights, setDeleteRights] = useState(data.Delete_Rights === 1)
+    const [printRights, setPrintRights] = useState(data.Print_Rights === 1)
     const [pflag, setpFlag] = useState(false);
 
     useEffect(() => {
         if(pflag === true){
-            postCheck({readRights, addRights, editRights, deleteRights, printRights}, props.props.Child_Menu_Id, 3, UserId)
+            postCheck({readRights, addRights, editRights, deleteRights, printRights}, data.Child_Menu_Id, 3, UserId)
         }
     }, [readRights, addRights, editRights, deleteRights, printRights])
 
     return(
         <>
-            <TableRow key={props.props.Child_Menu_Id} hover={true}>
-                <TableCell>{props.props.Child_Menu_Id}</TableCell>
-                <TableCell>{props.props.ChildMenuName}</TableCell>
+            <TableRow key={data.Child_Menu_Id} hover={true}>
+                <TableCell>{data.Child_Menu_Id}</TableCell>
+                <TableCell>{data.ChildMenuName}</TableCell>
                 <TableCell>
                     <Checkbox 
                         sx={{'& .MuiSvgIcon-root':{fontSize: 28}}} 
@@ -287,44 +294,100 @@ const CTrow = (props) => {
     )
 }
 
+
 const UserAuthorization = () => {
-    const nav = useNavigate();
     const [users, setUsers] = useState([]);
-    const [userID, setUserID] = useState('');
     const [mainMenu, setMainMenu] = useState([]);
     const [subMenu, setSubMenu] = useState([]);
     const [childMenu, setChildMenu] = useState([]);
-
+    const [open, setOpen] = useState(false);
     const [currentAuthId, setCurrentAuthId] = useState('');
-
+    const [pageInfo, setPageInfo] = useState({});
 
     useEffect(() => {
-        if (token) {
-            fetch(`${apihost}/api/users`, { headers: { 'Authorization': token } })
+        pageRights(1, 2).then(rights => setPageInfo(rights))
+    }, [])
+
+    useEffect(() => {
+        if (pageInfo.token) {
+            fetch(`${apihost}/api/users`, { headers: { 'Authorization': pageInfo.token } })
                 .then((res) => { return res.json() })
                 .then((data) => {
                     setUsers(data);
                 })
                 .catch((e) => { console.log(e) })
         } 
-    }, [])
+    }, [pageInfo])
 
-    useEffect(() => {
-        if(currentAuthId !== '') {
-            users.map(obj => obj.Autheticate_Id === currentAuthId ? setUserID(parseInt(obj.UserId)) : null);
-            fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId } })
+    useEffect(() => {        
+        fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId !== "" ? currentAuthId : token } })
+            .then(res => res.json())
+            .then(data => {
+                setMainMenu(data[0]);
+                setSubMenu(data[1]);
+                setChildMenu(data[2]);
+            })
+            .catch(e => console.log(e))
+    },[currentAuthId])
+
+    const initialValues = {
+        name: '',
+        link: '',
+        mtype: '',
+        mmenu: '',
+        smenu: '',
+        cmenu: ''
+    };
+    
+    const validate = (values) => {
+        const errors = {};
+        if (!values.name) {
+            errors.name = 'Name is required';
+        }
+        if (!values.mtype) {
+            errors.type = 'Select Menu Type';
+        }
+        if((values.mtype === 2 && !values.mmenu) || ( values.mtype === 3 && !values.mmenu)) {
+            errors.mmenu = 'Select Main Menu';
+        }
+        if (values.mtype === 3 && !values.smenu) {
+            errors.smenu = 'Select Sub-Menu'
+        } 
+        if (values.mtype === 3 && !values.link) {
+            errors.link = 'Page Link Is Required';
+        }
+        return errors;
+    };
+
+    const formik = useFormik({
+        initialValues,
+        validate,
+        onSubmit: (values) => {
+            console.log(values);
+            fetch(`${apihost}/api/newmenu`, { 
+                method: "POST",
+                body: JSON.stringify({
+                    menuType: values.mtype, 
+                    menuName: values.name, 
+                    menuLink: values.link,
+                    mainMenuId: values.mmenu,
+                    subMenuId: values.smenu
+                }),
+                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json' } 
+            })
                 .then(res => res.json())
                 .then(data => {
-                    setMainMenu(data[0]);
-                    setSubMenu(data[1]);
-                    setChildMenu(data[2]);
+                    if(data.status === "Success"){
+                        toast("New Menu Created");
+                        setOpen(false)
+                    }
                 })
                 .catch(e => console.log(e))
-        }
-    },[currentAuthId])    
+        },
+    });
 
     return (
-        <>
+        <>  <ToastContainer />
             <div className="row">
                 <div className="col-md-12">
                     <Header />
@@ -333,46 +396,137 @@ const UserAuthorization = () => {
                     <Sidebar mainMenuId={2} subMenuId={4} />
                 </div>
                 <div className="col-md-10">
+                    <div className="comhed">
+                        <button className="comadbtn" onClick={() => setOpen(true)}>Add Menu</button>
+                        <h5>USER AUTHORIZATION</h5>
+                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER AUTHORIZATION</h6>
+                    </div>
                     <div className="m-3">
-                        <h2>User Authorization</h2> <br />
-                        <div className="col-sm-4">
-                            <select className="form-select" onChange={(e) => setCurrentAuthId(e.target.value)}>
-                                <option defaultValue={true}>Select User</option>
-                                {users.map((user) => ( user.Autheticate_Id !=='' 
-                                ? <option key={user.UserId} value={user.Autheticate_Id}>
-                                        {user.UserName}
-                                    </option>
-                                : null
-                                ))}
-                            </select>
-                        </div><br />
-                        <h3 style={{paddingBottom: '0.5em'}}>Main Menu</h3>
-                        <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
-                            <Table stickyHeader aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        {MainMenu.map(obj => (
-                                            <TableCell
-                                                key={obj.id}
-                                                variant={obj.variant}
-                                                align={obj.align}
-                                                width={obj.width}
-                                                sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
-                                                {obj.headname}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                {mainMenu.map(obj => (
-                                    <TRow key={obj.Main_Menu_Id} data={obj} UserId={userID} subMenu={subMenu} childMenu={childMenu} />
-                                ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        <div className="row">
+                            <div className="col-sm-4 px-2">
+                                <TextField fullWidth select label="Select User" variant="outlined"
+                                    onChange={(e) => { setCurrentAuthId(e.target.value)}}
+                                    InputProps={{ inputProps: { style: { padding: '26px', width: '50%' } } }}
+                                    value={currentAuthId}
+                                >
+                                    {users.map((user) => (
+                                        user.Autheticate_Id !== '' 
+                                        &&   <MenuItem key={user.UserId} value={user.Autheticate_Id}>
+                                                {user.UserName}
+                                            </MenuItem>
+                                    ))}
+                                </TextField>
+                            </div>
+                        </div>
+                        
+                        <br />
+                        {mainMenu.length !== 0 
+                        && 
+                        <>
+                            <h3 style={{paddingBottom: '0.5em'}}>Main Menu</h3>
+                            <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
+                                <Table stickyHeader aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            {MainMenu.map(obj => (
+                                                <TableCell
+                                                    key={obj.id}
+                                                    variant={obj.variant}
+                                                    align={obj.align}
+                                                    width={obj.width}
+                                                    sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
+                                                    {obj.headname}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                    {mainMenu.map(obj => (
+                                        <TRow key={obj.Main_Menu_Id} data={obj} UserId={pageInfo.UserId} subMenu={subMenu} childMenu={childMenu} />
+                                    ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>}
+
                     </div>
                 </div>
             </div>
+            <Dialog open={open} onClose={() => setOpen(!open)}  maxWidth="lg" fullWidth>
+                <DialogTitle>
+                    Create New Menu
+                </DialogTitle>
+                <form onSubmit={formik.handleSubmit}>
+                    <DialogContent>
+                        <div className="row">
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="mtype" name="mtype" select label="Menu Type" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.mtype}
+                                    error={formik.touched.mtype && Boolean(formik.errors.mtype)}
+                                    helperText={formik.touched.mtype && formik.errors.mtype ? formik.errors.mtype : null}
+                                    InputProps={{inputProps: { style: { padding: '26px' }}}}>
+                                        <MenuItem value={1}>Main Menu</MenuItem>
+                                        <MenuItem value={2}>Sub Menu</MenuItem>
+                                        <MenuItem value={3}>Child Menu</MenuItem>
+                                </TextField>
+                            </div>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="name" name="name" label="Menu Name" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name}
+                                    error={formik.touched.name && Boolean(formik.errors.name)}
+                                    helperText={formik.touched.name && formik.errors.name}
+                                    InputProps={{
+                                        inputProps: { style: { padding: '26px' } }
+                                    }}
+                                />
+                            </div>
+                            <div className="col-md-4 p-3">
+                                <TextField fullWidth id="link" name="link" label="Page URL" variant="outlined"
+                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.link}
+                                    error={formik.touched.link && Boolean(formik.errors.link)}
+                                    helperText={formik.touched.link && formik.errors.link 
+                                        ? formik.errors.link
+                                        : null}
+                                    InputProps={{inputProps: { style: { padding: '26px' } }}}/>
+                            </div>
+                            {(formik.values.mtype === 2 || formik.values.mtype === 3)
+                                 &&  <div className="col-md-4 p-3">
+                                        <TextField fullWidth id="mmenu" name="mmenu" select label="Main Menu" variant="outlined"
+                                            onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.mmenu}
+                                            error={formik.touched.mmenu && Boolean(formik.errors.mmenu)}
+                                            helperText={formik.touched.mmenu && formik.errors.mmenu ? formik.errors.mmenu : null}
+                                            InputProps={{inputProps: { style: { padding: '26px' }}}}>
+                                                {mainMenu.map(obj => (
+                                                    obj.PageUrl === "" &&
+                                                    <MenuItem key={obj.Main_Menu_Id} value={obj.Main_Menu_Id}>{obj.MenuName}</MenuItem>
+                                                ))}
+                                        </TextField>
+                                    </div>
+                            }
+                            {formik.values.mtype === 3
+                                 &&  <div className="col-md-4 p-3">
+                                        <TextField fullWidth id="smenu" name="smenu" select label="Sub Menu" variant="outlined"
+                                            onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.smenu}
+                                            error={formik.touched.smenu && Boolean(formik.errors.smenu)}
+                                            helperText={formik.touched.smenu && formik.errors.smenu ? formik.errors.smenu : null}
+                                            InputProps={{inputProps: { style: { padding: '26px' }}}}>
+                                                {subMenu.map(obj => (
+                                                    ((obj.Main_Menu_Id === formik.values.mmenu) && (obj.PageUrl === ""))
+                                                    && <MenuItem key={obj.Sub_Menu_Id} value={obj.Sub_Menu_Id}>{obj.SubMenuName}</MenuItem>
+                                                ))}
+                                        </TextField>
+                                    </div>
+                            }
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type="submit" variant="contained">Create</Button>
+                        <Button onClick={() => setOpen(!open)} color="primary">
+                          Close
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
         </>
     )
 }

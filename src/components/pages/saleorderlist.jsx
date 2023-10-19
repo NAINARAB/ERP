@@ -6,12 +6,11 @@ import Header from "../header/header";
 import Sidebar from "../sidenav/sidebar";
 import moment from 'moment';
 import './com.css';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Slide, IconButton, Card } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton } from "@mui/material";
+import { Info, NavigateNext} from '@mui/icons-material';
 import { prodetails } from "../tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../loader/loader";
-import { useNavigate } from "react-router-dom";
 
 const SaleOrderList = () => {
   const [data, setData] = useState([]);
@@ -22,14 +21,12 @@ const SaleOrderList = () => {
   const [start, setStart] = useState(initialStartDate);
   const [end, setEnd] = useState(initialEndDate);
   const [popupdetails, setPopupdetails] = useState({});
-  const token = localStorage.getItem('userToken'); const nav = useNavigate()
+  const token = localStorage.getItem('userToken'); 
 
   useEffect(() => {
     if (token) {
       fetchrange()
-    } else {
-      nav('/')
-    }
+    } 
   }, []);
 
   const fetchrange = () => {
@@ -68,9 +65,11 @@ const SaleOrderList = () => {
           <Sidebar mainMenuId={4} subMenuId={7} />
         </div>
         <div className="col-md-10">
+          <div className="comhed">
+              <h5>SALES LIST</h5>
+              <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SALES LIST</h6>
+          </div>
           <div className="m-3">
-            <h3>Sale Orders</h3><br />
-            <p>Select Date Range</p>
             <div className="row">
               <div className="col-md-4 px-2">
                 <p>Form</p>
@@ -89,7 +88,7 @@ const SaleOrderList = () => {
               {data.map(obj => (
                 <div className="col-md-6" key={obj.orderNo}>
                   <div className="card">
-                    <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><InfoIcon sx={{ color: 'blue' }} /></IconButton></div>
+                    <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><Info sx={{ color: 'blue' }} /></IconButton></div>
                     <h4><span style={{ float: 'left' }}>Customer Name</span>   <span style={{ float: 'right' }}>{obj.customerName}</span></h4>
                     <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
                     <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
