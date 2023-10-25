@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
-import Header from "../header/header";
-import Sidebar from "../sidenav/sidebar";
+import Header from '../../components/header/header';
+import Sidebar from "../../components/sidenav/sidebar";
 import moment from 'moment';
-import './com.css';
+import '../com.css';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton } from "@mui/material";
 import { Info, NavigateNext} from '@mui/icons-material';
-import { prodetails } from "../tablecolumn";
+import { prodetails } from "../../components/tablecolumn";
 import DataTable from "react-data-table-component";
-import Loader from "../loader/loader";
+import Loader from "../../components/loader/loader";
 
 const SaleOrderList = () => {
   const [data, setData] = useState([]);
@@ -33,7 +33,7 @@ const SaleOrderList = () => {
     if (start > end) {
       toast.warn("Select valid date")
     } else {
-      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token } })
+      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token, 'Db': 'db1' } })
         .then((res) => { return res.json() })
         .then((data) => {
           setData(data.data)
@@ -45,7 +45,7 @@ const SaleOrderList = () => {
   const fetchorderinfo = (num, all) => {
     setOrderDetails([]);
     setPopupdetails(all);
-    fetch(`${apihost}/api/orderinfo?orderno=${num}`, { headers: { 'Authorization': token } })
+    fetch(`${apihost}/api/orderinfo?orderno=${num}`, { headers: { 'Authorization': token, 'Db': 'db1' } })
       .then((res) => { return res.json() })
       .then((data) => {
         setOrderDetails(data.data)

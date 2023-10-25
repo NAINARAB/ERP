@@ -3,9 +3,9 @@ import DataTable from "react-data-table-component";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
-import { products } from "../tablecolumn";
-import Header from "../header/header";
-import Sidebar from "../sidenav/sidebar";
+import { products } from "../../components/tablecolumn";
+import Header from '../../components/header/header'
+import Sidebar from "../../components/sidenav/sidebar"
 import { Sync, NavigateNext } from '@mui/icons-material';
 
 const Product = () => {
@@ -20,7 +20,8 @@ const Product = () => {
             fetch(`${apihost}/api/productinfo?date=${date}`,
                 {
                     headers: {
-                        'Authorization': token
+                        'Authorization': token,
+                        'Db': 'db1'
                     }
                 })
                 .then((res) => { return res.json() })
@@ -37,7 +38,8 @@ const Product = () => {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
-                    'Authorization': token
+                    'Authorization': token,
+                    'Db': 'db1'
                 },
                 body: JSON.stringify({
                     data: data,

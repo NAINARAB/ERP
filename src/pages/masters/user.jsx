@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { apihost } from "../../env";
-import { users, customStyles } from "../tablecolumn";
-import Header from "../header/header";
-import Sidebar from "../sidenav/sidebar";
+import { users, customStyles } from "../../components/tablecolumn";
+import Header from '../../components/header/header'
+import Sidebar from "../../components/sidenav/sidebar"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from "@mui/material";
 import { useFormik } from 'formik';
 import { AccountCircle, MailOutline, LockOutlined, LocationOn, ManageAccounts, NavigateNext } from '@mui/icons-material';
@@ -56,19 +56,19 @@ const User = () => {
 
     useEffect(() => {
         if (token) {
-            fetch(`${apihost}/api/users`,{headers: {'Authorization': token}})
+            fetch(`${apihost}/api/users`,{headers: {'Authorization': token, 'Db': 'db1'}})
                 .then((res) => { return res.json() })
                 .then((data) => {
                     setData(data);
                 })
                 .catch((e) => { console.log(e) })
-            fetch(`${apihost}/api/usertype`,{headers: {'Authorization': token}})
+            fetch(`${apihost}/api/usertype`,{headers: {'Authorization': token,'Db': 'db1'}})
                 .then((res) => { return res.json() })
                 .then((data) => {
                     setUserType(data)
                 })
                 .catch((e) => { console.log(e) });
-            fetch(`${apihost}/api/branch`,{headers: {'Authorization': token}})
+            fetch(`${apihost}/api/branch`,{headers: {'Authorization': token, 'Db': 'db1'}})
                 .then((res) => { return res.json() })
                 .then((data) => {
                     setBranch(data)
@@ -89,7 +89,7 @@ const User = () => {
         <>
             <div className="row">
                 <div className="col-md-12">
-                    <Header />
+                    <Header setting={true} />
                 </div>
                 <div className="col-md-2">
                     <Sidebar mainMenuId={2} subMenuId={3} />

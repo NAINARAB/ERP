@@ -9,20 +9,25 @@ import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, Arrow
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.Main_Menu_Id ? true : false);
+    const nav = useNavigate();
     return (
         <>
             <button
               className={open ? 'active' : 'in active'}
-              onClick={() => setOpen(!open)}
+              onClick={
+                props.MainMenuData.PageUrl === ""
+                    ? () => setOpen(!open)
+                    : () => nav(props.MainMenuData.PageUrl)
+            }
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             >
               <span style={{ textAlign: 'left' }}>
-                {props.MainMenuData.Main_Menu_Id === 1 && <GridView sx={{ fontSize: '1.3em', color: 'green' }} />}
-                {props.MainMenuData.Main_Menu_Id === 2 && <Tune sx={{ fontSize: '1.3em', color: 'green' }} />}
-                {props.MainMenuData.Main_Menu_Id === 3 && <ShoppingCart sx={{ fontSize: '1.3em', color: 'green' }} />}
-                {props.MainMenuData.Main_Menu_Id === 4 && <Toll sx={{ fontSize: '1.3em', color: 'green' }} />}
-                {props.MainMenuData.Main_Menu_Id === 5 && <Grading sx={{ fontSize: '1.3em', color: 'green' }} />}
-                {props.MainMenuData.Main_Menu_Id === 6 && <SwitchAccount sx={{ fontSize: '1.3em', color: 'green' }} />}
+                {props.MainMenuData.Main_Menu_Id === 1 && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.Main_Menu_Id === 2 && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.Main_Menu_Id === 3 && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.Main_Menu_Id === 4 && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.Main_Menu_Id === 5 && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.Main_Menu_Id === 6 && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
                 {' ' + props.MainMenuData.MenuName}
               </span>
               <div style={{ textAlign: 'right' }}>
@@ -30,13 +35,16 @@ const MainMenu = (props) => {
               </div>
             </button>
 
-            <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0.2em 0.4em'}}>
-                {props.SubMenuData.map(obj => (
-                    props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
-                        ? <SubMenu key={obj.Sub_Menu_Id} SubMenuData={obj} ChildMenuData={props.ChildMenuData} subMenuId={props.subMenuId} childMenuId={props.childMenuId} />
-                        : null
-                ))}
-            </Collapse>
+            {props.MainMenuData.PageUrl === ""
+                && 
+                <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0.2em 0.4em'}}>
+                    {props.SubMenuData.map(obj => (
+                        props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
+                            ? <SubMenu key={obj.Sub_Menu_Id} SubMenuData={obj} ChildMenuData={props.ChildMenuData} subMenuId={props.subMenuId} childMenuId={props.childMenuId} />
+                            : null
+                    ))}
+                </Collapse>
+            }
         </>
     );
 }
@@ -54,12 +62,15 @@ const SubMenu = (props) => {
                         ? () => setOpen(!open)
                         : () => nav(props.SubMenuData.PageUrl)
                 }>
-                {props.SubMenuData.PageUrl === "" ? <>{open === false ? <ArrowRight sx={{color:'green'}} /> : <ArrowDropDown sx={{color:'green'}} />}</> : null}
+                {props.SubMenuData.PageUrl === "" 
+                ?   open === false  ? <ArrowRight sx={{color:'rgb(66, 34, 225)'}} /> 
+                                    : <ArrowDropDown sx={{color:'rgb(66, 34, 225)'}} />
+                :   null}
                 
                 {props.SubMenuData.SubMenuName}
             </button>
             {props.SubMenuData.PageUrl === ""
-                ? 
+                && 
                 <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0em 1em'}}>
                     {props.ChildMenuData.map(obj => (
                         props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id && obj.Read_Rights === 1
@@ -67,7 +78,6 @@ const SubMenu = (props) => {
                         : null
                     ))}
                 </Collapse>
-                : null
             }
         </>
     );
@@ -88,7 +98,6 @@ const ChildMenu = (props) => {
 }
 
 const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
-    const nav = useNavigate(); 
     const [opncond, setopencond] = useState(false);
     const token = localStorage.getItem('userToken');
     const [mainMenu, setMainMenu] = useState([]);
@@ -99,7 +108,8 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
         if(token) {
             fetch(`${apihost}/api/sidebar`, {
                 headers: {
-                    'Authorization': token
+                    'Authorization': token,
+                    'Db': 'db1'
                 }
             })
                 .then((res) => { return res.json() })
@@ -138,7 +148,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                             // localStorage.getItem('Name') ||
                             'Raj Nainaar'
                         }</h5>
-                        <p style={{ color: 'rgb(64, 38, 236)' }}>{localStorage.getItem('UserType') || "Null"}</p>
+                        <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>
                     </div>
                 </div>
                 {mainMenu.map(obj => (

@@ -11,7 +11,8 @@ const pageRights = (pageType, page) => {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                'Authorization': token
+                'Authorization': token,
+                'Db': 'db1'
             }
          })
             .then((res) => res.json())
@@ -23,7 +24,8 @@ const pageRights = (pageType, page) => {
                     method: "GET",
                     headers: {
                         "Content-type": "application/json; charset=UTF-8",
-                        'Authorization': token
+                        'Authorization': token,
+                        'Db': 'db1'
                     }
                 })
             })
@@ -39,5 +41,32 @@ const pageRights = (pageType, page) => {
             });
     });
 }
+
+// UserId
+// : 
+// "1"
+// permissions
+// : 
+// Add_Rights
+// : 
+// 1
+// Delete_Rights
+// : 
+// 1
+// Edit_Rights
+// : 
+// 1
+// Read_Rights
+// : 
+// 1
+// [[Prototype]]
+// : 
+// Object
+// status
+// : 
+// "success"
+// token
+// : 
+// ""
 
 export { pageRights };

@@ -14,6 +14,13 @@ const customStyles = {
     },
 };
 
+const customSelectStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      height: '45px',
+    }),
+  };
+
 const users = [
     {
       name: 'UserId',
@@ -196,4 +203,4 @@ const MainMenu = [
     }
 ]
 
-export {users, products, prodetails, MainMenu, customStyles};
+export {users, products, prodetails, MainMenu, customStyles, customSelectStyles};

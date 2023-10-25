@@ -20,14 +20,22 @@ function Login() {
     }, [])
 
     const getLogin = async () => {
-        fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
+        fetch(`${apihost}/api/login?user=${userID}&pass=${password}`, {
+            headers: {
+                'Db': 1
+            }
+        })
             .then((res) => { return res.json() })
             .then((data) => {
                 setIsLoading(false);
-                localStorage.setItem('userToken',data[0].Autheticate_Id)
-                localStorage.setItem('Name', data[0].UserName)
-                localStorage.setItem('UserType', data[0].UserType)
-                navigate('users')
+                if (data.status === "Success") {
+                    localStorage.setItem('userToken',data.user.Autheticate_Id)
+                    localStorage.setItem('Name', data.user.UserName)
+                    localStorage.setItem('UserType', data.user.UserType)
+                    navigate('users')
+                } else {
+                    toast.error("Login Failed")
+                }
             })
             .catch((e) => { console.log(e) });
     };

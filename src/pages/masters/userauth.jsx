@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { apihost } from "../../env";
-import Header from "../header/header";
-import Sidebar from "../sidenav/sidebar";
+import Header from '../../components/header/header';
+import Sidebar from "../../components/sidenav/sidebar";
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, IconButton, Checkbox, TextField, MenuItem } from "@mui/material";
-import { MainMenu } from "../tablecolumn";
+import { MainMenu } from "../../components/tablecolumn";
 import { UnfoldMore, NavigateNext } from '@mui/icons-material';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material/';
 import { useFormik } from 'formik';
 import { ToastContainer, toast } from 'react-toastify';
-import { pageRights } from "../rightsCheck";
+import { pageRights } from "../../components/rightsCheck";
 
 
 const token = localStorage.getItem('userToken')
@@ -310,7 +310,7 @@ const UserAuthorization = () => {
 
     useEffect(() => {
         if (pageInfo.token) {
-            fetch(`${apihost}/api/users`, { headers: { 'Authorization': pageInfo.token } })
+            fetch(`${apihost}/api/users`, { headers: { 'Authorization': pageInfo.token, 'Db': 'db1' } })
                 .then((res) => { return res.json() })
                 .then((data) => {
                     setUsers(data);
@@ -320,7 +320,7 @@ const UserAuthorization = () => {
     }, [pageInfo])
 
     useEffect(() => {        
-        fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId !== "" ? currentAuthId : token } })
+        fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId !== "" ? currentAuthId : token, 'Db': 'db1' } })
             .then(res => res.json())
             .then(data => {
                 setMainMenu(data[0]);
@@ -373,13 +373,15 @@ const UserAuthorization = () => {
                     mainMenuId: values.mmenu,
                     subMenuId: values.smenu
                 }),
-                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json' } 
+                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json', 'Db': 'db1' } 
             })
                 .then(res => res.json())
                 .then(data => {
                     if(data.status === "Success"){
                         toast("New Menu Created");
                         setOpen(false)
+                    } else {
+                        toast.error(data.message); setOpen(false)
                     }
                 })
                 .catch(e => console.log(e))

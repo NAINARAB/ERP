@@ -6,9 +6,9 @@
     background-color: transparent;
     padding: 0.7em;
     background-color: #f1f1f1;
-    color: green;
+    color: rgb(66, 34, 225);
     border-radius: 10px;
-    transition: all 0.4s;
+    transition: all 0.3s;
     font-weight: 470;
 }
 .in{
@@ -18,7 +18,8 @@
 
 .active:hover{
     background-color: #f1f1f1 !important;
-    color: green;
+    color: rgb(66, 34, 225);
+    font-weight: bold;
 }
 
 .menuhide{
