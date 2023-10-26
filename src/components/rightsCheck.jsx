@@ -33,40 +33,17 @@ const pageRights = (pageType, page) => {
             .then((data) => {
                 res.token = token;
                 res.status = "success";
-                res.permissions = data;
-                resolve(res);
+                if(data.Read_Rights === 0) {
+                    window.location.href = '/'
+                } else {
+                    res.permissions = data;
+                    resolve(res);
+                }
             })
             .catch((e) => {
                 reject(e);
             });
     });
 }
-
-// UserId
-// : 
-// "1"
-// permissions
-// : 
-// Add_Rights
-// : 
-// 1
-// Delete_Rights
-// : 
-// 1
-// Edit_Rights
-// : 
-// 1
-// Read_Rights
-// : 
-// 1
-// [[Prototype]]
-// : 
-// Object
-// status
-// : 
-// "success"
-// token
-// : 
-// ""
 
 export { pageRights };

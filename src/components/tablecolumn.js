@@ -201,6 +201,49 @@ const MainMenu = [
         id: 8,
         headname: 'Action'
     }
+];
+
+const ReportMenu = [
+    {
+        id: 1,
+        headname : 'S.No',
+        variant : 'head',
+        align : 'left',
+        width : 100
+    },
+    {
+        id: 2,
+        headname : 'Menu',
+        align : 'left',
+        width : 300
+    },
+    {
+        id: 3,
+        width: 500
+    }
 ]
 
-export {users, products, prodetails, MainMenu, customStyles, customSelectStyles};
+const Report = [
+    {
+        name: 'Group_Name',
+        selector: (row) => row.Group_Name,
+        sortable: true,
+    },
+    {
+        name: 'Balance Quantity',
+        selector: (row) => row.Bal_Qty,
+        sortable: true,
+    },
+    {
+        name: 'Cl Rate',
+        selector: (row) => row.CL_Rate,
+        sortable: true,
+    },
+    {
+        name: 'Stock Value',
+        selector: (row) => row.Stock_Value,
+        sortable: true,
+    }
+]
+
+export {users, products, prodetails, MainMenu, customStyles, customSelectStyles, Report, ReportMenu};
