@@ -55,7 +55,7 @@ const SubMenu = (props) => {
     return (
         <>
             <button
-                className={open ? 'active subMenu' : 'in active subMenu'}
+                className={open ? 'active subMenu' : 'subin active subMenu'}
                 style={props.SubMenuData.PageUrl !== "" ? {backgroundColor: 'transparent'} : {} }
                 onClick={
                     props.SubMenuData.PageUrl === ""

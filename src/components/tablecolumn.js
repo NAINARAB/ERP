@@ -205,45 +205,30 @@ const MainMenu = [
 
 const ReportMenu = [
     {
-        id: 1,
-        headname : 'S.No',
-        variant : 'head',
-        align : 'left',
-        width : 100
-    },
-    {
-        id: 2,
-        headname : 'Menu',
-        align : 'left',
-        width : 300
-    },
-    {
-        id: 3,
-        width: 500
-    }
-]
+        header: 'S.No',
+        accessorKey: 'id',
+        enableGrouping: false, 
+      },
+      {
+        header: 'Stock Group',
+        accessorKey: 'Stock_Group',
+      },
+      {
+        header: 'INM',
+        accessorKey: 'Item_Name_Modified',
+      },
+      {
+        header: 'Balance Quantity',
+        accessorKey: 'Bal_Qty',
+      },
+      {
+        header: 'Closing Rate',
+        accessorKey: 'CL_Rate',
+      },
+      {
+        header: 'Stock Value',
+        accessorKey: 'Stock_Value',
+      },
+];
 
-const Report = [
-    {
-        name: 'Group_Name',
-        selector: (row) => row.Group_Name,
-        sortable: true,
-    },
-    {
-        name: 'Balance Quantity',
-        selector: (row) => row.Bal_Qty,
-        sortable: true,
-    },
-    {
-        name: 'Cl Rate',
-        selector: (row) => row.CL_Rate,
-        sortable: true,
-    },
-    {
-        name: 'Stock Value',
-        selector: (row) => row.Stock_Value,
-        sortable: true,
-    }
-]
-
-export {users, products, prodetails, MainMenu, customStyles, customSelectStyles, Report, ReportMenu};
+export {users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu};

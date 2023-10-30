@@ -10,6 +10,9 @@
     border-radius: 10px;
     transition: all 0.3s;
     font-weight: 470;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .in{
     background-color: transparent !important;
@@ -31,6 +34,13 @@
 }
 .subMenu {
     font-size: 0.75em;
+    background-color: transparent !important;
+}
+.subin {
+    color:#000
+}
+.subMenu:hover {
+    background-color: transparent !important;
 }
 
 .childMenu{
@@ -41,6 +51,9 @@
 .usrinfo{
     padding: 0.7em;
     background-color: #f8f6f6;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .usrinfo i{
     font-size: 30px;
