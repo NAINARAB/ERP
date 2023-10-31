@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+
+
 const customStyles = {
     rows: {
         style: {
@@ -16,36 +19,36 @@ const customStyles = {
 
 const customSelectStyles = {
     control: (provided, state) => ({
-      ...provided,
-      height: '45px',
+        ...provided,
+        height: '45px',
     }),
-  };
+};
 
 const users = [
     {
-      name: 'UserId',
-      selector: (row) => row.UserId,
-      sortable: true,
+        name: 'UserId',
+        selector: (row) => row.UserId,
+        sortable: true,
     },
     {
-      name: 'Name',
-      selector: (row) => row.Name, 
-      sortable: true,
+        name: 'Name',
+        selector: (row) => row.Name,
+        sortable: true,
     },
     {
-      name: 'Password',
-      selector: (row) => row.Password, 
-      sortable: true,
+        name: 'Password',
+        selector: (row) => row.Password,
+        sortable: true,
     },
     {
-      name: 'UserName',
-      selector: (row) => row.UserName, 
-      sortable: true,
+        name: 'UserName',
+        selector: (row) => row.UserName,
+        sortable: true,
     },
     {
-      name: 'BranchId',
-      selector: (row) => row.BranchId,
-      sortable: true,
+        name: 'BranchId',
+        selector: (row) => row.BranchId,
+        sortable: true,
     },
 ];
 
@@ -168,10 +171,10 @@ const products = [
 const MainMenu = [
     {
         id: 1,
-        headname : 'Menu ID',
-        variant : 'head',
-        align : 'left',
-        width : 100
+        headname: 'Menu ID',
+        variant: 'head',
+        align: 'left',
+        width: 100
     },
     {
         id: 2,
@@ -204,31 +207,41 @@ const MainMenu = [
 ];
 
 const ReportMenu = [
+    // {
+    //     header: 'S.No',
+    //     accessorKey: 'id',
+    //     enableGrouping: false,
+    // },
     {
-        header: 'S.No',
-        accessorKey: 'id',
-        enableGrouping: false, 
-      },
-      {
         header: 'Stock Group',
         accessorKey: 'Stock_Group',
-      },
-      {
+        width: 300
+    },
+    {
         header: 'INM',
         accessorKey: 'Item_Name_Modified',
-      },
-      {
+        width: 300
+    },
+    {
         header: 'Balance Quantity',
         accessorKey: 'Bal_Qty',
-      },
-      {
+    },
+    {
         header: 'Closing Rate',
         accessorKey: 'CL_Rate',
-      },
-      {
+    },
+    {
         header: 'Stock Value',
         accessorKey: 'Stock_Value',
-      },
+    },
+    {
+        header: 'Month',
+        accessorKey: 'month',
+    },
+    {
+        header: 'Date',
+        accessorKey: 'Trans_Date',
+    },
 ];
 
-export {users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu};
+export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu };
