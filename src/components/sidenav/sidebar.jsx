@@ -121,13 +121,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                 })
                 .catch((e) => { console.log(e) })
         } 
-    }, [])
-
-    // useEffect(() => {
-    //     if(!token){
-    //         nav('/')
-    //     }
-    // },[token])
+    },[])
 
     return (
         <>

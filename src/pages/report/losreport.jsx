@@ -10,6 +10,22 @@ import { CurrentCompany } from "../../components/context/contextData";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import { ReportMenu } from "../../components/tablecolumn";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import Enumerable from 'linq';
+import Loader from '../../components/loader/loader'
+
+const Dropdown = ({ label, options, value, onChange, placeholder }) => (
+    <div className="col-md-4 p-2">
+        <label className="p p-2">{label}</label>
+        <Select
+            options={options}
+            isSearchable={true}
+            placeholder={placeholder}
+            styles={customSelectStyles}
+            value={{ value, label: value }}
+            onChange={(e) => onChange(e.value)}
+        />
+    </div>
+);
 
 
 const LOSReport = () => {
@@ -20,7 +36,7 @@ const LOSReport = () => {
     const [open, setOpen] = useState(false)
     const [dropDown, setDropdown] = useState({ stock_group: [], group: [], brand: [], bag: [], inm: [] });
     const [allDropDown, setAllDropDown] = useState([])
-    const [allReport, setAllReport] = useState([]);
+    const [allReport, setAllReport] = useState(null);
     const allOption = { value: 'ALL', label: 'ALL' };
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -38,11 +54,21 @@ const LOSReport = () => {
         inm: allOption.value,
         date: dateFormatted,
         todate: todateFormatted,
+        zero: false
     });
 
-    function getUniqueValues(data, key) {
-        const uniqueValues = new Set(data.map((item) => item[key]));
-        return Array.from(uniqueValues);
+    const includeZero = (array) => {
+        if (selectedValue.zero === false) {
+            let temp = [];
+            array.map(obj => {
+                if (obj.Bal_Qty !== 0 || obj.CL_Rate !== 0 || obj.Stock_Value !== 0) {
+                    temp.push(obj)
+                }
+            });
+            setAllReport(temp)
+        } else {
+            setAllReport(array)
+        }
     }
 
     useEffect(() => {
@@ -74,6 +100,7 @@ const LOSReport = () => {
 
     useEffect(() => {
         if (pageInfo.permissions.Read_Rights === 1) {
+            setAllReport(null)
             fetch(`${apihost}/api/stockabstract?Fromdate=${selectedValue.date}&Todate=${selectedValue.todate}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
@@ -82,26 +109,18 @@ const LOSReport = () => {
                 }
             }).then(res => res.json())
                 .then(data => {
-                    let resdata = data.data, temp = [];
-                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                    for (let i = 0; i < resdata.length; i++) {
-                        resdata[i].id = i + 1;
-                        const date = new Date(resdata[i].Trans_Date);
-                        resdata[i].Trans_Date = date.toISOString().split('T')[0];
-                        const monthIndex = date.getMonth();
-                        resdata[i].month = monthNames[monthIndex];
-                        if (resdata[i].Bal_Qty !== 0 || resdata[i].CL_Rate !== 0 || resdata[i].Stock_Value) {
-                            temp.push(resdata[i])
-                        }
-                    } setAllReport(temp)
-                }).catch(e => console.log(e))
+                    includeZero(data.data)
+                }).catch(e => {
+                    console.log(e)
+                    setAllReport([])
+                })
         }
     }, [selectedValue, compData, pageInfo])
 
 
     const table = useMaterialReactTable({
         columns: ReportMenu,
-        data: allReport,
+        data: allReport === null ? [] : allReport,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
@@ -117,6 +136,78 @@ const LOSReport = () => {
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: 440 } },
     })
+
+    const brandOptions = () => {
+        const query = Enumerable.from(allDropDown);
+        return query
+            .where(obj =>
+                (selectedValue.stock_group === "ALL" || obj.Stock_Group === selectedValue.stock_group) &&
+                (selectedValue.group === "ALL" || obj.Group_ST === selectedValue.group) &&
+                (selectedValue.bag === "ALL" || obj.Bag === selectedValue.bag) &&
+                (selectedValue.inm === "ALL" || obj.Item_Name_Modified === selectedValue.inm)
+            )
+            .select(obj => ({ value: obj.Brand, label: obj.Brand }))
+            .distinct(o => o.value)
+            .toArray();
+    };
+
+    const stockOptions = () => {
+        const query = Enumerable.from(allDropDown);
+        return query
+            .where(obj =>
+                (selectedValue.brand === "ALL" || obj.Brand === selectedValue.brand) &&
+                (selectedValue.group === "ALL" || obj.Group_ST === selectedValue.group) &&
+                (selectedValue.bag === "ALL" || obj.Bag === selectedValue.bag) &&
+                (selectedValue.inm === "ALL" || obj.Item_Name_Modified === selectedValue.inm)
+            )
+            .select(obj => ({ value: obj.Stock_Group, label: obj.Stock_Group }))
+            .distinct(o => o.value)
+            .toArray();
+    };
+
+    const groupOptions = () => {
+        const query = Enumerable.from(allDropDown);
+        return query
+            .where(obj =>
+                (selectedValue.stock_group === "ALL" || obj.Stock_Group === selectedValue.stock_group) &&
+                (selectedValue.brand === "ALL" || obj.Brand === selectedValue.brand) &&
+                (selectedValue.bag === "ALL" || obj.Bag === selectedValue.bag) &&
+                (selectedValue.inm === "ALL" || obj.Item_Name_Modified === selectedValue.inm)
+            )
+            .select(obj => ({ value: obj.Group_ST, label: obj.Group_ST }))
+            .distinct(o => o.value)
+            .toArray();
+    };
+
+    const bagOptions = () => {
+        const query = Enumerable.from(allDropDown);
+        return query
+            .where(obj =>
+                (selectedValue.stock_group === "ALL" || obj.Stock_Group === selectedValue.stock_group) &&
+                (selectedValue.group === "ALL" || obj.Group_ST === selectedValue.group) &&
+                (selectedValue.brand === "ALL" || obj.Brand === selectedValue.brand) &&
+                (selectedValue.inm === "ALL" || obj.Bag === selectedValue.bag)
+            )
+            .select(obj => ({ value: obj.Bag, label: obj.Bag }))
+            .distinct(o => o.value)
+            .toArray();
+    };
+    
+    const inmOptions = () => {
+        const query = Enumerable.from(allDropDown);
+        return query
+            .where(obj =>
+                (selectedValue.stock_group === "ALL" || obj.Stock_Group === selectedValue.stock_group) &&
+                (selectedValue.group === "ALL" || obj.Group_ST === selectedValue.group) &&
+                (selectedValue.brand === "ALL" || obj.Brand === selectedValue.brand) &&
+                (selectedValue.bag === "ALL" || obj.Bag === selectedValue.bag)
+            )
+            .select(obj => ({ value: obj.Item_Name_Modified, label: obj.Item_Name_Modified }))
+            .distinct(o => o.value)
+            .toArray();
+    };
+    
+
 
     return (
         <>
@@ -143,7 +234,7 @@ const LOSReport = () => {
                             TO :
                             <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.todate}</span>
                         </h5>
-                        <MaterialReactTable table={table} />
+                        {allReport === null ? <Loader /> : <MaterialReactTable table={table} />}
                     </div>
                 </div>
             </div>
@@ -154,75 +245,76 @@ const LOSReport = () => {
                 fullWidth>
                 <DialogTitle>Filter Options</DialogTitle><hr />
                 <DialogContent className="row">
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2">Select Stock Group</label>
-                        <Select
-                            options={[allOption, ...dropDown.stock_group.map(obj => ({ value: obj.Stock_Group, label: obj.Stock_Group }))]}
-                            isSearchable={true}
-                            placeholder="Stock Group"
-                            styles={customSelectStyles}
-                            value={{ value: selectedValue.stock_group, label: selectedValue.stock_group }}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, stock_group: e.value })}
-                        />
-                    </div>
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2">Select Group</label>
-                        <Select
-                            options={selectedValue.stock_group === "ALL"
+                    <Dropdown
+                        label="Select Stock Group"
+                        options={
+                            (selectedValue.group === "ALL" && selectedValue.brand === "ALL" && selectedValue.bag === "ALL" && selectedValue.inm === "ALL")
+                                ? [allOption, ...dropDown.stock_group.map(obj => ({ value: obj.Stock_Group, label: obj.Stock_Group }))]
+                                : [allOption, ...stockOptions()]
+                        }
+                        value={selectedValue.stock_group}
+                        onChange={(value) => setSelectedValue({ ...selectedValue, stock_group: value })}
+                        placeholder="Stock Group"
+                    />
+                    <Dropdown
+                        label="Select Group"
+                        options={
+                            (selectedValue.stock_group === "ALL" && selectedValue.brand === "ALL" && selectedValue.bag === "ALL" && selectedValue.inm === "ALL")
                                 ? [allOption, ...dropDown.group.map(obj => ({ value: obj.Group_ST, label: obj.Group_ST }))]
-                                : [allOption, ...getUniqueValues(allDropDown.filter(obj => selectedValue.stock_group === obj.Stock_Group), 'Group_ST').map(value => ({ value:value, label: value }))]
-                            }
-
-                            isSearchable={true}
-                            placeholder="Group"
-                            styles={customSelectStyles}
-                            value={{ value: selectedValue.group, label: selectedValue.group }}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, group: e.value })}
-                        />
-                    </div>
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2">Select Brand</label>
-                        <Select
-                            options={
-                                selectedValue.group === "ALL"
-                                    ? [allOption, ...dropDown.brand.map(obj => ({ value: obj.Brand, label: obj.Brand }))]
-                                    : [allOption, ...getUniqueValues(allDropDown.filter(obj => selectedValue.group === obj.Group_ST), 'Brand').map(value => ({ value:value, label: value }))]
-                            }
-                            isSearchable={true}
-                            placeholder="Bag"
-                            styles={customSelectStyles}
-                            value={{ value: selectedValue.brand, label: selectedValue.brand }}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, brand: e.value })}
-                        />
-                    </div>
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2">Select Bag</label>
-                        <Select
-                            options={selectedValue.brand === "ALL"
+                                : [allOption, ...groupOptions()]
+                        }
+                        value={selectedValue.group}
+                        onChange={(value) => setSelectedValue({ ...selectedValue, group: value })}
+                        placeholder="Group"
+                    />
+                    <Dropdown
+                        label="Select Brand"
+                        options={
+                            (selectedValue.stock_group === "ALL" && selectedValue.group === "ALL" && selectedValue.bag === "ALL" && selectedValue.inm === "ALL")
+                                ? [allOption, ...dropDown.brand.map(obj => ({ value: obj.Brand, label: obj.Brand }))]
+                                : [allOption, ...brandOptions()]
+                        }
+                        value={selectedValue.brand}
+                        onChange={(value) => setSelectedValue({ ...selectedValue, brand: value })}
+                        placeholder="Brand"
+                    />
+                    <Dropdown
+                        label="Select Bag"
+                        options={
+                            (selectedValue.stock_group === "ALL" && selectedValue.group === "ALL" && selectedValue.brand === "ALL" && selectedValue.inm === "ALL")
                                 ? [allOption, ...dropDown.bag.map(obj => ({ value: obj.Bag, label: obj.Bag }))]
-                                : [allOption, ...getUniqueValues(allDropDown.filter(obj => selectedValue.brand === obj.Brand), 'Bag').map(value => ({ value, label: value }))]
-                            }
-                            isSearchable={true}
-                            placeholder="Bag"
+                                : [allOption, ...bagOptions()]
+                        }
+                        value={selectedValue.bag}
+                        onChange={(value) => setSelectedValue({ ...selectedValue, bag: value })}
+                        placeholder="Bag"
+                    />
+                    <Dropdown
+                        label="Select INM"
+                        options={
+                            (selectedValue.stock_group === "ALL" && selectedValue.group === "ALL" && selectedValue.brand === "ALL" && selectedValue.bag === "ALL")
+                                ? [allOption, ...dropDown.inm.map(obj => ({ value: obj.Item_Name_Modified, label: obj.Item_Name_Modified }))]
+                                : [allOption, ...inmOptions()]
+                        }
+                        value={selectedValue.inm}
+                        onChange={(value) => setSelectedValue({ ...selectedValue, inm: value })}
+                        placeholder="INM"
+                    />
+                    <div className="col-md-4 p-2">
+                        <label className="p p-2">Include Zero Values</label>
+                        <Select
+                            options={[{ value: false, label: 'No' }, { value: true, label: 'Yes' }]}
+                            isSearchable={false}
+                            placeholder="Include Zero"
                             styles={customSelectStyles}
-                            value={{ value: selectedValue.bag, label: selectedValue.bag }}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, bag: e.value })}
+                            value={{ value: selectedValue.zero, label: selectedValue.zero === false ? "No" : "Yes" }}
+                            onChange={(e) => {
+                                setSelectedValue({ ...selectedValue, zero: e.value })
+                                includeZero(allReport)
+                            }}
                         />
                     </div>
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2">Select INM</label>
-                        <Select
-                            options={selectedValue.bag === "ALL"
-                                ? [allOption, ...dropDown.inm.map(obj => ({ value: obj.Item_Name_Modified, label: obj.Item_Name_Modified }))]
-                                : [allOption, ...getUniqueValues(allDropDown.filter(obj => selectedValue.bag === obj.Bag), 'Item_Name_Modified').map(value => ({ value, label: value }))]
-                            }
-                            isSearchable={true}
-                            placeholder="INM"
-                            styles={customSelectStyles}
-                            value={{ value: selectedValue.inm, label: selectedValue.inm }}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, inm: e.value })}
-                        />
-                    </div><div className="col-md-4"></div><div className="col-md-12"><br /></div><hr />
+                    <div className="col-md-12"><br /></div><hr />
                     <div className="col-md-4 p-2">
                         <label className="p p-2">From DATE</label>
                         <input
@@ -242,7 +334,7 @@ const LOSReport = () => {
                     <div className="p-5 mb-5"></div>
                 </DialogContent><hr />
                 <DialogActions>
-                    <Button variant="outlined" onClick={() => { setOpen(!open) }}>Apply</Button>
+                    <Button variant="contained" onClick={() => { setOpen(!open) }}>Apply</Button>
                 </DialogActions>
             </Dialog>
         </>

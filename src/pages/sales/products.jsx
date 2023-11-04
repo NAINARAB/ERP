@@ -3,10 +3,13 @@ import DataTable from "react-data-table-component";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
-import { products } from "../../components/tablecolumn";
+import { products, subtable, customStyles } from "../../components/tablecolumn";
 import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
 import { Sync, NavigateNext } from '@mui/icons-material';
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box } from "@mui/material";
+import axios from 'axios'
+
 
 const Product = () => {
     const today = new Date();
@@ -16,20 +19,18 @@ const Product = () => {
     const token = localStorage.getItem('userToken')
 
     useEffect(() => {
-        if (token) {
-            fetch(`${apihost}/api/productinfo?date=${date}`,
-                {
-                    headers: {
-                        'Authorization': token,
-                        'Db': 'db1'
-                    }
+        axios.get(`${apihost}/api/productinfo?date=${date}`, {
+            headers: {
+                'Authorization': token,
+            }
+        }).then(data => {
+            data.data.map(obj => {
+                obj.transDetails.map(tobj => {
+                    tobj.orderNo = obj.orderNo
                 })
-                .then((res) => { return res.json() })
-                .then((data) => {
-                    setData(data)
-                })
-                .catch((e) => { console.log(e) });
-        }
+            })
+            setData(data.data);
+        }).catch(e => console.log(e))
     }, [date]);
 
     const syncData = () => {
@@ -60,6 +61,45 @@ const Product = () => {
         }
     }
 
+    const ExpandedComponent = ({ data }) => {
+        return (
+            <Box sx={{ padding: '2em' }}>
+                <h5>Transaction Details ({data.orderNo})</h5>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                {subtable.map(obj => (
+                                    <TableCell
+                                        key={obj.id}
+                                        width={obj.width}
+                                        sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
+                                        {obj.headname}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.transDetails.map(obj => (
+                                <TableRow>
+                                    <TableCell>{obj.actualQty}</TableCell>
+                                    <TableCell>{obj.amount}</TableCell>
+                                    <TableCell>{obj.billedQty}</TableCell>
+                                    <TableCell>{obj.closeingStock}</TableCell>
+                                    <TableCell>{obj.productCode}</TableCell>
+                                    <TableCell>{obj.rate}</TableCell>
+                                    <TableCell>{obj.taxAmount}</TableCell>
+                                    <TableCell>{obj.taxCode}</TableCell>
+                                    <TableCell>{obj.uom}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+        )
+    }
+
 
     return (
         <>
@@ -72,10 +112,10 @@ const Product = () => {
                     <Sidebar mainMenuId={4} subMenuId={6} />
                 </div>
                 <div className="col-md-10">
-                <div className="comhed">
-                    <h5>SYNC SALE ORDER</h5>
-                    <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SYNC SALE ORDER</h6>
-                </div>
+                    <div className="comhed">
+                        <h5>SYNC SALE ORDER</h5>
+                        <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SYNC SALE ORDER</h6>
+                    </div>
                     <div className="m-3">
                         <div className="col-sm-4">
                             <label>Order Date</label><br />
@@ -88,23 +128,25 @@ const Product = () => {
                                     console.log(e.target.value);
                                 }} />
                             <br />
-                            <button
+                            {/* <button
                                 className={date >= todaydate ? 'btn btn-disabled' : 'btn btn-success'}
                                 onClick={syncData}
                                 disabled={date >= todaydate ? true : false}
-                            ><Sync /> &nbsp;Sync Data </button>
+                            ><Sync /> &nbsp;Sync Data </button> */}
                         </div><br />
                         <DataTable
-                            title="Sale Orders"
+                            title="Today Sale Orders"
                             columns={products}
                             data={data}
+                            expandableRows
+                            expandableRowsComponent={ExpandedComponent}
+                            expandableIconColumnIndex={-1}
                             pagination
                             highlightOnHover={true}
                             fixedHeader={true}
-                            fixedHeaderScrollHeight={"50vh"}
+                            fixedHeaderScrollHeight={"70vh"}
+                            customStyles={customStyles}
                         />
-
-
                     </div>
                 </div>
             </div>

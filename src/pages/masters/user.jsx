@@ -7,6 +7,7 @@ import Sidebar from "../../components/sidenav/sidebar"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from "@mui/material";
 import { useFormik } from 'formik';
 import { AccountCircle, MailOutline, LockOutlined, LocationOn, ManageAccounts, NavigateNext } from '@mui/icons-material';
+import axios from 'axios'
 
 
 const initialValues = {
@@ -75,13 +76,35 @@ const User = () => {
                 })
                 .catch((e) => { console.log(e) });
         }
-    }, []);
+    }, [token]);
 
     const formik = useFormik({
         initialValues,
         validate,
         onSubmit: (values) => {
-            console.log(values);
+            // axios.post(`${apihost}/api/user`, data, {headers: {'Authorization': token, 'Content-Type': 'application/json'}})
+            // .then(res => {
+            //     console.log(res.data)
+            // })
+            const data = {
+                name: values.name,
+                username: values.name,
+                usertype: values.usertype,
+                password: values.password,
+                branch: values.branch,
+                mode: 1
+            }
+            
+            fetch(`${apihost}/api/user`,{
+                method: 'POST',
+                headers: {'Authorization': token, 'Content-Type': 'application/json'},
+                body: JSON.stringify({name: values.name, username: values.name, usertype: values.usertype, password: values.password, branch: values.branch, mode: 1})
+            })
+            .then((res) => res.json())
+            .then((resdata) => {
+              console.log(resdata);
+            })
+            .catch((e) => console.log(e));
         },
     });
 

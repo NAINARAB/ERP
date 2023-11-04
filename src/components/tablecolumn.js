@@ -1,6 +1,3 @@
-import { format } from 'date-fns';
-
-
 const customStyles = {
     rows: {
         style: {
@@ -80,91 +77,106 @@ const prodetails = [
     }
 ]
 
+const subtable = [
+    {
+        id: 1,
+        headname: 'actualQty',
+        width: 50,
+    },
+    {
+        id: 2,
+        headname: 'amount',
+    },
+    {
+        id: 3,
+        headname: 'billedQty',
+    },
+    {
+        id: 4,
+        headname: 'closeingStock',
+    },
+    {
+        id: 5,
+        headname: 'productCode',
+    },
+    {
+        id: 6,
+        headname: 'rate',
+    },
+    {
+        id: 7,
+        headname: 'taxAmount',
+    },
+    {
+        id: 8,
+        headname: 'taxCode',
+    },
+    {
+        id: 9,
+        headname: 'umo',
+    },
+]
+
 const products = [
     {
-        name: 'actualQty',
-        selector: (row) => row.actualQty,
-        sortable: true,
-    },
-    {
-        name: 'amount',
-        selector: (row) => row.amount,
-        sortable: true,
-    },
-    {
-        name: 'billedQty',
-        selector: (row) => row.billedQty,
-        sortable: true,
-    },
-    {
-        name: 'billingAddress',
+        name: 'Billing Address',
         selector: (row) => row.billingAddress,
         sortable: true,
+        maxWidth: '150px'
     },
     {
-        name: 'customerName',
+        name: 'Customer',
         selector: (row) => row.customerName,
         sortable: true,
+        maxWidth: '150px'
     },
     {
-        name: 'distributorCode',
+        name: 'Distributor Code',
         selector: (row) => row.distributorCode,
         sortable: true,
+        maxWidth: '150px'
     },
     {
         name: 'docDate',
         selector: (row) => row.docDate,
         sortable: true,
+        maxWidth: '150px'
     },
     {
         name: 'docNumber',
         selector: (row) => row.docNumber,
         sortable: true,
+        maxWidth: '150px'
     },
     {
-        name: 'gstinNo',
-        selector: (row) => row.gstinNo,
-        sortable: true,
-    },
-    {
-        name: 'orderDate',
+        name: 'Order Date',
         selector: (row) => row.orderDate,
         sortable: true,
+        maxWidth: '150px'
     },
     {
         name: 'orderNo',
         selector: (row) => row.orderNo,
         sortable: true,
+        maxWidth: '150px'
     },
     {
         name: 'orderValue',
         selector: (row) => row.orderValue,
         sortable: true,
-    },
-    {
-        name: 'productName',
-        selector: (row) => row.productName,
-        sortable: true,
-    },
-    {
-        name: 'rate',
-        selector: (row) => row.rate,
-        sortable: true,
-    },
+        maxWidth: '100px'
+    },    
     {
         name: 'shippingAddress',
         selector: (row) => row.shippingAddress,
         sortable: true,
-    },
-    {
-        name: 'taxAmount',
-        selector: (row) => row.taxAmount,
-        sortable: true,
+        maxWidth: '150px'
     },
     {
         name: 'transType',
         selector: (row) => row.transType,
         sortable: true,
+        maxWidth: '150px'
     },
 ];
 
@@ -207,11 +219,6 @@ const MainMenu = [
 ];
 
 const ReportMenu = [
-    // {
-    //     header: 'S.No',
-    //     accessorKey: 'id',
-    //     enableGrouping: false,
-    // },
     {
         header: 'Stock Group',
         accessorKey: 'Stock_Group',
@@ -221,6 +228,10 @@ const ReportMenu = [
         header: 'INM',
         accessorKey: 'Item_Name_Modified',
         width: 300
+    },
+    {
+        header: 'Date',
+        accessorKey: 'Trans_Date',
     },
     {
         header: 'Balance Quantity',
@@ -237,11 +248,7 @@ const ReportMenu = [
     {
         header: 'Month',
         accessorKey: 'month',
-    },
-    {
-        header: 'Date',
-        accessorKey: 'Trans_Date',
-    },
+    }
 ];
 
-export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu };
+export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu, subtable };
