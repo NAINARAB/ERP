@@ -22,7 +22,11 @@ const Header = ({setting}) => {
       fetch(`${apihost}/api/company`,{headers: {'Authorization': token}})
         .then((res) => { return res.json() })
         .then((data) => {
-          setComp(data.data);
+          if(data.status === "Success"){
+            setComp(data.data);
+          } else {
+            
+          }
         })
         .catch((e) => { console.log(e) })
     }

@@ -24,12 +24,12 @@ const Product = () => {
                 'Authorization': token,
             }
         }).then(data => {
-            data.data.map(obj => {
+            data.data.data.map(obj => {
                 obj.transDetails.map(tobj => {
                     tobj.orderNo = obj.orderNo
                 })
             })
-            setData(data.data);
+            setData(data.data.data);
         }).catch(e => console.log(e))
     }, [date]);
 

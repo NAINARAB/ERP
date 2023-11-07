@@ -26,6 +26,7 @@ const users = [
         name: 'UserId',
         selector: (row) => row.UserId,
         sortable: true,
+        maxWidth: '50px'
     },
     {
         name: 'Name',
@@ -33,20 +34,26 @@ const users = [
         sortable: true,
     },
     {
-        name: 'Password',
-        selector: (row) => row.Password,
+        name: 'Mobile',
+        selector: (row) => row.Mobile,
         sortable: true,
     },
     {
-        name: 'UserName',
-        selector: (row) => row.UserName,
+        name: 'User Type',
+        selector: (row) => row.UserType,
         sortable: true,
     },
     {
-        name: 'BranchId',
-        selector: (row) => row.BranchId,
+        name: 'Branch Name',
+        selector: (row) => row.BranchName,
         sortable: true,
     },
+    {
+        name: 'Token',
+        selector: (row) => row.Token,
+        sortable: true,
+    },
+    
 ];
 
 const prodetails = [

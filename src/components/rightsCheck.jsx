@@ -12,7 +12,6 @@ const pageRights = (pageType, page) => {
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
                 'Authorization': token,
-                'Db': 'db1'
             }
          })
             .then((res) => res.json())
@@ -33,10 +32,10 @@ const pageRights = (pageType, page) => {
             .then((data) => {
                 res.token = token;
                 res.status = "success";
-                if(data.Read_Rights === 0) {
+                if(data.data.Read_Rights === 0) {
                     window.location.href = '/'
                 } else {
-                    res.permissions = data;
+                    res.permissions = data.data;
                     resolve(res);
                 }
             })

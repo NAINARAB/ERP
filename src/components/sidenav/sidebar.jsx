@@ -114,10 +114,11 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
             })
                 .then((res) => { return res.json() })
                 .then((data) => {
-                    setMainMenu(data[0])
-                    setSubMenu(data[1])
-                    setChildMenu(data[2])
-    
+                    if(data.status === "Success"){
+                        setMainMenu(data.data[0])
+                        setSubMenu(data.data[1])
+                        setChildMenu(data.data[2])
+                    }    
                 })
                 .catch((e) => { console.log(e) })
         } 
