@@ -5,7 +5,7 @@ const pageRights = (pageType, page) => {
         const token = localStorage.getItem('userToken');
         let res = {};
         if (!token) {
-            reject(new Error('Token not available'));
+            window.location.href = '/'
         }
         fetch(`${apihost}/api/userid`, { 
             method: "GET",
@@ -24,7 +24,6 @@ const pageRights = (pageType, page) => {
                     headers: {
                         "Content-type": "application/json; charset=UTF-8",
                         'Authorization': token,
-                        'Db': 'db1'
                     }
                 })
             })

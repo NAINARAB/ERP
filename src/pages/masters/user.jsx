@@ -75,7 +75,7 @@ const User = () => {
 
     useEffect(() => {
         pageRights(2, 3).then(rights => {
-            if(rights.permissions.Read_Rights === 1){
+            if (rights.permissions.Read_Rights === 1) {
                 fetch(`${apihost}/api/users`, { headers: { 'Authorization': rights.token } })
                     .then((res) => { return res.json() })
                     .then((data) => {
@@ -94,7 +94,7 @@ const User = () => {
     }, [token, refresh]);
 
     useEffect(() => {
-        if(token) {
+        if (token) {
             fetch(`${apihost}/api/usertype`, { headers: { 'Authorization': token } })
                 .then((res) => { return res.json() })
                 .then((data) => {
@@ -117,32 +117,32 @@ const User = () => {
     const formik = useFormik({
         initialValues,
         validate,
-        onSubmit: (values) => {         
+        onSubmit: (values) => {
             fetch(`${apihost}/api/users`, {
-                method: values.userid == 0 ? 'POST' : 'PUT', 
+                method: values.userid == 0 ? 'POST' : 'PUT',
                 headers: { 'Authorization': token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    userid: values.userid, 
-                    name: values.name,     
-                    mobile: values.mobile, 
-                    usertype: values.usertype, 
-                    password: values.password, 
-                    branch: values.branch 
+                body: JSON.stringify({
+                    userid: values.userid,
+                    name: values.name,
+                    mobile: values.mobile,
+                    usertype: values.usertype,
+                    password: values.password,
+                    branch: values.branch
                 })
             })
-            .then((res) => res.json())
-            .then((resdata) => {
-                setOpen(false);
-                setRefresh(!refresh);
-                if (resdata.status === "Success") {
-                    toast.success(resdata.message);
-                } else {
-                    toast.error(resdata.message);
-                }
-            })
-            .catch((e) => console.log(e));
+                .then((res) => res.json())
+                .then((resdata) => {
+                    setOpen(false);
+                    setRefresh(!refresh);
+                    if (resdata.status === "Success") {
+                        toast.success(resdata.message);
+                    } else {
+                        toast.error(resdata.message);
+                    }
+                })
+                .catch((e) => console.log(e));
         },
-        
+
     });
 
     function onlynum(e) {
@@ -187,7 +187,7 @@ const User = () => {
                 <div>
                     {modify.edit === true && <IconButton onClick={() => handleEdit(row)}><Edit /></IconButton>}
                     {modify.delete === true && <IconButton onClick={() => handleDelete(row)}><Delete sx={{ color: '#FF6865' }} /></IconButton>}
-                </div> 
+                </div>
             ),
         },
     ];
@@ -209,7 +209,7 @@ const User = () => {
         setdopen(true);
         setdelid(row.UserId)
     };
-    
+
     const deleteuser = () => {
         fetch(`${apihost}/api/users/${delid}`, {
             method: 'DELETE',
@@ -221,7 +221,7 @@ const User = () => {
             }
         });
     };
-    
+
 
     return (
         <>
@@ -350,7 +350,7 @@ const User = () => {
                         </div>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => {setOpen(false);formik.handleReset()}}>Close</Button>
+                        <Button onClick={() => { setOpen(false); formik.handleReset() }}>Close</Button>
                         <Button type="submit" variant="contained" color="primary">
                             Submit
                         </Button>
@@ -358,26 +358,26 @@ const User = () => {
                 </form>
             </Dialog>
             <Dialog
-            open={dopen}
-            onClose={() => {setdopen(false)}}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">
-                { "Confirmation"}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    <b style={{ color: 'black', padding: '0px 20px' }}>Do you Want to Delete?</b>
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => setdopen(false)}>Cancel</Button>
-                <Button onClick={deleteuser} autoFocus sx={{ color: 'red' }}>
-                    Delete
-                </Button>
-            </DialogActions>
-        </Dialog>
+                open={dopen}
+                onClose={() => { setdopen(false) }}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Confirmation"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <b style={{ color: 'black', padding: '0px 20px' }}>Do you Want to Delete?</b>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setdopen(false)}>Cancel</Button>
+                    <Button onClick={deleteuser} autoFocus sx={{ color: 'red' }}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }

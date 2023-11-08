@@ -27,7 +27,6 @@ const Dropdown = ({ label, options, value, onChange, placeholder }) => (
     </div>
 );
 
-
 const LOSReport = () => {
     const today = new Date();
     today.setDate(today.getDate() - 30);
@@ -61,6 +60,7 @@ const LOSReport = () => {
         if (selectedValue.zero === false) {
             let temp = [];
             array.map(obj => {
+                obj.Trans_Date = obj.Trans_Date.split('-').reverse().join('-')
                 if (obj.Bal_Qty !== 0 || obj.CL_Rate !== 0 || obj.Stock_Value !== 0) {
                     temp.push(obj)
                 }
@@ -206,8 +206,6 @@ const LOSReport = () => {
             .distinct(o => o.value)
             .toArray();
     };
-    
-
 
     return (
         <>
@@ -230,9 +228,9 @@ const LOSReport = () => {
                             REPORT OF
                             <span style={{ color: 'rgb(66, 34, 225)' }}> &nbsp;{compData.Company_Name}</span> &nbsp;
                             FROM :
-                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.date}</span> &nbsp;
+                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.date.split('-').reverse().join('-')}</span> &nbsp;
                             TO :
-                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.todate}</span>
+                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.todate.split('-').reverse().join('-')}</span>
                         </h5>
                         {allReport === null ? <Loader /> : <MaterialReactTable table={table} />}
                     </div>

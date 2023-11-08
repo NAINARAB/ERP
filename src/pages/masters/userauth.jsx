@@ -13,6 +13,26 @@ import { pageRights } from "../../components/rightsCheck";
 
 const token = localStorage.getItem('userToken')
 
+const validate = (values) => {
+    const errors = {};
+    if (!values.name) {
+        errors.name = 'Name is required';
+    }
+    if (!values.mtype) {
+        errors.type = 'Select Menu Type';
+    }
+    if ((values.mtype === 2 && !values.mmenu) || (values.mtype === 3 && !values.mmenu)) {
+        errors.mmenu = 'Select Main Menu';
+    }
+    if (values.mtype === 3 && !values.smenu) {
+        errors.smenu = 'Select Sub-Menu'
+    }
+    if (values.mtype === 3 && !values.link) {
+        errors.link = 'Page Link Is Required';
+    }
+    return errors;
+};
+
 const postCheck = (param, Menu_id, Menu_Type, UserId) => {
     fetch(`${apihost}/api/updatesidemenu`, {
         method: 'POST',
@@ -95,9 +115,9 @@ const TRow = ({ UserId, subMenu, childMenu, data }) => {
                 </TableCell>
                 <TableCell>
                     {data.PageUrl === ""
-                        &&  <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                                <UnfoldMore />
-                            </IconButton>}
+                        && <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                            <UnfoldMore />
+                        </IconButton>}
                 </TableCell>
             </TableRow>
             <Dialog open={open} onClose={() => setOpen(!open)} maxWidth="lg" fullWidth>
@@ -195,9 +215,9 @@ const STrow = (props) => {
                 </TableCell>
                 <TableCell>
                     {data.PageUrl === ""
-                        &&  <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-                                <UnfoldMore />
-                            </IconButton>}
+                        && <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                            <UnfoldMore />
+                        </IconButton>}
                 </TableCell>
             </TableRow>
 
@@ -308,12 +328,9 @@ const UserAuthorization = () => {
     const [pageInfo, setPageInfo] = useState({});
 
     useEffect(() => {
-        pageRights(1, 2).then(rights => setPageInfo(rights))
-    }, [])
-
-    useEffect(() => {
-        if (pageInfo.token) {
-            fetch(`${apihost}/api/users`, { headers: { 'Authorization': pageInfo.token, 'Db': 'db1' } })
+        pageRights(1, 2).then(rights => {
+            setPageInfo(rights)
+            fetch(`${apihost}/api/users`, { headers: { 'Authorization': rights.token } })
                 .then((res) => { return res.json() })
                 .then((data) => {
                     if (data.status === "Success") {
@@ -321,11 +338,11 @@ const UserAuthorization = () => {
                     }
                 })
                 .catch((e) => { console.log(e) })
-        }
-    }, [pageInfo])
+        })
+    }, [])
 
     useEffect(() => {
-        fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId !== "" ? currentAuthId : token, 'Db': 'db1' } })
+        fetch(`${apihost}/api/sidebar`, { headers: { 'Authorization': currentAuthId !== "" ? currentAuthId : token } })
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Success") {
@@ -346,26 +363,6 @@ const UserAuthorization = () => {
         cmenu: ''
     };
 
-    const validate = (values) => {
-        const errors = {};
-        if (!values.name) {
-            errors.name = 'Name is required';
-        }
-        if (!values.mtype) {
-            errors.type = 'Select Menu Type';
-        }
-        if ((values.mtype === 2 && !values.mmenu) || (values.mtype === 3 && !values.mmenu)) {
-            errors.mmenu = 'Select Main Menu';
-        }
-        if (values.mtype === 3 && !values.smenu) {
-            errors.smenu = 'Select Sub-Menu'
-        }
-        if (values.mtype === 3 && !values.link) {
-            errors.link = 'Page Link Is Required';
-        }
-        return errors;
-    };
-
     const formik = useFormik({
         initialValues,
         validate,
@@ -380,7 +377,7 @@ const UserAuthorization = () => {
                     mainMenuId: values.mmenu,
                     subMenuId: values.smenu
                 }),
-                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json', 'Db': 'db1' }
+                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json' }
             })
                 .then(res => res.json())
                 .then(data => {

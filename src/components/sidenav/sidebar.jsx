@@ -55,7 +55,7 @@ const SubMenu = (props) => {
     return (
         <>
             <button
-                className={open ? 'active subMenu' : 'subin active subMenu'}
+                className={open ? 'active subMenu' : 'in active subMenu'}
                 style={props.SubMenuData.PageUrl !== "" ? {backgroundColor: 'transparent'} : {} }
                 onClick={
                     props.SubMenuData.PageUrl === ""
@@ -115,6 +115,15 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                 .then((res) => { return res.json() })
                 .then((data) => {
                     if(data.status === "Success"){
+                        data.data[1].sort((a, b) => {
+                            if (a.PageUrl === '' && b.PageUrl !== '') {
+                              return -1;
+                            } else if (a.PageUrl !== '' && b.PageUrl === '') {
+                              return 1;
+                            } else {
+                              return 0;
+                            }
+                          });
                         setMainMenu(data.data[0])
                         setSubMenu(data.data[1])
                         setChildMenu(data.data[2])

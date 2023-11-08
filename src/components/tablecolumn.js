@@ -9,7 +9,8 @@ const customStyles = {
             paddingLeft: '8px',
             paddingRight: '8px',
             backgroundColor: 'rgb(15, 11, 42)',
-            color: 'white'
+            color: 'white',
+            fontSize: '14px',
         },
     },
 };
@@ -87,101 +88,72 @@ const prodetails = [
 const subtable = [
     {
         id: 1,
-        headname: 'actualQty',
-        width: 50,
+        headname: 'Product Name',
+        width: 370
     },
     {
         id: 2,
-        headname: 'amount',
+        headname: 'Product Code',
+        width: 150
     },
     {
         id: 3,
         headname: 'billedQty',
+        width: 150
     },
     {
         id: 4,
-        headname: 'closeingStock',
+        headname: 'Rate',
+        width: 170
     },
     {
         id: 5,
-        headname: 'productCode',
-    },
-    {
-        id: 6,
-        headname: 'rate',
-    },
-    {
-        id: 7,
-        headname: 'taxAmount',
-    },
-    {
-        id: 8,
-        headname: 'taxCode',
-    },
-    {
-        id: 9,
         headname: 'umo',
     },
 ]
 
 const products = [
     {
-        name: 'Billing Address',
-        selector: (row) => row.billingAddress,
+        name: 'Order Taken By',
+        selector: (row) => row.orderTakenBy,
         sortable: true,
-        maxWidth: '150px'
+        minWidth: '100px',
+        maxWidth: '140px'
+    },
+    {
+        name: 'Customer ID',
+        selector: (row) => row.customerId,
+        sortable: true,
+        maxWidth: '60px'
     },
     {
         name: 'Customer',
         selector: (row) => row.customerName,
         sortable: true,
-        maxWidth: '150px'
-    },
-    {
-        name: 'Distributor Code',
-        selector: (row) => row.distributorCode,
-        sortable: true,
-        maxWidth: '150px'
-    },
-    {
-        name: 'docDate',
-        selector: (row) => row.docDate,
-        sortable: true,
-        maxWidth: '150px'
-    },
-    {
-        name: 'docNumber',
-        selector: (row) => row.docNumber,
-        sortable: true,
-        maxWidth: '150px'
+        maxWidth: '230px'
     },
     {
         name: 'Order Date',
         selector: (row) => row.orderDate,
         sortable: true,
-        maxWidth: '150px'
+        maxWidth: '100px'
     },
     {
-        name: 'orderNo',
+        name: 'Order No',
         selector: (row) => row.orderNo,
         sortable: true,
-        maxWidth: '150px'
+        minWidth: '200px',
+        maxWidth: '210px',
     },
     {
-        name: 'orderValue',
+        name: 'Billing Address',
+        selector: (row) => row.billingAddress,
+        sortable: true,
+        minWidth: '200px'
+    },
+    {
+        name: 'Order Value',
         selector: (row) => row.orderValue,
-        sortable: true,
-        maxWidth: '100px'
-    },    
-    {
-        name: 'shippingAddress',
-        selector: (row) => row.shippingAddress,
-        sortable: true,
-        maxWidth: '150px'
-    },
-    {
-        name: 'transType',
-        selector: (row) => row.transType,
         sortable: true,
         maxWidth: '150px'
     },
@@ -258,4 +230,173 @@ const ReportMenu = [
     }
 ];
 
-export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu, subtable };
+const SF_Product = [
+    {
+        name: 'Product Code',
+        selector: (row) => row.productCode,
+        sortable: true,
+        minWidth: '120px'
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.productName,
+        sortable: true,
+        minWidth: '270px'
+    },
+    {
+        name: 'Description',
+        selector: (row) => row.productDescription,
+        sortable: true,
+    },
+    {
+        name: 'Category Name',
+        selector: (row) => row.product_Cat_Name,
+        sortable: true,
+    },
+    {
+        name: 'UMO',
+        selector: (row) => row.base_UOM,
+        sortable: true,
+    },
+    {
+        name: 'Gross Weight',
+        selector: (row) => row.grossweight,
+        sortable: true,
+    },
+    {
+        name: 'Net Weight',
+        selector: (row) => row.netweight,
+        sortable: true,
+    },
+    {
+        name: 'Brand',
+        selector: (row) => row.brand,
+        sortable: true,
+        minWidth: '150px'
+    },
+    {
+        name: 'ERP CODE',
+        selector: (row) => row.erP_Code,
+        sortable: true,
+    }
+]
+
+const SF_Retailers = [
+    {
+        name: 'Retailer Name',
+        selector: (row) => row.retailer_Name,
+        sortable: true,
+        minWidth: '190px'
+    },
+    {
+        name: 'Mobile',
+        selector: (row) => row.mobile_No,
+        sortable: true,
+        maxWidth: '130px'
+    },
+    {
+        name: 'Address',
+        selector: (row) => row.address,
+        sortable: true,
+    },
+    {
+        name: 'Route',
+        selector: (row) => row.route_Name,
+        sortable: true,
+    },
+    {
+        name: 'Created',
+        selector: (row) => row.created_Date,
+        sortable: true,
+    },
+    {
+        name: 'Retailer Code',
+        selector: (row) => row.retailer_code,
+        sortable: true,
+    },
+    {
+        name: 'Latitude',
+        selector: (row) => row.latitude,
+        sortable: true,
+    },
+    {
+        name: 'Longitude',
+        selector: (row) => row.longitude,
+        sortable: true,
+    },
+    {
+        name: 'Pincode',
+        selector: (row) => row.pinCode,
+        sortable: true,
+        minWidth: '150px'
+    },
+    {
+        name: 'ERP CODE',
+        selector: (row) => row.erP_Code,
+        sortable: true,
+    }
+]
+
+const SF_Details = [
+    {
+        name: 'Emp Id',
+        selector: (row) => row.employee_Id,
+        sortable: true,
+        maxWidth: '130px'
+    },
+    {
+        name: 'Employee Name',
+        selector: (row) => row.employee_Name,
+        sortable: true,
+        minWidth: '170px'
+    },
+    {
+        name: 'Mobile',
+        selector: (row) => row.mobileNumber,
+        sortable: true,
+        minWidth: '130px'
+    },
+    {
+        name: 'Designation',
+        selector: (row) => row.designation,
+        sortable: true,
+    },
+    {
+        name: 'DOB',
+        selector: (row) => row.dob,
+        sortable: true,
+    },
+    {
+        name: 'DOJ',
+        selector: (row) => row.doj,
+        sortable: true,
+    },
+    {
+        name: 'EMail',
+        selector: (row) => row.email,
+        sortable: true,
+    },
+    {
+        name: 'Manager',
+        selector: (row) => row.manager_Name,
+        sortable: true,
+    },
+    {
+        name: 'Territory',
+        selector: (row) => row.territory,
+        sortable: true,
+    },
+    {
+        name: 'Total Beats',
+        selector: (row) => row.total_Beats,
+        sortable: true,
+        minWidth: '150px'
+    },
+    {
+        name: 'Status',
+        selector: (row) => row.status,
+        sortable: true,
+    }
+]
+
+export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu, subtable, SF_Product, SF_Retailers, SF_Details };

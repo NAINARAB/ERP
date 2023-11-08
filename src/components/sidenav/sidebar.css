@@ -34,13 +34,9 @@
 }
 .subMenu {
     font-size: 0.75em;
-    background-color: transparent !important;
 }
 .subin {
     color:#000
-}
-.subMenu:hover {
-    background-color: transparent !important;
 }
 
 .childMenu{

@@ -14,12 +14,15 @@ import axios from 'axios'
 const Product = () => {
     const today = new Date();
     const todaydate = today.toISOString().split('T')[0];
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const [data, setData] = useState([]);
     const [date, setDate] = useState(todaydate)
+    const [from, setFrom] = useState(thirtyDaysAgo.toISOString().split('T')[0])
     const token = localStorage.getItem('userToken')
 
     useEffect(() => {
-        axios.get(`${apihost}/api/productinfo?date=${date}`, {
+        axios.get(`${apihost}/api/sf/saleorders?from=${from}&to=${date}`, {
             headers: {
                 'Authorization': token,
             }
@@ -31,7 +34,7 @@ const Product = () => {
             })
             setData(data.data.data);
         }).catch(e => console.log(e))
-    }, [date]);
+    }, [date,from]);
 
     const syncData = () => {
         if (data.length !== 0) {
@@ -82,14 +85,10 @@ const Product = () => {
                         <TableBody>
                             {data.transDetails.map(obj => (
                                 <TableRow>
-                                    <TableCell>{obj.actualQty}</TableCell>
-                                    <TableCell>{obj.amount}</TableCell>
-                                    <TableCell>{obj.billedQty}</TableCell>
-                                    <TableCell>{obj.closeingStock}</TableCell>
+                                    <TableCell>{obj.productName}</TableCell>
                                     <TableCell>{obj.productCode}</TableCell>
+                                    <TableCell>{obj.billedQty}</TableCell>
                                     <TableCell>{obj.rate}</TableCell>
-                                    <TableCell>{obj.taxAmount}</TableCell>
-                                    <TableCell>{obj.taxCode}</TableCell>
                                     <TableCell>{obj.uom}</TableCell>
                                 </TableRow>
                             ))}
@@ -116,24 +115,35 @@ const Product = () => {
                         <h5>SYNC SALE ORDER</h5>
                         <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SYNC SALE ORDER</h6>
                     </div>
-                    <div className="m-3">
-                        <div className="col-sm-4">
-                            <label>Order Date</label><br />
-                            <input
-                                className="form-control"
-                                type='date'
-                                value={date}
-                                onChange={(e) => {
-                                    setDate((e.target.value));
-                                    console.log(e.target.value);
-                                }} />
-                            <br />
-                            {/* <button
+                    <div className="p-3">
+                        <div className="row">
+                            <div className="col-sm-4 p-2">
+                                <label>From Date</label><br />
+                                <input
+                                    className="form-control"
+                                    type='date'
+                                    value={from}
+                                    onChange={(e) => {
+                                        setFrom((e.target.value));
+                                    }} />
+                            </div>
+                            <div className="col-sm-4 p-2">
+                                <label>To Date</label><br />
+                                <input
+                                    className="form-control"
+                                    type='date'
+                                    value={date}
+                                    onChange={(e) => {
+                                        setDate((e.target.value));
+                                    }} />
+                            </div>
+                        </div>
+                        {/* <button
                                 className={date >= todaydate ? 'btn btn-disabled' : 'btn btn-success'}
                                 onClick={syncData}
                                 disabled={date >= todaydate ? true : false}
                             ><Sync /> &nbsp;Sync Data </button> */}
-                        </div><br />
+                        <br />
                         <DataTable
                             title="Today Sale Orders"
                             columns={products}
@@ -146,6 +156,7 @@ const Product = () => {
                             fixedHeader={true}
                             fixedHeaderScrollHeight={"70vh"}
                             customStyles={customStyles}
+                            sort={{ field: 'orderDate', order: 'asc' }}
                         />
                     </div>
                 </div>
