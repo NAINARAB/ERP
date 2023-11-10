@@ -19,7 +19,8 @@ const Product = () => {
     const [data, setData] = useState([]);
     const [date, setDate] = useState(todaydate)
     const [from, setFrom] = useState(thirtyDaysAgo.toISOString().split('T')[0])
-    const token = localStorage.getItem('userToken')
+    const token = localStorage.getItem('userToken');
+    const [isSync, setIsSync] = useState(false);
 
     useEffect(() => {
         axios.get(`${apihost}/api/sf/saleorders?from=${from}&to=${date}`, {
@@ -34,24 +35,24 @@ const Product = () => {
             })
             setData(data.data.data);
         }).catch(e => console.log(e))
-    }, [date,from]);
+    }, [date, from]);
 
     const syncData = () => {
         if (data.length !== 0) {
+            setIsSync(true);
             fetch(`${apihost}/api/syncsalesorder`, {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
                     'Authorization': token,
-                    'Db': 'db1'
                 },
                 body: JSON.stringify({
-                    data: data,
-                    date: date
+                    data: data
                 })
             })
                 .then(response => response.json())
                 .then((data) => {
+                    setIsSync(false)
                     if (data.status == "Success") {
                         toast.success(data.message);
                     } else {
@@ -137,15 +138,17 @@ const Product = () => {
                                         setDate((e.target.value));
                                     }} />
                             </div>
+                            <div className="col-sm-4 p-2">
+                                <label></label><br />
+                                <button
+                                    className={'btn btn-success'}
+                                    onClick={syncData} disabled={isSync}>
+                                        <Sync /> &nbsp; {isSync ? "Syncing Data" : "Sync Data"}
+                                </button>
+                            </div>
                         </div>
-                        {/* <button
-                                className={date >= todaydate ? 'btn btn-disabled' : 'btn btn-success'}
-                                onClick={syncData}
-                                disabled={date >= todaydate ? true : false}
-                            ><Sync /> &nbsp;Sync Data </button> */}
                         <br />
                         <DataTable
-                            title="Today Sale Orders"
                             columns={products}
                             data={data}
                             expandableRows

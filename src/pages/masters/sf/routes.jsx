@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { apihost } from "../../../env";
-import { SF_Details, customStyles } from "../../../components/tablecolumn";
+import { SF_Routes, customStyles } from "../../../components/tablecolumn";
 import Header from '../../../components/header/header'
 import Sidebar from "../../../components/sidenav/sidebar"
 import { NavigateNext } from '@mui/icons-material';
-import { pageRights } from '../../../components/rightsCheck'
+import { pageRights } from '../../../components/rightsCheck';
 import { Sync } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../../components/loader/loader';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../com.css';
 
-const SFDetails = () => {
+const SFRoutes = () => {
     const [sfData, setSfData] = useState([]);
     const [pageInfo, setPageInfo] = useState({ permissions: { Read_Rights: 0, Add_Rights: 0, Edit_Rights: 0, Delete_Rights: 0 }, token: '' });
     const [isSync, setIsSync] = useState(false);
 
     useEffect(() => {
-        pageRights(3, 6).then(rights => {
+        pageRights(3, 7).then(rights => {
             if (rights.permissions.Read_Rights === 1) {
-                fetch(`${apihost}/api/sf/sfdetails`, { method: "GET", headers: { 'Authorization': rights.token } }).then(res => res.json())
+                fetch(`${apihost}/api/sf/routes`, { method: "GET", headers: { 'Authorization': rights.token } }).then(res => res.json())
                     .then(resdata => {
                         if (resdata.status === "Success") {
                             setSfData(resdata.data)
@@ -30,10 +30,10 @@ const SFDetails = () => {
         })
     }, [])
 
-    const syncSFDetails = () => {
+    const syncSFRoutes = () => {
         if (sfData.length !== 0) {
             setIsSync(true)
-            fetch(`${apihost}/api/sf/sfdetails`, {
+            fetch(`${apihost}/api/sf/routes`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
@@ -49,7 +49,6 @@ const SFDetails = () => {
         } else { toast.warn("No Data") }
     }
 
-
     return (
         <>
             <ToastContainer />
@@ -58,28 +57,28 @@ const SFDetails = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={11} childMenuId={6} />
+                    <Sidebar mainMenuId={2} subMenuId={11} childMenuId={7} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
                         {pageInfo.permissions.Add_Rights === 1
                             && <button
                                 className={`comadbtn filticon ${isSync ? 'rotate' : ''}`}
-                                onClick={syncSFDetails}
+                                onClick={syncSFRoutes}
                                 disabled={isSync}
                             >
                                 <Sync sx={{ color: 'white' }} />
                             </button>}
-                        <h5>SALES FORCE DETAILS</h5>
+                        <h5>SALES FORCE ROUTES</h5>
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp;
-                            SALES FORCE &nbsp;<NavigateNext fontSize="small" />&nbsp; SF DETAILS</h6>
+                            SALES FORCE &nbsp;<NavigateNext fontSize="small" />&nbsp; ROUTES</h6>
                     </div>
                     <div className="px-4">
                         <br />
                         {sfData && sfData.length
                             ? <div className="box">
                                 <DataTable
-                                    columns={SF_Details}
+                                    columns={SF_Routes}
                                     data={sfData}
                                     pagination
                                     highlightOnHover={true}
@@ -96,4 +95,4 @@ const SFDetails = () => {
     )
 }
 
-export default SFDetails;
+export default SFRoutes;

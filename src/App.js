@@ -10,6 +10,8 @@ import { CompanyProvider } from './components/context/contextData';
 import SFProducts from './pages/masters/sf/sfproducts';
 import SFRetailers from './pages/masters/sf/sfretailers';
 import SFDetails from './pages/masters/sf/sfdetails';
+import SFRoutes from './pages/masters/sf/routes';
+import SFDistributors from './pages/masters/sf/distributors';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path='/salesforce/products' element={<SFProducts />} />
             <Route path='/salesforce/retailers' element={<SFRetailers />} />
             <Route path='/salesforce/sfdetails' element={<SFDetails />} />
+            <Route path='/salesforce/routes' element={<SFRoutes />} />
+            <Route path='/salesforce/distributor' element={<SFDistributors />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>

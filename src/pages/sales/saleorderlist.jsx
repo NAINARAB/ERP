@@ -7,7 +7,7 @@ import Sidebar from "../../components/sidenav/sidebar";
 import moment from 'moment';
 import '../com.css';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton } from "@mui/material";
-import { Info, NavigateNext} from '@mui/icons-material';
+import { Info, NavigateNext } from '@mui/icons-material';
 import { prodetails } from "../../components/tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../../components/loader/loader";
@@ -21,12 +21,12 @@ const SaleOrderList = () => {
   const [start, setStart] = useState(initialStartDate);
   const [end, setEnd] = useState(initialEndDate);
   const [popupdetails, setPopupdetails] = useState({});
-  const token = localStorage.getItem('userToken'); 
+  const token = localStorage.getItem('userToken');
 
   useEffect(() => {
     if (token) {
       fetchrange()
-    } 
+    }
   }, []);
 
   const fetchrange = () => {
@@ -66,8 +66,8 @@ const SaleOrderList = () => {
         </div>
         <div className="col-md-10">
           <div className="comhed">
-              <h5>SALES LIST</h5>
-              <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SALES LIST</h6>
+            <h5>SALES LIST</h5>
+            <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SALES LIST</h6>
           </div>
           <div className="m-3">
             <div className="row">
@@ -92,8 +92,13 @@ const SaleOrderList = () => {
                     <h4><span style={{ float: 'left' }}>Customer Name</span>   <span style={{ float: 'right' }}>{obj.customerName}</span></h4>
                     <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
                     <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
-                    <p><span style={{ float: 'left' }}>Doc Date</span>         <span style={{ float: 'right' }}>{moment(obj.docDate).format("DD-MM-YYYY")}</span></p>
-                    <p><span style={{ float: 'left' }}>Shipping Address</span> <span style={{ float: 'right' }}>{obj.shippingAddress}</span></p>
+                    <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{moment(obj.docDate).format("DD-MM-YYYY")}</span></p>
+                    <p>
+                      <span style={{ float: 'left' }}>Address</span>
+                      <span style={{ float: 'right', width: '50%', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textAlign:'right' }}>
+                        {obj.shippingAddress}
+                      </span>
+                    </p>
                   </div>
                 </div>
               ))}
@@ -122,15 +127,17 @@ const SaleOrderList = () => {
                 <>
                   <div className="row">
                     <div className="col-md-6 px-4">
-                      <p style={{color:'black'}}>Customer Name    <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span>    </p>
-                      <p style={{color:'black'}}>Order No         <span className="text-primary" style={{ float: 'right',fontSize:'0.85em' }}>{popupdetails.orderNo}</span>         </p>
+                      <p style={{ color: 'black' }}>Name    <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span>    </p>
+                      <p style={{ color: 'black' }}>Order No         <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span>         </p>
                     </div>
                     <div className="col-md-6 px-4">
-                      <p style={{color:'black'}}>Doc Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
-                      <p style={{color:'black'}}>Shipping Address &nbsp;<span className="text-primary" style={{ float: 'right',fontSize:'0.85em' }}>{popupdetails.shippingAddress}</span> </p>
+                      <p style={{ color: 'black' }}>Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
+                      <p style={{ color: 'black' }}>
+                        Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em',  textAlign:'right' }}>{popupdetails.shippingAddress}</span>
+                      </p>
                     </div>
                   </div>
-                  
+
                   <DataTable
                     columns={prodetails}
                     data={orderDetails}
@@ -146,7 +153,7 @@ const SaleOrderList = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => { setOpen(false)}}>Close</Button>
+            <Button onClick={() => { setOpen(false) }} color="error">Close</Button>
           </DialogActions>
         </Dialog>
       </div>

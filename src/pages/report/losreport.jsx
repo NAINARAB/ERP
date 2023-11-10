@@ -87,13 +87,16 @@ const LOSReport = () => {
                 }
             }).then(res => res.json())
                 .then(data => {
-                    setDropdown({
-                        stock_group: data.sg,
-                        group: data.g,
-                        brand: data.bnd,
-                        bag: data.bag,
-                        inm: data.inm,
-                    }); setAllDropDown(data.data)
+                    if(data.status === "Success"){
+                        setDropdown({
+                            stock_group: data.data[1],
+                            group: data.data[2],
+                            brand: data.data[3],
+                            bag: data.data[4],
+                            inm: data.data[5],
+                        });
+                        setAllDropDown(data.data[0]);
+                    }
                 })
         }
     }, [pageInfo, compData])

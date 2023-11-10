@@ -75,7 +75,7 @@ const prodetails = [
     },
     {
         name: 'Unit of Measure',
-        selector: (row) => row.umo,
+        selector: (row) => row.uom,
         sortable: true,
     },
     {
@@ -108,7 +108,7 @@ const subtable = [
     },
     {
         id: 5,
-        headname: 'umo',
+        headname: 'uom',
     },
 ]
 
@@ -121,7 +121,7 @@ const products = [
         maxWidth: '140px'
     },
     {
-        name: 'Customer ID',
+        name: 'Cus-ID',
         selector: (row) => row.customerId,
         sortable: true,
         maxWidth: '60px'
@@ -133,7 +133,7 @@ const products = [
         maxWidth: '230px'
     },
     {
-        name: 'Order Date',
+        name: 'Date',
         selector: (row) => row.orderDate,
         sortable: true,
         maxWidth: '100px'
@@ -146,16 +146,16 @@ const products = [
         maxWidth: '210px',
     },
     {
+        name: 'Order Value',
+        selector: (row) => row.orderValue,
+        sortable: true,
+        maxWidth: '120px'
+    },
+    {
         name: 'Billing Address',
         selector: (row) => row.billingAddress,
         sortable: true,
         minWidth: '200px'
-    },
-    {
-        name: 'Order Value',
-        selector: (row) => row.orderValue,
-        sortable: true,
-        maxWidth: '150px'
     },
 ];
 
@@ -399,4 +399,105 @@ const SF_Details = [
     }
 ]
 
-export { users, products, prodetails, MainMenu, customStyles, customSelectStyles, ReportMenu, subtable, SF_Product, SF_Retailers, SF_Details };
+const SF_Distributors = [
+    {
+        name: 'Name',
+        selector: (row) => row.distributor_Name,
+        sortable: true,
+        maxWidth: '130px'
+    },
+    {
+        name: 'Contact Person',
+        selector: (row) => row.contactPerson,
+        sortable: true,
+        minWidth: '170px'
+    },
+    {
+        name: 'Mobile',
+        selector: (row) => row.mobile,
+        sortable: true,
+        minWidth: '130px'
+    },
+    {
+        name: 'Type',
+        selector: (row) => row.type,
+        sortable: true,
+    },
+    {
+        name: 'EMail',
+        selector: (row) => row.emailID,
+        sortable: true,
+    },
+    {
+        name: 'UserName',
+        selector: (row) => row.username,
+        sortable: true,
+    },
+    {
+        name: 'ERP CODE',
+        selector: (row) => row.erP_Code,
+        sortable: true,
+    },
+    {
+        name: 'Territory',
+        selector: (row) => row.territory,
+        sortable: true,
+    },
+    {
+        name: 'Address',
+        selector: (row) => row.address,
+        sortable: true,
+    }
+]
+
+const SF_Routes = [
+    {
+        name: 'Code',
+        selector: (row) => row.route_Code,
+        sortable: true,
+        maxWidth: '130px'
+    },
+    {
+        name: 'Route Name',
+        selector: (row) => row.route_Name,
+        sortable: true,
+        maxWidth: '200px'
+    },
+    {
+        name: 'SF Name',
+        selector: (row) => row.sF_Name,
+        sortable: true,
+        minWidth: '600px'
+    },
+    {
+        name: 'Territory',
+        selector: (row) => row.territory_name,
+        sortable: true,
+    },
+    {
+        name: 'State',
+        selector: (row) => row.stateName,
+        sortable: true,
+    },
+    {
+        name: 'Created At',
+        selector: (row) => row.create_Date,
+        sortable: true,
+    },
+]
+
+export { 
+    users,
+    products,
+    prodetails,
+    MainMenu,
+    customStyles,
+    customSelectStyles,
+    ReportMenu,
+    subtable,
+    SF_Product,
+    SF_Retailers,
+    SF_Details,
+    SF_Distributors, 
+    SF_Routes 
+};

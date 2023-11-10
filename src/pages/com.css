@@ -62,5 +62,21 @@
     overflow: hidden;
     box-shadow: 0px 0px 4px grey;
 }
+
+@keyframes rotateForward {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+  
+  .rotate {
+    animation: rotateForward 0.3s linear infinite; 
+  }
+  
+  
+  
   
   
