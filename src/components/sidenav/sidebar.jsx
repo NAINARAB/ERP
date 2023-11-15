@@ -31,7 +31,7 @@ const MainMenu = (props) => {
                 {' ' + props.MainMenuData.MenuName}
               </span>
               <div style={{ textAlign: 'right' }}>
-                {open ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
+                {props.MainMenuData.PageUrl === "" && (open ? <KeyboardArrowDown /> : <KeyboardArrowRight />)}
               </div>
             </button>
 
@@ -84,7 +84,6 @@ const SubMenu = (props) => {
 }
 
 const ChildMenu = (props) => {
-    console.log(props,'child')
     const nav = useNavigate()
     return (
         <>
@@ -149,7 +148,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     <AccountCircle sx={{fontSize: '2.7em', marginRight:'0.2em'}} />
                     <div>
                         <h5 style={{ color: 'rgb(64, 38, 236)' }}>{
-                            // localStorage.getItem('Name') ||
+                            localStorage.getItem('Name') ||
                             'Raj Nainaar'
                         }</h5>
                         <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>

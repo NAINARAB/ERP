@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../com.css';
 import { pageRights } from "../../components/rightsCheck";
-import DialogBoxComp from "../../components/DialogBox/deletedialog";
+import Loader from '../../components/loader/loader'
 
 const initialValues = {
     userid: 0,
@@ -226,7 +226,7 @@ const User = () => {
     return (
         <>
             <ToastContainer />
-            <div className="row">
+            <div className="row container-fluid">
                 <div className="col-md-12">
                     <Header setting={true} />
                 </div>
@@ -240,17 +240,19 @@ const User = () => {
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER MASTERS</h6>
                     </div>
                     <div className="m-4">
-                        <div className="box">
-                            <DataTable
-                                columns={users}
-                                data={data}
-                                pagination
-                                highlightOnHover={true}
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'70vh'}
-                                customStyles={customStyles}
-                            />
-                        </div>
+                        {data && data.length
+                            ? <div className="box">
+                                <DataTable
+                                    columns={users}
+                                    data={data}
+                                    pagination
+                                    highlightOnHover={true}
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'70vh'}
+                                    customStyles={customStyles}
+                                />
+                            </div>
+                            : <Loader />}
                     </div>
                 </div>
             </div>

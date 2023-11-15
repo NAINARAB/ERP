@@ -185,7 +185,7 @@ const MainMenu = [
     },
     {
         id: 6,
-        headname: 'Delete_Rights'
+        headname: 'Delete Rights'
     },
     {
         id: 7,

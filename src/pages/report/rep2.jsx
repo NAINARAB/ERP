@@ -27,7 +27,7 @@ const Dropdown = ({ label, options, value, onChange, placeholder }) => (
     </div>
 );
 
-const LOSReport = () => {
+const LOSReport2 = () => {
     const today = new Date();
     today.setDate(today.getDate() - 30);
     const [pageInfo, setPageInfo] = useState({ permissions: { Read_Rights: 0, Add_Rights: 0, Edit_Rights: 0, Delete_Rights: 0 } });
@@ -72,7 +72,7 @@ const LOSReport = () => {
     }
 
     useEffect(() => {
-        pageRights(2, 10).then(rights => {
+        pageRights(1, 11).then(rights => {
             setPageInfo(rights);
         })
     }, [])
@@ -217,7 +217,7 @@ const LOSReport = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={5} subMenuId={10} />
+                    <Sidebar mainMenuId={11} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
@@ -342,4 +342,4 @@ const LOSReport = () => {
     )
 }
 
-export default LOSReport;
+export default LOSReport2;

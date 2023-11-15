@@ -15,24 +15,20 @@ function Login() {
 
     useEffect(() => {
         if(localStorage.getItem('userToken')){
-            navigate('/users')
+            navigate('home')
         } 
     }, [])
 
     const getLogin = async () => {
-        fetch(`${apihost}/api/login?user=${userID}&pass=${password}`, {
-            headers: {
-                'Db': 1
-            }
-        })
+        fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
             .then((res) => { return res.json() })
             .then((data) => {
                 setIsLoading(false);
                 if (data.status === "Success") {
                     localStorage.setItem('userToken',data.user.Autheticate_Id)
-                    localStorage.setItem('Name', data.user.UserName)
+                    localStorage.setItem('Name', data.user.Name)
                     localStorage.setItem('UserType', data.user.UserType)
-                    navigate('users')
+                    navigate('home')
                 } else {
                     toast.error("Login Failed")
                 }

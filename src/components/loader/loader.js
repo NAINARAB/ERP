@@ -3,8 +3,8 @@ import './loading.css';
 let Loader = () => {
     return (
         <>
-            <section class="wrapper fulscrn">
-                <div class="spinner">
+            <section className="wrapper fulscrn">
+                <div className="spinner">
                     <i></i>
                     <i></i>
                     <i></i>

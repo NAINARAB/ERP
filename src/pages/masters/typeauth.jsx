@@ -11,35 +11,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import { pageRights } from "../../components/rightsCheck";
 
 
-const token = localStorage.getItem('userToken')
+const token = localStorage.getItem('userToken');
+const localuserType = localStorage.getItem('UserType')
 
-const validate = (values) => {
-    const errors = {};
-    if (!values.name) {
-        errors.name = 'Name is required';
-    }
-    if (!values.mtype) {
-        errors.type = 'Select Menu Type';
-    }
-    if ((values.mtype === 2 && !values.mmenu) || (values.mtype === 3 && !values.mmenu)) {
-        errors.mmenu = 'Select Main Menu';
-    }
-    if (values.mtype === 3 && !values.smenu) {
-        errors.smenu = 'Select Sub-Menu'
-    }
-    if (values.mtype === 3 && !values.link) {
-        errors.link = 'Page Link Is Required';
-    }
-    return errors;
-};
-
-const postCheck = (param, Menu_id, Menu_Type, UserId) => {
-    fetch(`${apihost}/api/updatesidemenu`, {
+const postCheck = (param, Menu_id, Menu_Type, usertype) => {
+    fetch(`${apihost}/api/usertypeauth`, {
         method: 'POST',
         body: JSON.stringify({
             MenuId: Menu_id,
             MenuType: Menu_Type,
-            User: UserId,
+            UserType: usertype,
             ReadRights: param.readRights === true ? 1 : 0,
             AddRights: param.addRights === true ? 1 : 0,
             EditRights: param.editRights === true ? 1 : 0,
@@ -321,24 +302,22 @@ const CTrow = (props) => {
 }
 
 
-const UserAuthorization = () => {
-    const [users, setUsers] = useState([]);
+const TypeAuthorization = () => {
+    const [usertype, setUserType] = useState([]);
     const [mainMenu, setMainMenu] = useState([]);
     const [subMenu, setSubMenu] = useState([]);
     const [childMenu, setChildMenu] = useState([]);
-    const [open, setOpen] = useState(false);
-    const [currentAuthId, setCurrentAuthId] = useState('');
-    const [currentUserId, setCurrentUserId] = useState();
-    const [pageInfo, setPageInfo] = useState({});
+    const [currentUserType, setCurrentUserType] = useState();
 
     useEffect(() => {
-        pageRights(1, 2).then(rights => {
-            setPageInfo(rights)
-            fetch(`${apihost}/api/users`, { headers: { 'Authorization': rights.token } })
+        pageRights(2, 12).then(rights => {
+            fetch(`${apihost}/api/usertype`, { headers: { 'Authorization': rights.token } })
                 .then((res) => { return res.json() })
                 .then((data) => {
                     if (data.status === "Success") {
-                        setUsers(data.data);
+                        setUserType(data.data);
+                        const crnt = data.data.find(obj => obj.UserType === localuserType)
+                        setCurrentUserType(crnt.Id)
                     }
                 })
                 .catch((e) => { console.log(e) })
@@ -346,7 +325,7 @@ const UserAuthorization = () => {
     }, [])
 
     useEffect(() => {
-        fetch(`${apihost}/api/side`, { headers: { 'Authorization': currentAuthId ? currentAuthId : token} })
+        fetch(`${apihost}/api/usertypeauth?usertype=${currentUserType}`, { headers: { 'Authorization': token} })
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Success") {
@@ -356,44 +335,8 @@ const UserAuthorization = () => {
                 }
             })
             .catch(e => console.log(e))
-    }, [currentAuthId])
+    }, [currentUserType])
 
-    const initialValues = {
-        name: '',
-        link: '',
-        mtype: '',
-        mmenu: '',
-        smenu: '',
-        cmenu: ''
-    };
-
-    const formik = useFormik({
-        initialValues,
-        validate,
-        onSubmit: (values) => {
-            fetch(`${apihost}/api/newmenu`, {
-                method: "POST",
-                body: JSON.stringify({
-                    menuType: values.mtype,
-                    menuName: values.name,
-                    menuLink: values.link,
-                    mainMenuId: values.mmenu,
-                    subMenuId: values.smenu
-                }),
-                headers: { 'Authorization': pageInfo.token, 'Content-Type': 'application/json' }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "Success") {
-                        toast.success("New Menu Created");
-                        setOpen(false)
-                    } else {
-                        toast.error(data.message); setOpen(false)
-                    }
-                })
-                .catch(e => console.log(e))
-        },
-    });
 
     return (
         <>  <ToastContainer />
@@ -402,13 +345,12 @@ const UserAuthorization = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={4} />
+                    <Sidebar mainMenuId={2} subMenuId={12} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
-                        <button className="comadbtn" onClick={() => setOpen(true)}>Add Menu</button>
-                        <h5>USER AUTHORIZATION</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER AUTHORIZATION</h6>
+                        <h5>USER TYPE AUTHORIZATION</h5>
+                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER TYPE AUTHORIZATION</h6>
                     </div>
                     <div className="m-3">
                         <div className="row">
@@ -416,19 +358,15 @@ const UserAuthorization = () => {
                                 <TextField
                                     fullWidth
                                     select
-                                    label="Select User"
+                                    label="Select User Type"
                                     variant="outlined"
-                                    onChange={(e) => {
-                                        const selectedUser = users.find(user => user.Token === e.target.value);
-                                        setCurrentAuthId(selectedUser.Token);
-                                        setCurrentUserId(selectedUser.UserId);
-                                    }}
+                                    onChange={(e) => setCurrentUserType(e.target.value)}
                                     InputProps={{ inputProps: { style: { padding: '26px', width: '50%' } } }}
-                                    value={currentAuthId ? currentAuthId : token}
+                                    value={currentUserType ? currentUserType : localuserType}
                                 >
-                                    {users.map((user) => (
-                                        <MenuItem key={user.UserId} value={user.Token}>
-                                            {user.Name}
+                                    {usertype.map((user) => (
+                                        <MenuItem key={user.Id} value={user.Id}>
+                                            {user.UserType}
                                         </MenuItem>
                                     ))}
                                 </TextField>
@@ -437,7 +375,9 @@ const UserAuthorization = () => {
                         </div>
 
                         <br />
-                        <>
+                        {mainMenu.length !== 0
+                            &&
+                            <>
                                 <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
                                 <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
                                     <Table stickyHeader aria-label="simple table">
@@ -460,96 +400,21 @@ const UserAuthorization = () => {
                                                 <TRow
                                                     key={obj.Main_Menu_Id}
                                                     data={obj}
-                                                    UserId={currentUserId}
+                                                    UserId={currentUserType}
                                                     subMenu={subMenu}
                                                     childMenu={childMenu} />
                                             ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </>
+                            </>}
 
                     </div>
                 </div>
             </div>
-            <Dialog open={open} onClose={() => setOpen(!open)} maxWidth="lg" fullWidth>
-                <DialogTitle>
-                    Create New Menu
-                </DialogTitle>
-                <form onSubmit={formik.handleSubmit}>
-                    <DialogContent>
-                        <div className="row">
-                            <div className="col-md-4 p-3">
-                                <TextField fullWidth id="mtype" name="mtype" select label="Menu Type" variant="outlined"
-                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.mtype}
-                                    error={formik.touched.mtype && Boolean(formik.errors.mtype)}
-                                    helperText={formik.touched.mtype && formik.errors.mtype ? formik.errors.mtype : null}
-                                    InputProps={{ inputProps: { style: { padding: '26px' } } }}>
-                                    <MenuItem value={1}>Main Menu</MenuItem>
-                                    <MenuItem value={2}>Sub Menu</MenuItem>
-                                    <MenuItem value={3}>Child Menu</MenuItem>
-                                </TextField>
-                            </div>
-                            <div className="col-md-4 p-3">
-                                <TextField fullWidth id="name" name="name" label="Menu Name" variant="outlined"
-                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name}
-                                    error={formik.touched.name && Boolean(formik.errors.name)}
-                                    helperText={formik.touched.name && formik.errors.name}
-                                    InputProps={{
-                                        inputProps: { style: { padding: '26px' } }
-                                    }}
-                                />
-                            </div>
-                            <div className="col-md-4 p-3">
-                                <TextField fullWidth id="link" name="link" label="Page URL" variant="outlined"
-                                    onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.link}
-                                    error={formik.touched.link && Boolean(formik.errors.link)}
-                                    helperText={formik.touched.link && formik.errors.link
-                                        ? formik.errors.link
-                                        : null}
-                                    InputProps={{ inputProps: { style: { padding: '26px' } } }} />
-                            </div>
-                            {(formik.values.mtype === 2 || formik.values.mtype === 3)
-                                && <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="mmenu" name="mmenu" select label="Main Menu" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.mmenu}
-                                        error={formik.touched.mmenu && Boolean(formik.errors.mmenu)}
-                                        helperText={formik.touched.mmenu && formik.errors.mmenu ? formik.errors.mmenu : null}
-                                        InputProps={{ inputProps: { style: { padding: '26px' } } }}>
-                                        {mainMenu.map(obj => (
-                                            obj.PageUrl === "" &&
-                                            <MenuItem key={obj.Main_Menu_Id} value={obj.Main_Menu_Id}>{obj.MenuName}</MenuItem>
-                                        ))}
-                                    </TextField>
-                                </div>
-                            }
-                            {formik.values.mtype === 3
-                                && <div className="col-md-4 p-3">
-                                    <TextField fullWidth id="smenu" name="smenu" select label="Sub Menu" variant="outlined"
-                                        onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.smenu}
-                                        error={formik.touched.smenu && Boolean(formik.errors.smenu)}
-                                        helperText={formik.touched.smenu && formik.errors.smenu ? formik.errors.smenu : null}
-                                        InputProps={{ inputProps: { style: { padding: '26px' } } }}>
-                                        {subMenu.map(obj => (
-                                            ((obj.Main_Menu_Id === formik.values.mmenu) && (obj.PageUrl === ""))
-                                            && <MenuItem key={obj.Sub_Menu_Id} value={obj.Sub_Menu_Id}>{obj.SubMenuName}</MenuItem>
-                                        ))}
-                                    </TextField>
-                                </div>
-                            }
-                        </div>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button type="submit" variant="contained">Create</Button>
-                        <Button onClick={() => setOpen(!open)} color="primary">
-                            Close
-                        </Button>
-                    </DialogActions>
-                </form>
-            </Dialog>
         </>
     )
 }
 
 
-export default UserAuthorization;
+export default TypeAuthorization;
