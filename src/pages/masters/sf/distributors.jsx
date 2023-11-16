@@ -57,7 +57,7 @@ const SFDistributors = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={11} childMenuId={8} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'SALES FORCE'} childMenuId={'DISTRIBUTORS'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

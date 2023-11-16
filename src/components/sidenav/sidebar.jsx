@@ -8,7 +8,7 @@ import { Collapse } from '@mui/material';
 import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount } from '@mui/icons-material';
 
 const MainMenu = (props) => {
-    const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.Main_Menu_Id ? true : false);
+    const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.MenuName ? true : false);
     const nav = useNavigate();
     return (
         <>
@@ -50,7 +50,7 @@ const MainMenu = (props) => {
 }
 
 const SubMenu = (props) => {
-    const [open, setOpen] = useState(props.subMenuId === props.SubMenuData.Sub_Menu_Id ? true : false);
+    const [open, setOpen] = useState(props.subMenuId === props.SubMenuData.SubMenuName ? true : false);
     const nav = useNavigate();
     return (
         <>
@@ -88,7 +88,7 @@ const ChildMenu = (props) => {
     return (
         <>
             <button 
-                className={props.childMenuId === props.ChildMenuData.Child_Menu_Id ? 'active childMenu': 'in active childMenu'} 
+                className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu': 'in active childMenu'} 
                 onClick={() => nav(props.ChildMenuData.PageUrl)} >
                 {'-  ' + props.ChildMenuData.ChildMenuName}
             </button>
@@ -108,7 +108,6 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
             fetch(`${apihost}/api/sidebar`, {
                 headers: {
                     'Authorization': token,
-                    'Db': 'db1'
                 }
             })
                 .then((res) => { return res.json() })

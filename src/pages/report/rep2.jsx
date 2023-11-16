@@ -72,52 +72,46 @@ const LOSReport2 = () => {
     }
 
     useEffect(() => {
-        pageRights(1, 11).then(rights => {
-            setPageInfo(rights);
-        })
+
     }, [])
 
     useEffect(() => {
-        if (pageInfo.permissions.Read_Rights === 1) {
-            fetch(`${apihost}/api/listlos`, {
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    'Authorization': pageInfo.token,
-                    'Db': compData.id
+        fetch(`${apihost}/api/listlos`, {
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                'Authorization': localStorage.getItem('userToken'),
+                'Db': compData.id
+            }
+        }).then(res => res.json())
+            .then(data => {
+                if (data.status === "Success") {
+                    setDropdown({
+                        stock_group: data.data[1],
+                        group: data.data[2],
+                        brand: data.data[3],
+                        bag: data.data[4],
+                        inm: data.data[5],
+                    });
+                    setAllDropDown(data.data[0]);
                 }
-            }).then(res => res.json())
-                .then(data => {
-                    if(data.status === "Success"){
-                        setDropdown({
-                            stock_group: data.data[1],
-                            group: data.data[2],
-                            brand: data.data[3],
-                            bag: data.data[4],
-                            inm: data.data[5],
-                        });
-                        setAllDropDown(data.data[0]);
-                    }
-                })
-        }
-    }, [pageInfo, compData])
+            })
+    }, [compData])
 
     useEffect(() => {
-        if (pageInfo.permissions.Read_Rights === 1) {
-            setAllReport(null)
-            fetch(`${apihost}/api/stockabstract?Fromdate=${selectedValue.date}&Todate=${selectedValue.todate}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    'Authorization': pageInfo.token || localStorage.getItem('userToken'),
-                    'Db': compData.id
-                }
-            }).then(res => res.json())
-                .then(data => {
-                    includeZero(data.data)
-                }).catch(e => {
-                    console.log(e)
-                    setAllReport([])
-                })
-        }
+        setAllReport(null)
+        fetch(`${apihost}/api/stockabstract?Fromdate=${selectedValue.date}&Todate=${selectedValue.todate}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                'Authorization': pageInfo.token || localStorage.getItem('userToken'),
+                'Db': compData.id
+            }
+        }).then(res => res.json())
+            .then(data => {
+                includeZero(data.data)
+            }).catch(e => {
+                console.log(e)
+                setAllReport([])
+            })
     }, [selectedValue, compData, pageInfo])
 
 
@@ -195,7 +189,7 @@ const LOSReport2 = () => {
             .distinct(o => o.value)
             .toArray();
     };
-    
+
     const inmOptions = () => {
         const query = Enumerable.from(allDropDown);
         return query
@@ -217,7 +211,7 @@ const LOSReport2 = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={11} />
+                    <Sidebar mainMenuId={'LOS REPORT'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

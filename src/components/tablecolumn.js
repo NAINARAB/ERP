@@ -201,12 +201,13 @@ const ReportMenu = [
     {
         header: 'Stock Group',
         accessorKey: 'Stock_Group',
-        width: 300
+        width: 300,
+        minWidth: 150,
     },
     {
         header: 'INM',
         accessorKey: 'Item_Name_Modified',
-        width: 300
+        minWidth: 400,
     },
     {
         header: 'Date',
@@ -215,19 +216,22 @@ const ReportMenu = [
     {
         header: 'Balance Quantity',
         accessorKey: 'Bal_Qty',
+        width: 300
     },
     {
         header: 'Closing Rate',
         accessorKey: 'CL_Rate',
+        width: 300
     },
     {
         header: 'Stock Value',
         accessorKey: 'Stock_Value',
+        width: 300
     },
     {
         header: 'Month',
         accessorKey: 'month',
-    }
+    },
 ];
 
 const SF_Product = [

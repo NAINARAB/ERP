@@ -231,7 +231,7 @@ const User = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={3} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'USER MASTER'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

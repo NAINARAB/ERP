@@ -52,7 +52,7 @@ const LOSReport = () => {
         stock_group: allOption.value,
         inm: allOption.value,
         date: dateFormatted,
-        todate: todateFormatted,
+        todate: dateFormatted,
         zero: false
     });
 
@@ -87,7 +87,7 @@ const LOSReport = () => {
                 }
             }).then(res => res.json())
                 .then(data => {
-                    if(data.status === "Success"){
+                    if (data.status === "Success") {
                         setDropdown({
                             stock_group: data.data[1],
                             group: data.data[2],
@@ -112,7 +112,14 @@ const LOSReport = () => {
                 }
             }).then(res => res.json())
                 .then(data => {
-                    includeZero(data.data)
+                    const uniqueItems = data.data.reduce((accumulator, currentItem) => {
+                        const existingItem = accumulator.find(item => item.Item_Name_Modified === currentItem.Item_Name_Modified);
+                        if (!existingItem) {
+                          accumulator.push(currentItem);
+                        }
+                        return accumulator;
+                      }, []);
+                    includeZero(uniqueItems)
                 }).catch(e => {
                     console.log(e)
                     setAllReport([])
@@ -132,7 +139,7 @@ const LOSReport = () => {
         initialState: {
             density: 'compact',
             expanded: true,
-            grouping: ['Stock_Group', 'month', 'Item_Name_Modified'],
+            // grouping: ['Stock_Group', 'month', 'Item_Name_Modified'],
             pagination: { pageIndex: 0, pageSize: 100 },
             sorting: [{ id: 'Stock_Group', desc: false }],
         },
@@ -195,7 +202,7 @@ const LOSReport = () => {
             .distinct(o => o.value)
             .toArray();
     };
-    
+
     const inmOptions = () => {
         const query = Enumerable.from(allDropDown);
         return query
@@ -217,7 +224,7 @@ const LOSReport = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={5} subMenuId={10} />
+                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'LOS REPORT'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

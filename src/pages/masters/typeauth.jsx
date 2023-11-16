@@ -325,16 +325,18 @@ const TypeAuthorization = () => {
     }, [])
 
     useEffect(() => {
-        fetch(`${apihost}/api/usertypeauth?usertype=${currentUserType}`, { headers: { 'Authorization': token} })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "Success") {
-                    setMainMenu(data.data[0])
-                    setSubMenu(data.data[1])
-                    setChildMenu(data.data[2])
-                }
-            })
-            .catch(e => console.log(e))
+        if (currentUserType) {
+            fetch(`${apihost}/api/usertypeauth?usertype=${currentUserType}`, { headers: { 'Authorization': token } })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "Success") {
+                        setMainMenu(data.data[0])
+                        setSubMenu(data.data[1])
+                        setChildMenu(data.data[2])
+                    }
+                })
+                .catch(e => console.log(e))
+        }
     }, [currentUserType])
 
 
@@ -345,7 +347,7 @@ const TypeAuthorization = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={12} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'USER TYPE AUTHORIZATION'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

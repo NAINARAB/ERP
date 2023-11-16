@@ -30,7 +30,7 @@ function App() {
             <Route path='/userauthorization' element={<UserAuthorization />} />
             <Route path='/usertypeauthorization' element={<TypeAuthorization />} />
             <Route path='/losreport' element={<LOSReport />} />
-            <Route path='/losreport2' element={<LOSReport2 />} />
+            {/* <Route path='/losreport' element={<LOSReport2 />} /> */}
             <Route path='/salesforce/products' element={<SFProducts />} />
             <Route path='/salesforce/retailers' element={<SFRetailers />} />
             <Route path='/salesforce/sfdetails' element={<SFDetails />} />

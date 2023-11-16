@@ -57,7 +57,7 @@ const SFRoutes = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={11} childMenuId={7} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'SALES FORCE'} childMenuId={'ROUTES'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

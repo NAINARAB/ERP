@@ -56,7 +56,7 @@ const SFRetailers = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={2} subMenuId={11} childMenuId={5} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'SALES FORCE'} childMenuId={'RETAILERS'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
