@@ -8,8 +8,9 @@ import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
 import { Sync, NavigateNext } from '@mui/icons-material';
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box } from "@mui/material";
-import axios from 'axios'
-
+import axios from 'axios';
+import Loader from "../../components/loader/loader";
+import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 
 const Product = () => {
     const today = new Date();
@@ -68,7 +69,7 @@ const Product = () => {
     const ExpandedComponent = ({ data }) => {
         return (
             <Box sx={{ padding: '2em' }}>
-                <h5>Transaction Details ({data.orderNo})</h5>
+                {/* <h5>Transaction Details ({data.orderNo})</h5> */}
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -99,6 +100,39 @@ const Product = () => {
             </Box>
         )
     }
+
+    const table = useMaterialReactTable({
+        columns: products,
+        data: data === null ? [] : data,
+        enableRowSelection: true,
+        enableColumnResizing: true,
+        enableGrouping: true,
+        enableStickyHeader: true,
+        enableStickyFooter: true,
+        enableRowVirtualization: true,
+        enableColumnOrdering: true,
+        enableColumnPinning: true,
+        enableRowNumbers: true,
+        initialState: {
+            density: 'compact',
+            pagination: { pageIndex: 0, pageSize: 100 },
+            sorting: [{ id: 'orderDate', desc: false }],
+        },
+        muiToolbarAlertBannerChipProps: { color: 'primary' },
+        muiTableContainerProps: { sx: { maxHeight: '60vh' } },
+        renderDetailPanel: ({ row }) => (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              {console.log(row)}
+              <ExpandedComponent data={row.original} />
+            </Box>
+          ),
+    })
 
 
     return (
@@ -148,7 +182,7 @@ const Product = () => {
                             </div>
                         </div>
                         <br />
-                        <DataTable
+                        {/* <DataTable
                             columns={products}
                             data={data}
                             expandableRows
@@ -160,7 +194,8 @@ const Product = () => {
                             fixedHeaderScrollHeight={"70vh"}
                             customStyles={customStyles}
                             sort={{ field: 'orderDate', order: 'asc' }}
-                        />
+                        /> */}
+                        {data === null ? <Loader /> : <MaterialReactTable table={table} />}
                     </div>
                 </div>
             </div>

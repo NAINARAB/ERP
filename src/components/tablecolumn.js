@@ -114,46 +114,46 @@ const subtable = [
 
 const products = [
     {
-        name: 'Order Taken By',
-        selector: (row) => row.orderTakenBy,
+        header: 'Order Taken By',
+        accessorKey: 'orderTakenBy',
         sortable: true,
         minWidth: '100px',
         maxWidth: '140px'
     },
     {
-        name: 'Cus-ID',
-        selector: (row) => row.customerId,
+        header: 'Cus-ID',
+        accessorKey: 'customerId',
         sortable: true,
         maxWidth: '60px'
     },
     {
-        name: 'Customer',
-        selector: (row) => row.customerName,
+        header: 'Customer',
+        accessorKey: 'customerName',
         sortable: true,
         maxWidth: '230px'
     },
     {
-        name: 'Date',
-        selector: (row) => row.orderDate,
+        header: 'Date',
+        accessorKey: 'orderDate',
         sortable: true,
         maxWidth: '100px'
     },
     {
-        name: 'Order No',
-        selector: (row) => row.orderNo,
+        header: 'Order No',
+        accessorKey: 'orderNo',
         sortable: true,
         minWidth: '200px',
         maxWidth: '210px',
     },
     {
-        name: 'Order Value',
-        selector: (row) => row.orderValue,
+        header: 'Order Value',
+        accessorKey: 'orderValue',
         sortable: true,
         maxWidth: '120px'
     },
     {
-        name: 'Billing Address',
-        selector: (row) => row.billingAddress,
+        header: 'Billing Address',
+        accessorKey: 'billingAddress',
         sortable: true,
         minWidth: '200px'
     },
