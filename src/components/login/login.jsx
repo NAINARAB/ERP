@@ -28,6 +28,8 @@ function Login() {
                     localStorage.setItem('userToken',data.user.Autheticate_Id)
                     localStorage.setItem('Name', data.user.Name)
                     localStorage.setItem('UserType', data.user.UserType)
+                    localStorage.setItem('UserId', data.user.UserId)
+                    localStorage.setItem('loginResponse', JSON.stringify(data.sessionInfo))
                     navigate('home')
                 } else {
                     toast.error("Login Failed")

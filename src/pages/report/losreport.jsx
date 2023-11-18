@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { apihost } from "../../env";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
-import { NavigateNext, FilterAlt } from '@mui/icons-material';
+import { NavigateNext, FilterAlt, FileDownload } from '@mui/icons-material';
 import { customSelectStyles } from "../../components/tablecolumn";
 import Select from 'react-select';
 import { CurrentCompany } from "../../components/context/contextData";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
-import { ReportMenu } from "../../components/tablecolumn";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import Enumerable from 'linq';
-import Loader from '../../components/loader/loader'
+import Loader from '../../components/loader/loader';
+import { mkConfig, generateCsv, download } from 'export-to-csv';
 
 const Dropdown = ({ label, options, value, onChange, placeholder }) => (
     <div className="col-md-4 p-2">
@@ -27,9 +27,15 @@ const Dropdown = ({ label, options, value, onChange, placeholder }) => (
     </div>
 );
 
+const csvConfig = mkConfig({
+    fieldSeparator: ',',
+    decimalSeparator: '.',
+    useKeysAsHeaders: true,
+});
+
 const LOSReport = () => {
     const today = new Date();
-    today.setDate(today.getDate() - 30);
+    today.setDate(today.getDate() - 35);
     const [pageInfo, setPageInfo] = useState({ permissions: { Read_Rights: 0, Add_Rights: 0, Edit_Rights: 0, Delete_Rights: 0 } });
     const { compData } = useContext(CurrentCompany)
     const [open, setOpen] = useState(false)
@@ -56,12 +62,53 @@ const LOSReport = () => {
         zero: false
     });
 
+    const ReportMenu = [
+        {
+            header: 'Stock Group',
+            accessorKey: 'Stock_Group',
+        },
+        {
+            header: 'INM',
+            accessorKey: 'Item_Name_Modified',
+            size: 300
+        },
+        {
+            header: 'Date',
+            accessorKey: 'Trans_Date',
+        },
+        {
+            header: 'Balance Quantity',
+            accessorKey: 'Bal_Qty',
+            aggregationFn: 'sum',
+            size: 210,
+            AggregatedCell: ({ cell }) => <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{parseInt(cell.getValue())}</div>,
+            Footer: () => <div style={{ color: 'blue' }}>Total ( {totalbalance.baltotal} )</div>,
+        },
+        {
+            header: 'Closing Rate',
+            accessorKey: 'CL_Rate',
+        },
+        {
+            header: 'Stock Value',
+            accessorKey: 'Stock_Value',
+            aggregationFn: 'sum',
+            size: 240,
+            AggregatedCell: ({ cell }) => <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{parseInt(cell.getValue())}</div>,
+            Footer: () => <div style={{ color: 'blue' }}>Total ( {totalbalance.stocktotal} )</div>,
+        },
+        {
+            header: 'Month',
+            accessorKey: 'month',
+            hide: true
+        },
+    ];
+
     const includeZero = (array) => {
         if (selectedValue.zero === false) {
             let temp = [];
             array.map(obj => {
                 obj.Trans_Date = obj.Trans_Date.split('-').reverse().join('-')
-                if (obj.Bal_Qty !== 0 || obj.CL_Rate !== 0 || obj.Stock_Value !== 0) {
+                if (parseInt(obj.Bal_Qty) > 0 ) {
                     temp.push(obj)
                 }
             });
@@ -115,10 +162,10 @@ const LOSReport = () => {
                     const uniqueItems = data.data.reduce((accumulator, currentItem) => {
                         const existingItem = accumulator.find(item => item.Item_Name_Modified === currentItem.Item_Name_Modified);
                         if (!existingItem) {
-                          accumulator.push(currentItem);
+                            accumulator.push(currentItem);
                         }
                         return accumulator;
-                      }, []);
+                    }, []);
                     includeZero(uniqueItems)
                 }).catch(e => {
                     console.log(e)
@@ -128,23 +175,71 @@ const LOSReport = () => {
     }, [selectedValue, compData, pageInfo])
 
 
+    const totalbalance = useMemo(() => {
+        let baltotal = 0, stocktotal = 0;
+        if (allReport !== null) {
+            const tot = allReport.map(obj => {
+                baltotal += parseInt(obj.Bal_Qty);
+                stocktotal += parseInt(obj.Stock_Value);
+            })
+        }
+        return { baltotal, stocktotal };
+    }, [allReport]);
+
+    const handleExportRows = (rows) => {
+        const rowData = rows.map((row) => row.original);
+        const csv = generateCsv(csvConfig)(rowData);
+        download(csvConfig)(csv);
+    };
+
+
     const table = useMaterialReactTable({
         columns: ReportMenu,
         data: allReport === null ? [] : allReport,
+        enableRowSelection: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
         enableStickyFooter: true,
         enableRowVirtualization: true,
+        enableColumnOrdering: true,
+        enableColumnPinning: true,
+        enableRowNumbers: true,
         initialState: {
             density: 'compact',
             expanded: true,
-            // grouping: ['Stock_Group', 'month', 'Item_Name_Modified'],
+            grouping: ['Stock_Group'],
             pagination: { pageIndex: 0, pageSize: 100 },
-            sorting: [{ id: 'Stock_Group', desc: false }],
+            sorting: [{ id: 'Item_Name_Modified', desc: false }],
+            columnVisibility: { month: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
+        renderTopToolbarCustomActions: ({ table }) => (
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: '16px',
+                    padding: '8px',
+                    flexWrap: 'wrap',
+                }}
+            >
+                {/* <Button
+                    onClick={handleExportData}
+                    startIcon={<FileDownload />}
+                >
+                    Export All Data
+                </Button> */}
+                <Button
+                    disabled={table.getRowModel().rows.length === 0}
+                    onClick={() => handleExportRows(table.getRowModel().rows)}
+                    startIcon={<FileDownload />}
+                >
+                    Export Page Rows
+                </Button>
+            </Box>
+        ),
+
     })
 
     const brandOptions = () => {

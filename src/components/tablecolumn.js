@@ -54,7 +54,7 @@ const users = [
         selector: (row) => row.Token,
         sortable: true,
     },
-    
+
 ];
 
 const prodetails = [
@@ -201,13 +201,11 @@ const ReportMenu = [
     {
         header: 'Stock Group',
         accessorKey: 'Stock_Group',
-        width: 300,
-        minWidth: 150,
     },
     {
         header: 'INM',
         accessorKey: 'Item_Name_Modified',
-        minWidth: 400,
+        size: 300
     },
     {
         header: 'Date',
@@ -216,21 +214,23 @@ const ReportMenu = [
     {
         header: 'Balance Quantity',
         accessorKey: 'Bal_Qty',
-        width: 300
+        aggregationFn: 'sum',
+        AggregatedCell: ({ cell }) => <div style={{color: 'red'}}>{parseInt(cell.getValue())}</div>  
     },
     {
         header: 'Closing Rate',
         accessorKey: 'CL_Rate',
-        width: 300
     },
     {
         header: 'Stock Value',
         accessorKey: 'Stock_Value',
-        width: 300
+        aggregationFn: 'sum',
+        AggregatedCell: ({ cell }) => <div style={{color: 'red'}}>{parseInt(cell.getValue())}</div>
     },
     {
         header: 'Month',
         accessorKey: 'month',
+        hide: true
     },
 ];
 
@@ -490,7 +490,7 @@ const SF_Routes = [
     },
 ]
 
-export { 
+export {
     users,
     products,
     prodetails,
@@ -502,6 +502,6 @@ export {
     SF_Product,
     SF_Retailers,
     SF_Details,
-    SF_Distributors, 
-    SF_Routes 
+    SF_Distributors,
+    SF_Routes
 };

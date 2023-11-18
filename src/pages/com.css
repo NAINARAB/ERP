@@ -77,6 +77,21 @@
   }
   
   
+.icon {
+    padding: 10px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 130px;
+    height: 75px;
+    cursor: pointer;
+  }
+  
+  .icon img {
+    width: 95%;
+    height: 90%;
+    border-radius: inherit;
+    margin: auto 0;
+  }
   
   
   
