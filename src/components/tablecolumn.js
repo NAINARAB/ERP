@@ -88,27 +88,87 @@ const prodetails = [
 const subtable = [
     {
         id: 1,
-        headname: 'Product Name',
-        width: 370
-    },
-    {
-        id: 2,
         headname: 'Product Code',
         width: 150
     },
     {
+        id: 2,
+        headname: 'Product Name',
+        width: 370
+    },
+    {
         id: 3,
-        headname: 'billedQty',
+        headname: 'Quantity',
         width: 150
     },
     {
         id: 4,
         headname: 'Rate',
-        width: 170
+        width: 150
     },
     {
         id: 5,
+        headname: 'Amount',
+        width: 150
+    },
+    {
+        id: 5,
+        headname: 'Closeing Stock',
+        width: 150
+    },
+    {
+        id: 6,
         headname: 'uom',
+    },
+]
+
+const subtable2 = [
+    {
+        header: 'Code',
+        accessorKey: 'productCode',
+        size: 100
+    },
+    {
+        header: 'Product Name',
+        accessorKey: 'productName',
+        size: 270
+    },
+    {
+        header: 'Quantity',
+        accessorKey: 'billedQty',
+        size: 150,
+        align: 'center'
+    },
+    {
+        header: 'Rate',
+        accessorKey: 'rate',
+        size: 120,
+    },
+    {
+        header: 'Amount',
+        accessorKey: 'amount',
+        size: 150,
+    },
+    {
+        header: 'Customer',
+        accessorKey: 'customerName',
+    },
+    {
+        header: 'Closeing Stock',
+        accessorKey: 'closeingStock',
+        size: 150
+    },
+    {
+        header: 'Date',
+        accessorKey: 'orderDate',
+    },
+    {
+        header: 'Unit Of Measure',
+        accessorKey: 'uom',
+    },
+    {
+        header: 'OrderTaken',
+        accessorKey: 'orderTakenBy',
     },
 ]
 
@@ -116,46 +176,33 @@ const products = [
     {
         header: 'Order Taken By',
         accessorKey: 'orderTakenBy',
-        sortable: true,
-        minWidth: '100px',
-        maxWidth: '140px'
     },
     {
         header: 'Cus-ID',
         accessorKey: 'customerId',
-        sortable: true,
-        maxWidth: '60px'
+        size: 150
     },
     {
         header: 'Customer',
         accessorKey: 'customerName',
-        sortable: true,
-        maxWidth: '230px'
-    },
-    {
-        header: 'Date',
-        accessorKey: 'orderDate',
-        sortable: true,
-        maxWidth: '100px'
-    },
-    {
-        header: 'Order No',
-        accessorKey: 'orderNo',
-        sortable: true,
-        minWidth: '200px',
-        maxWidth: '210px',
     },
     {
         header: 'Order Value',
         accessorKey: 'orderValue',
-        sortable: true,
-        maxWidth: '120px'
+    },
+    {
+        header: 'Date',
+        accessorKey: 'orderDate',
+    },
+    {
+        header: 'Order No',
+        accessorKey: 'orderNo',
+        size: 230
     },
     {
         header: 'Billing Address',
         accessorKey: 'billingAddress',
-        sortable: true,
-        minWidth: '200px'
+        size: 350
     },
 ];
 
@@ -503,5 +550,6 @@ export {
     SF_Retailers,
     SF_Details,
     SF_Distributors,
-    SF_Routes
+    SF_Routes,
+    subtable2
 };

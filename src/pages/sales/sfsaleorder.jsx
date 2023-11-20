@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
-import { products, subtable, customStyles } from "../../components/tablecolumn";
+import { subtable } from "../../components/tablecolumn";
 import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
-import { Sync, NavigateNext } from '@mui/icons-material';
-import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box } from "@mui/material";
+import { Sync, NavigateNext, KeyboardArrowUp, KeyboardArrowRight, BarChart as BC } from '@mui/icons-material';
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box, IconButton, Collapse, Dialog, DialogContent, DialogActions, Button, DialogTitle } from "@mui/material";
 import axios from 'axios';
-import Loader from "../../components/loader/loader";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import ProductBased from "./sfproductsaleorder";
+import { Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, BarChart } from 'recharts';
+import { PieChart, Pie, Sector, Cell } from 'recharts';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 const Product = () => {
     const today = new Date();
@@ -22,6 +24,20 @@ const Product = () => {
     const [from, setFrom] = useState(thirtyDaysAgo.toISOString().split('T')[0])
     const token = localStorage.getItem('userToken');
     const [isSync, setIsSync] = useState(false);
+    const [totalOrderValue, setTotalOrderValue] = useState(0);
+    const [dispBy, setDispBy] = useState(false)
+    const [open, setOpen] = useState(false);
+
+    const totcount = (data) => {
+        let total = 0;
+        data.forEach(obj => {
+            if (obj.orderValue) {
+                total = total + parseInt(obj.orderValue, 10) || 0;
+            }
+        });
+        return total;
+    };
+
 
     useEffect(() => {
         axios.get(`${apihost}/api/sf/saleorders?from=${from}&to=${date}`, {
@@ -33,7 +49,9 @@ const Product = () => {
                 obj.transDetails.map(tobj => {
                     tobj.orderNo = obj.orderNo
                 })
+                obj.orderValue = parseInt(obj.orderValue)
             })
+            setTotalOrderValue(totcount(data.data.data))
             setData(data.data.data);
         }).catch(e => console.log(e))
     }, [date, from]);
@@ -87,10 +105,12 @@ const Product = () => {
                         <TableBody>
                             {data.transDetails.map(obj => (
                                 <TableRow>
-                                    <TableCell>{obj.productName}</TableCell>
                                     <TableCell>{obj.productCode}</TableCell>
+                                    <TableCell>{obj.productName}</TableCell>
                                     <TableCell>{obj.billedQty}</TableCell>
                                     <TableCell>{obj.rate}</TableCell>
+                                    <TableCell>{obj.amount}</TableCell>
+                                    <TableCell>{obj.closeingStock}</TableCell>
                                     <TableCell>{obj.uom}</TableCell>
                                 </TableRow>
                             ))}
@@ -101,38 +121,95 @@ const Product = () => {
         )
     }
 
+    const products = [
+        {
+            header: 'Order Taken By',
+            accessorKey: 'orderTakenBy',
+            sortable: true,
+            minWidth: '100px',
+            maxWidth: '140px'
+        },
+        {
+            header: 'Date',
+            accessorKey: 'orderDate',
+            sortable: true,
+            maxWidth: '100px'
+        },
+        {
+            header: 'Cus-ID',
+            accessorKey: 'customerId',
+            size: 150
+        },
+        {
+            header: 'Customer',
+            accessorKey: 'customerName',
+            sortable: true,
+            maxWidth: '230px'
+        },
+        {
+            header: 'Order Value',
+            accessorKey: 'orderValue',
+            sortable: true,
+            maxWidth: '120px',
+            AggregatedCell: ({ cell }) => <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{parseInt(cell.getValue())}</div>,
+            Footer: () => <div style={{ color: 'blue' }}> {totalOrderValue} </div>,
+        },
+        {
+            header: 'Order No',
+            accessorKey: 'orderNo',
+            size: 230
+        },
+        {
+            header: 'Billing Address',
+            accessorKey: 'billingAddress',
+            sortable: true,
+            minWidth: '200px',
+            size: 330
+        },
+    ];
+
     const table = useMaterialReactTable({
         columns: products,
         data: data === null ? [] : data,
-        enableRowSelection: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
         enableStickyFooter: true,
-        enableRowVirtualization: true,
         enableColumnOrdering: true,
-        enableColumnPinning: true,
         enableRowNumbers: true,
         initialState: {
             density: 'compact',
             pagination: { pageIndex: 0, pageSize: 100 },
-            sorting: [{ id: 'orderDate', desc: false }],
+            sorting: [{ id: 'orderDate', desc: false }, { id: 'orderNo', desc: false }],
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
-        muiTableContainerProps: { sx: { maxHeight: '60vh' } },
+        muiTableContainerProps: { sx: { maxHeight: '56vh', minHeight: '56vh' } },
         renderDetailPanel: ({ row }) => (
             <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    alignItems: 'center',
+                }}
             >
-              {console.log(row)}
-              <ExpandedComponent data={row.original} />
+                <ExpandedComponent data={row.original} />
             </Box>
-          ),
+        ),
     })
+
+    const totalOrders = data.length;
+
+    const salespersonCounts = data.reduce((counts, salesorder) => {
+        const { orderTakenBy } = salesorder;
+        counts[orderTakenBy] = (counts[orderTakenBy] || 0) + 1;
+        return counts;
+    }, {});
+
+    const pieData = Object.entries(salespersonCounts).map(([name, count]) => ({
+        name,
+        value: (count / totalOrders) * 100,
+    }));
+    const colorScale = schemeCategory10;
 
 
     return (
@@ -143,7 +220,7 @@ const Product = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={4} subMenuId={6} />
+                    <Sidebar mainMenuId={"SALES"} subMenuId={'SALES ORDER SYNC'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
@@ -177,28 +254,83 @@ const Product = () => {
                                 <button
                                     className={'btn btn-success'}
                                     onClick={syncData} disabled={isSync}>
-                                        <Sync /> &nbsp; {isSync ? "Syncing Data" : "Sync Data"}
+                                    <Sync /> &nbsp; {isSync ? "Syncing Data" : "Sync Data"}
                                 </button>
+                                <IconButton onClick={() => setOpen(true)}><BC /></IconButton>
                             </div>
                         </div>
                         <br />
-                        {/* <DataTable
-                            columns={products}
-                            data={data}
-                            expandableRows
-                            expandableRowsComponent={ExpandedComponent}
-                            expandableIconColumnIndex={-1}
-                            pagination
-                            highlightOnHover={true}
-                            fixedHeader={true}
-                            fixedHeaderScrollHeight={"70vh"}
-                            customStyles={customStyles}
-                            sort={{ field: 'orderDate', order: 'asc' }}
-                        /> */}
-                        {data === null ? <Loader /> : <MaterialReactTable table={table} />}
+
+                        <Box sx={{ boxShadow: '0 2px 8px rgb(0, 0, 0, 0.1)' }}>
+                            <h5 className="p-4">Order Based
+                                <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, order: !dispBy.order })}>
+                                    {dispBy.order ? <KeyboardArrowUp /> : <KeyboardArrowRight />}
+                                </IconButton>
+                            </h5>
+                            <Collapse in={dispBy.order} timeout="auto" unmountOnExit >
+                                <MaterialReactTable table={table} />
+                            </Collapse>
+                        </Box>
+                        <Box sx={{ boxShadow: '0 2px 8px rgb(0, 0, 0, 0.1)', padding: '0' }} >
+                            <h5 className="p-4">Product Based
+                                <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, product: !dispBy.product })}>
+                                    {dispBy.product ? <KeyboardArrowUp /> : <KeyboardArrowRight />}
+                                </IconButton></h5>
+                            <Collapse in={dispBy.product} timeout="auto" unmountOnExit>
+                                <ProductBased from={from} to={date} />
+                            </Collapse>
+                        </Box>
+
                     </div>
+
                 </div>
             </div>
+            <Dialog
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                fullWidth={true}
+                maxWidth={'lg'}>
+                <DialogTitle id="alert-dialog-title">
+                    {"Analysis"}
+                </DialogTitle>
+                <DialogContent>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={data}>
+                            <XAxis dataKey="productName" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="customerName" name="Customer" fill="#8884d8" />
+                            <Bar dataKey="orderValue" name="Order Value" fill="#82ca9d" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <PieChart>
+                            <Pie
+                                data={pieData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={80}
+                                fill="#8884d8"
+                                label
+                            >
+                                {pieData.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={colorScale[index % colorScale.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }

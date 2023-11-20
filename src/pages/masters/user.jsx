@@ -117,7 +117,7 @@ const User = () => {
     const formik = useFormik({
         initialValues,
         validate,
-        onSubmit: (values) => {
+        onSubmit: (values, actions) => {
             fetch(`${apihost}/api/users`, {
                 method: values.userid == 0 ? 'POST' : 'PUT',
                 headers: { 'Authorization': token, 'Content-Type': 'application/json' },
@@ -136,6 +136,7 @@ const User = () => {
                     setRefresh(!refresh);
                     if (resdata.status === "Success") {
                         toast.success(resdata.message);
+                        actions.resetForm();
                     } else {
                         toast.error(resdata.message);
                     }
