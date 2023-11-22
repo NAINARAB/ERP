@@ -29,11 +29,11 @@ const validate = (values) => {
         errors.name = 'Name is required';
     }
 
-    if (!values.mobile) {
-        errors.mobile = 'Mobile number is required';
-    } else if (!/^\d{10}$/.test(values.mobile)) {
-        errors.mobile = 'Invalid mobile number. Please enter a 10-digit number.';
-    }
+    // if (!values.mobile) {
+    //     errors.mobile = 'Mobile number is required';
+    // } else if (!/^\d{10}$/.test(values.mobile)) {
+    //     errors.mobile = 'Invalid mobile number. Please enter a 10-digit number.';
+    // }
 
     // if (!values.email) {
     //     errors.email = 'Email is required';
@@ -216,7 +216,8 @@ const User = () => {
             method: 'DELETE',
             headers: { 'Authorization': token, 'Content-Type': 'application/json' },
         }).then(res => res.json()).then(resdata => {
-            setdopen(false)
+            setdopen(false);
+            setRefresh(!refresh);
             if (resdata.status === 'Success') {
                 toast.success(resdata.message);
             }
@@ -285,9 +286,9 @@ const User = () => {
                             </div>
                             <div className="col-md-4 p-3">
                                 <TextField fullWidth id="mobile" name="mobile" label="Mobile Number" variant="outlined"
-                                    onInput={(e) => {
-                                        onlynum(e)
-                                    }}
+                                    // onInput={(e) => {
+                                    //     onlynum(e)
+                                    // }}
                                     onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.mobile}
                                     error={formik.touched.mobile && Boolean(formik.errors.mobile)}
                                     helperText={formik.touched.mobile && formik.errors.mobile}

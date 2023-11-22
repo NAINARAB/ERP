@@ -3,12 +3,13 @@ import { apihost } from "../../env";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, IconButton, Checkbox, TextField, MenuItem } from "@mui/material";
-import { MainMenu } from "../../components/tablecolumn";
+import { MainMenu, customSelectStyles } from "../../components/tablecolumn";
 import { UnfoldMore, NavigateNext } from '@mui/icons-material';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material/';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Autocomplete } from '@mui/material/';
 import { useFormik } from 'formik';
 import { ToastContainer, toast } from 'react-toastify';
 import { pageRights } from "../../components/rightsCheck";
+import Select from 'react-select';
 
 
 const token = localStorage.getItem('userToken')
@@ -346,7 +347,7 @@ const UserAuthorization = () => {
     }, [])
 
     useEffect(() => {
-        fetch(`${apihost}/api/side`, { headers: { 'Authorization': currentAuthId ? currentAuthId : token} })
+        fetch(`${apihost}/api/side`, { headers: { 'Authorization': currentAuthId ? currentAuthId : token } })
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Success") {
@@ -395,6 +396,19 @@ const UserAuthorization = () => {
         },
     });
 
+    const options = users.map((user) => ({
+        value: user.Token,
+        label: user.Name,
+    }));
+
+    const handleUserChange = (selectedOption) => {
+        if (selectedOption) {
+            const selectedUser = users.find(user => user.Token === selectedOption.value);
+            setCurrentAuthId(selectedUser?.Token || null);
+            setCurrentUserId(selectedUser?.UserId || null);
+        }
+    };
+
     return (
         <>  <ToastContainer />
             <div className="row" >
@@ -413,61 +427,50 @@ const UserAuthorization = () => {
                     <div className="m-3">
                         <div className="row">
                             <div className="col-sm-4 px-2">
-                                <TextField
-                                    fullWidth
-                                    select
-                                    label="Select User"
-                                    variant="outlined"
-                                    onChange={(e) => {
-                                        const selectedUser = users.find(user => user.Token === e.target.value);
-                                        setCurrentAuthId(selectedUser.Token);
-                                        setCurrentUserId(selectedUser.UserId);
-                                    }}
-                                    InputProps={{ inputProps: { style: { padding: '26px', width: '50%' } } }}
-                                    value={currentAuthId ? currentAuthId : token}
-                                >
-                                    {users.map((user) => (
-                                        <MenuItem key={user.UserId} value={user.Token}>
-                                            {user.Name}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-
+                                
+                                <Select
+                                    defaultValue={{value:token, label: localStorage.getItem('Name')}}
+                                    onChange={handleUserChange}
+                                    options={options}
+                                    styles={customSelectStyles}
+                                    isSearchable={true}
+                                    placeholder={"Select User"}
+                                />
                             </div>
                         </div>
 
                         <br />
                         <>
-                                <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
-                                <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
-                                    <Table stickyHeader aria-label="simple table">
-                                        <TableHead>
-                                            <TableRow>
-                                                {MainMenu.map(obj => (
-                                                    <TableCell
-                                                        key={obj.id}
-                                                        variant={obj.variant}
-                                                        align={obj.align}
-                                                        width={obj.width}
-                                                        sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
-                                                        {obj.headname}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {mainMenu.map(obj => (
-                                                <TRow
-                                                    key={obj.Main_Menu_Id}
-                                                    data={obj}
-                                                    UserId={currentUserId}
-                                                    subMenu={subMenu}
-                                                    childMenu={childMenu} />
+                            <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
+                            <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
+                                <Table stickyHeader aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            {MainMenu.map(obj => (
+                                                <TableCell
+                                                    key={obj.id}
+                                                    variant={obj.variant}
+                                                    align={obj.align}
+                                                    width={obj.width}
+                                                    sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
+                                                    {obj.headname}
+                                                </TableCell>
                                             ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {mainMenu.map(obj => (
+                                            <TRow
+                                                key={obj.Main_Menu_Id}
+                                                data={obj}
+                                                UserId={currentUserId}
+                                                subMenu={subMenu}
+                                                childMenu={childMenu} />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>
 
                     </div>
                 </div>

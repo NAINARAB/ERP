@@ -17,9 +17,10 @@ const HomeComp = () => {
     const loginResponse = localStorage.getItem('loginResponse')
     const loginInfo = JSON.parse(loginResponse)
     const name = localStorage.getItem('Name')
+    const branch = localStorage.getItem('branchId')
 
     const navtoTask = () => {
-        window.location.href = `${taskManagementWebAddress}?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${name}`
+        window.location.href = `${taskManagementWebAddress}?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${name}&branch=${branch}`
     }
 
     return (

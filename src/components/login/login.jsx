@@ -29,6 +29,7 @@ function Login() {
                     localStorage.setItem('Name', data.user.Name)
                     localStorage.setItem('UserType', data.user.UserType)
                     localStorage.setItem('UserId', data.user.UserId)
+                    localStorage.setItem('branchId', data.user.BranchId)
                     localStorage.setItem('loginResponse', JSON.stringify(data.sessionInfo))
                     navigate('home')
                 } else {

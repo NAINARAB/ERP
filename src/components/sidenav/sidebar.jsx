@@ -22,12 +22,12 @@ const MainMenu = (props) => {
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             >
               <span style={{ textAlign: 'left' }}>
-                {props.MainMenuData.Main_Menu_Id === 1 && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.Main_Menu_Id === 2 && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.Main_Menu_Id === 3 && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.Main_Menu_Id === 4 && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.Main_Menu_Id === 5 && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.Main_Menu_Id === 6 && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "MASTERS" && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
                 {' ' + props.MainMenuData.MenuName}
               </span>
               <div style={{ textAlign: 'right' }}>

@@ -11,7 +11,6 @@ import { Info, NavigateNext } from '@mui/icons-material';
 import { prodetails } from "../../components/tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../../components/loader/loader";
-import ProductBased from "./sfproductsaleorder";
 
 const SaleOrderList = () => {
   const [data, setData] = useState([]);
@@ -85,7 +84,6 @@ const SaleOrderList = () => {
                 <button className="btn btn-success" onClick={fetchrange}>Search</button>
               </div>
             </div><br />
-            <ProductBased />
             <div className="row">
               {data.map(obj => (
                 <div className="col-md-6" key={obj.orderNo}>

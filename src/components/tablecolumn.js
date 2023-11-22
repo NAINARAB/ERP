@@ -20,6 +20,10 @@ const customSelectStyles = {
         ...provided,
         height: '45px',
     }),
+    menu: (provided, state) => ({
+        ...provided,
+        zIndex: 9999,
+    }),
 };
 
 const users = [
@@ -262,7 +266,7 @@ const ReportMenu = [
         header: 'Balance Quantity',
         accessorKey: 'Bal_Qty',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div style={{color: 'red'}}>{parseInt(cell.getValue())}</div>  
+        AggregatedCell: ({ cell }) => <div style={{ color: 'red' }}>{parseInt(cell.getValue())}</div>
     },
     {
         header: 'Closing Rate',
@@ -272,7 +276,7 @@ const ReportMenu = [
         header: 'Stock Value',
         accessorKey: 'Stock_Value',
         aggregationFn: 'sum',
-        AggregatedCell: ({ cell }) => <div style={{color: 'red'}}>{parseInt(cell.getValue())}</div>
+        AggregatedCell: ({ cell }) => <div style={{ color: 'red' }}>{parseInt(cell.getValue())}</div>
     },
     {
         header: 'Month',
