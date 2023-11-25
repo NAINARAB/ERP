@@ -6,20 +6,24 @@ import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 
 
 const ProductBased = ({ from, to }) => {
-    ;
     const [data, setData] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0)
     const token = localStorage.getItem('userToken');
 
     const subtable2 = [
         {
-            header: 'Code',
-            accessorKey: 'productCode',
+            header: 'Date',
+            accessorKey: 'orderDate',
             size: 100
         },
         {
-            header: 'Date',
-            accessorKey: 'orderDate',
+            header: 'Customer',
+            accessorKey: 'customerName',
+            size: 250
+        },
+        {
+            header: 'Product Code',
+            accessorKey: 'productCode',
             size: 100
         },
         {
@@ -31,7 +35,6 @@ const ProductBased = ({ from, to }) => {
             header: 'Quantity',
             accessorKey: 'billedQty',
             size: 150,
-            align: 'center'
         },
         {
             header: 'Rate',
@@ -46,8 +49,8 @@ const ProductBased = ({ from, to }) => {
             Footer: () => <div style={{ color: 'blue' }}> {totalAmount} </div>,
         },
         {
-            header: 'Customer',
-            accessorKey: 'customerName',
+            header: 'Customer ID',
+            accessorKey: 'customerId'
         },
         {
             header: 'Closeing Stock',
@@ -94,7 +97,7 @@ const ProductBased = ({ from, to }) => {
         initialState: {
             density: 'compact',
             pagination: { pageIndex: 0, pageSize: 100 },
-            columnVisibility: { orderTakenBy: false, uom: false },
+            columnVisibility: { orderTakenBy: false, uom: false, productCode: false, orderTakenBy: false, customerId: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '56vh', minHeight: '56vh' } },

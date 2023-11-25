@@ -17,6 +17,9 @@ const pageRights = (pageType, page) => {
             .then((res) => res.json())
             .then((data) => {
                 res.UserId = data.User_Id
+                if(data.status === 'Success'){
+                    res.UserId = data.data[0].UserId
+                }
             })
             .then(() => {
                 return fetch(`${apihost}/api/pagerights?menuid=${page}&menutype=${pageType}&user=${res.UserId}`, {

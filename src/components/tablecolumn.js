@@ -63,8 +63,19 @@ const users = [
 
 const prodetails = [
     {
+        name: 'Product Code',
+        selector: (row) => row.productCode,
+        sortable: true,
+    },
+    {
         name: 'Product Name',
         selector: (row) => row.productName,
+        sortable: true,
+        width: '270px'
+    },
+    {
+        name: 'Quantity',
+        selector: (row) => row.billedQty,
         sortable: true,
     },
     {
@@ -73,20 +84,20 @@ const prodetails = [
         sortable: true,
     },
     {
-        name: 'Billed Quantity',
-        selector: (row) => row.billedQty,
+        name: 'Amount',
+        selector: (row) => row.amount,
         sortable: true,
+    },
+    {
+        name: "Closeing Stock",
+        selector: (row) => row.closeingStock,
+        sortable: true
     },
     {
         name: 'Unit of Measure',
         selector: (row) => row.uom,
         sortable: true,
     },
-    {
-        name: 'Amount',
-        selector: (row) => row.amount,
-        sortable: true,
-    }
 ]
 
 const subtable = [

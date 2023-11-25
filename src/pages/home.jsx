@@ -1,17 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from '../components/header/header'
 import Sidebar from "../components/sidenav/sidebar"
 import Logo from '../download.png'
 import './com.css';
 import { taskManagementWebAddress } from "../env";
+import { pageRights } from "../components/rightsCheck";
 
 
 const HomeComp = () => {
+    const [task, setTask] = useState(false);
 
     useEffect(() => {
         if(!localStorage.getItem('userToken')){
             window.location.href = '/'
         }
+        pageRights(2, 1013).then(per => {
+            if (per.permissions.Add_Rights === 1){
+                setTask(true)
+            } else {
+                setTask(false)
+            }
+        })
     }, [])
 
     const loginResponse = localStorage.getItem('loginResponse')
@@ -38,10 +47,12 @@ const HomeComp = () => {
                     </div>
                     <div className="px-4">
                         <br />
-                        <div className="icon" onClick={navtoTask}>
-                            <img src={Logo} alt="SMT TASK ICON"  /><br /><br />
-                            <p style={{textAlign: 'center'}}>SMT TASK</p>
-                        </div>
+                        {task 
+                        &&  <div className="icon" onClick={navtoTask}>
+                                <img src={Logo} alt="SMT TASK ICON"  /><br /><br />
+                                <p style={{textAlign: 'center'}}>SMT TASK</p>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

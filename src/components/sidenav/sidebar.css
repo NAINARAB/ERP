@@ -28,8 +28,8 @@
 
 .menuhide{
     position: absolute;
-    top: 22px;
-    left: 27px;
+    top: 18px;
+    left: 24px;
     display: none;
     z-index: 101;
 }
