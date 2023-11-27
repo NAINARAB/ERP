@@ -22,18 +22,32 @@ const SaleOrderList = () => {
   const [end, setEnd] = useState(initialEndDate);
   const [popupdetails, setPopupdetails] = useState({});
   const token = localStorage.getItem('userToken');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredData, setFilteredData] = useState(data);
 
   useEffect(() => {
     if (token) {
       fetchrange()
     }
-  }, []);
+  }, [start, end]);
+
+  function handleSearchChange(event) {
+    const term = event.target.value;
+    setSearchTerm(term);
+    const filteredResults = data.filter(item => {
+      return Object.values(item).some(value =>
+        String(value).toLowerCase().includes(term.toLowerCase())
+      );
+    });
+
+    setFilteredData(filteredResults);
+  }
 
   const fetchrange = () => {
     if (start > end) {
       toast.warn("Select valid date")
     } else {
-      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token, 'Db': 'db1' } })
+      fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token } })
         .then((res) => { return res.json() })
         .then((data) => {
           setData(data.data)
@@ -71,21 +85,25 @@ const SaleOrderList = () => {
           </div>
           <div className="m-3">
             <div className="row">
-              <div className="col-md-4 px-2">
+              <div className="col-md-3 px-2">
                 <p>Form</p>
                 <input type="date" className="form-control" value={start} onChange={(e) => { setStart(e.target.value) }} />
               </div>
-              <div className="col-md-4 px-2">
+              <div className="col-md-3 px-2">
                 <p>To</p>
                 <input type="date" className="form-control" value={end} onChange={(e) => setEnd(e.target.value)} />
               </div>
-              <div className="col-md-4 px-2">
+              <div className="col-md-3 px-2">
+                <p>Search Data</p>
+                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control"/>
+              </div>
+              {/* <div className="col-md-3 px-2">
                 <p style={{ opacity: '0' }}>j</p>
                 <button className="btn btn-success" onClick={fetchrange}>Search</button>
-              </div>
+              </div> */}
             </div><br />
-            <div className="row">
-              {data.map(obj => (
+            <div className="row" style={{ maxHeight: '68vh', overflowY: 'scroll' }}>
+              {(filteredData && filteredData.length ? filteredData : data).map(obj => (
                 <div className="col-md-6" key={obj.orderNo}>
                   <div className="card">
                     <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><Info sx={{ color: 'blue' }} /></IconButton></div>
@@ -95,7 +113,7 @@ const SaleOrderList = () => {
                     <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{moment(obj.docDate).format("DD-MM-YYYY")}</span></p>
                     <p>
                       <span style={{ float: 'left' }}>Address</span>
-                      <span style={{ float: 'right', width: '50%', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', textAlign:'right' }}>
+                      <span style={{ float: 'right', width: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>
                         {obj.shippingAddress}
                       </span>
                     </p>
@@ -133,7 +151,7 @@ const SaleOrderList = () => {
                     <div className="col-md-6 px-4">
                       <p style={{ color: 'black' }}>Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
                       <p style={{ color: 'black' }}>
-                        Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em',  textAlign:'right' }}>{popupdetails.shippingAddress}</span>
+                        Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em', textAlign: 'right' }}>{popupdetails.shippingAddress}</span>
                       </p>
                     </div>
                   </div>
