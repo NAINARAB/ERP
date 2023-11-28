@@ -3,9 +3,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../env";
 import axios from 'axios';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { FileDownload } from '@mui/icons-material';
-import { Box, Button } from "@mui/material";
-import * as XLSX from 'xlsx';
+// import { FileDownload } from '@mui/icons-material';
+// import { Box, Button } from "@mui/material";
+// import * as XLSX from 'xlsx';
 
 
 const ProductBased = ({ from, to }) => {
@@ -87,19 +87,19 @@ const ProductBased = ({ from, to }) => {
         }).catch(e => console.log(e))
     }, [from, to]);
 
-    const XLExport = (rows) => {
-        const keysToExport = ['orderDate', 'orderTakenBy', 'docNumber', 'productName', 'customerName', 'billedQty', 'rate', 'amount', 'closeingStock', 'orderValue'];
-        const rowData = rows.map((row) => row.original);
-        const filteredData = rowData.map((item) => {
-            return Object.fromEntries(
-                Object.entries(item).filter(([key]) => keysToExport.includes(key))
-            );
-        });
-        const ws = XLSX.utils.json_to_sheet(filteredData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
-        XLSX.writeFile(wb, 'output.xlsx');
-    }
+    // const XLExport = (rows) => {
+    //     const keysToExport = ['orderDate', 'orderTakenBy', 'docNumber', 'productName', 'customerName', 'billedQty', 'rate', 'amount', 'closeingStock', 'orderValue'];
+    //     const rowData = rows.map((row) => row.original);
+    //     const filteredData = rowData.map((item) => {
+    //         return Object.fromEntries(
+    //             Object.entries(item).filter(([key]) => keysToExport.includes(key))
+    //         );
+    //     });
+    //     const ws = XLSX.utils.json_to_sheet(filteredData);
+    //     const wb = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
+    //     XLSX.writeFile(wb, 'output.xlsx');
+    // }
 
 
     const table = useMaterialReactTable({
@@ -123,16 +123,16 @@ const ProductBased = ({ from, to }) => {
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '56vh', minHeight: '56vh' } },
-        renderTopToolbarCustomActions: ({ table }) => {
-            return (
-                <Box sx={{ display: 'flex', gap: '16px', padding: '8px', flexWrap: 'wrap' }}
-                    disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}>
-                    <Button onClick={() => XLExport(table.getRowModel().rows)} startIcon={<FileDownload />}>
-                        Export to Excel
-                    </Button>
-                </Box>
-            )
-        },
+        // renderTopToolbarCustomActions: ({ table }) => {
+        //     return (
+        //         <Box sx={{ display: 'flex', gap: '16px', padding: '8px', flexWrap: 'wrap' }}
+        //             disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}>
+        //             <Button onClick={() => XLExport(table.getRowModel().rows)} startIcon={<FileDownload />}>
+        //                 Export to Excel
+        //             </Button>
+        //         </Box>
+        //     )
+        // },
     })
 
 

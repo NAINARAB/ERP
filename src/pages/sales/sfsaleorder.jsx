@@ -5,14 +5,12 @@ import { apihost } from "../../env";
 import { subtable } from "../../components/tablecolumn";
 import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
-import { Sync, NavigateNext, KeyboardArrowUp, KeyboardArrowRight, BarChart as BC, FileDownload } from '@mui/icons-material';
+import { Sync, NavigateNext, KeyboardArrowUp, BarChart as BC, KeyboardArrowDown } from '@mui/icons-material';
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box, IconButton, Collapse, Dialog, DialogContent, DialogActions, Button, DialogTitle } from "@mui/material";
 import axios from 'axios';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import ProductBased from "./sfproductsaleorder";
 import { Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, BarChart } from 'recharts';
-import { PieChart, Pie, Sector, Cell } from 'recharts';
-import { schemeCategory10 } from 'd3-scale-chromatic';
 
 const Product = () => {
     const today = new Date();
@@ -196,19 +194,6 @@ const Product = () => {
         ),
     })
 
-    const totalOrders = data.length;
-
-    const salespersonCounts = data.reduce((counts, salesorder) => {
-        const { orderTakenBy } = salesorder;
-        counts[orderTakenBy] = (counts[orderTakenBy] || 0) + 1;
-        return counts;
-    }, {});
-    const pieData = Object.entries(salespersonCounts).map(([name, count]) => ({
-        name,
-        value: (count / totalOrders) * 100,
-    }));
-    const colorScale = schemeCategory10;
-
 
     return (
         <>
@@ -227,7 +212,7 @@ const Product = () => {
                     </div>
                     <div className="p-3">
                         <div className="row">
-                            <div className="col-sm-4 p-2">
+                            <div className="col-sm-3 p-2">
                                 <label>From Date</label><br />
                                 <input
                                     className="form-control"
@@ -237,7 +222,7 @@ const Product = () => {
                                         setFrom((e.target.value));
                                     }} />
                             </div>
-                            <div className="col-sm-4 p-2">
+                            <div className="col-sm-3 p-2">
                                 <label>To Date</label><br />
                                 <input
                                     className="form-control"
@@ -247,7 +232,7 @@ const Product = () => {
                                         setDate((e.target.value));
                                     }} />
                             </div>
-                            <div className="col-sm-4 p-2">
+                            <div className="col-sm-3 p-2">
                                 <label></label><br />
                                 <button
                                     className={'btn btn-success'}
@@ -262,7 +247,7 @@ const Product = () => {
                         <Box sx={{ boxShadow: '0 2px 8px rgb(0, 0, 0, 0.1)' }}>
                             <h5 className="p-4">Order Based
                                 <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, order: !dispBy.order })}>
-                                    {dispBy.order ? <KeyboardArrowUp /> : <KeyboardArrowRight />}
+                                    {dispBy.order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                                 </IconButton>
                             </h5>
                             <Collapse in={dispBy.order} timeout="auto" unmountOnExit >
@@ -272,7 +257,7 @@ const Product = () => {
                         <Box sx={{ boxShadow: '0 2px 8px rgb(0, 0, 0, 0.1)', padding: '0' }} >
                             <h5 className="p-4">Product Based
                                 <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, product: !dispBy.product })}>
-                                    {dispBy.product ? <KeyboardArrowUp /> : <KeyboardArrowRight />}
+                                    {dispBy.product ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                                 </IconButton></h5>
                             <Collapse in={dispBy.product} timeout="auto" unmountOnExit>
                                 <ProductBased from={from} to={date} />
@@ -303,26 +288,6 @@ const Product = () => {
                             <Bar dataKey="customerName" name="Customer" fill="#8884d8" />
                             <Bar dataKey="orderValue" name="Order Value" fill="#82ca9d" />
                         </BarChart>
-                    </ResponsiveContainer>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <PieChart>
-                            <Pie
-                                data={pieData}
-                                dataKey="value"
-                                nameKey="name"
-                                cx="50%"
-                                cy="50%"
-                                outerRadius={80}
-                                fill="#8884d8"
-                                label
-                            >
-                                {pieData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={colorScale[index % colorScale.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
                     </ResponsiveContainer>
                 </DialogContent>
                 <DialogActions>
