@@ -38,6 +38,22 @@ const Header = ({setting}) => {
     const name = matchingCompany ? matchingCompany.Company_Name : 'Company Not Found';
     setCompData({ ...compData, id, Company_Name: name });
   };
+
+  const logout = () => {
+    const session = JSON.parse(localStorage.getItem('loginResponse'))
+    fetch(`${apihost}/api/logout?userid=${localStorage.getItem('UserId')}&sessionId=${session.SessionId}`,
+    {
+      method: 'PUT',
+      headers: {'Authorization': token}
+    })
+    .then((res) => { return res.json()})
+    .then(data => {
+      if(data.status === 'Success'){
+        localStorage.clear();
+        nav('/');
+      } 
+    })
+  }
   
   
   return (
@@ -46,7 +62,7 @@ const Header = ({setting}) => {
         <h2>ERP</h2>
         <div className='logout'>
           {setting === true && <IconButton sx={{color: 'white'}} onClick={() => setOpen(!open)}><Settings /></IconButton>}
-          <IconButton sx={{color: 'white'}} onClick={() => {localStorage.clear();nav('/')}}><Logout /></IconButton>
+          <IconButton sx={{color: 'white'}} onClick={logout}><Logout /></IconButton>
         </div>
       </div>
       <Dialog

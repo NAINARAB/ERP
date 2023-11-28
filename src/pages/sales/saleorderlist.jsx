@@ -59,7 +59,7 @@ const SaleOrderList = () => {
   const fetchorderinfo = (num, all) => {
     setOrderDetails([]);
     setPopupdetails(all);
-    fetch(`${apihost}/api/orderinfo?orderno=${num}`, { headers: { 'Authorization': token, 'Db': 'db1' } })
+    fetch(`${apihost}/api/orderinfo?orderno=${num}`, { headers: { 'Authorization': token } })
       .then((res) => { return res.json() })
       .then((data) => {
         setOrderDetails(data.data)

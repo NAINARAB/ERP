@@ -72,18 +72,19 @@ const ProductBased = ({ from, to }) => {
     ]
 
     useEffect(() => {
-        axios.get(`${apihost}/api/SaleOrder?from=${from}&to=${to}`, {
+        fetch(`${apihost}/api/SaleOrder?from=${from}&to=${to}`, {
             headers: {
                 'Authorization': token,
             }
-        }).then(data => {
+        }).then((res) => { return res.json() })
+        .then(data => {
             let temptotal = 0;
-            data.data.data.map(obj => {
+            data.data.map(obj => {
                 obj.amount = parseInt(obj.amount)
                 temptotal += obj.amount
             })
             setTotalAmount(temptotal)
-            setData(data.data.data);
+            setData(data.data);
         }).catch(e => console.log(e))
     }, [from, to]);
 
