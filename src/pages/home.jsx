@@ -14,7 +14,7 @@ const HomeComp = () => {
         if(!localStorage.getItem('userToken')){
             window.location.href = '/'
         }
-        pageRights(2, 1013).then(per => {
+        pageRights(2, 13).then(per => {
             if (per.permissions.Add_Rights === 1){
                 setTask(true)
             } else {

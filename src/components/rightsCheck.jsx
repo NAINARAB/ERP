@@ -1,4 +1,4 @@
-import { apihost } from "../env";
+import { apihost } from "../backendAPI";
 
 const pageRights = (pageType, page) => {
     return new Promise((resolve, reject) => {
@@ -34,10 +34,10 @@ const pageRights = (pageType, page) => {
             .then((data) => {
                 res.token = token;
                 res.status = "success";
-                if(data.data.Read_Rights === 0) {
+                if(data.data[0].Read_Rights === 0) {
                     window.location.href = '/'
                 } else {
-                    res.permissions = data.data;
+                    res.permissions = data.data[0];
                     resolve(res);
                 }
             })

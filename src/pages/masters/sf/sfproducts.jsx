@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { apihost } from "../../../env";
+import { apihost } from "../../../backendAPI";
 import { SF_Product, customStyles } from "../../../components/tablecolumn";
 import Header from '../../../components/header/header'
 import Sidebar from "../../../components/sidenav/sidebar"
