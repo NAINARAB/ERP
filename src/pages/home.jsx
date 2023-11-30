@@ -3,7 +3,7 @@ import Header from '../components/header/header'
 import Sidebar from "../components/sidenav/sidebar"
 import Logo from '../download.png'
 import './com.css';
-import { taskManagementWebAddress } from "../env";
+import { taskManagementWebAddress } from "../backendAPI";
 import { pageRights } from "../components/rightsCheck";
 
 
