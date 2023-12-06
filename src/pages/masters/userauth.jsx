@@ -424,10 +424,9 @@ const UserAuthorization = () => {
                         <h5>USER AUTHORIZATION</h5>
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER AUTHORIZATION</h6>
                     </div>
-                    <div className="m-3">
+                    <div className="p-4">
                         <div className="row">
-                            <div className="col-sm-4 px-2">
-                                
+                            <div className="col-sm-4 pt-1">
                                 <Select
                                     defaultValue={{value:token, label: localStorage.getItem('Name')}}
                                     onChange={handleUserChange}
@@ -441,7 +440,7 @@ const UserAuthorization = () => {
 
                         <br />
                         <>
-                            <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
+                            <h3 style={{ marginBottom: '0.5em', borderBottom: '2px solid blue', width:'fit-content' }}>Main Menu</h3>
                             <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
                                 <Table stickyHeader aria-label="simple table">
                                     <TableHead>

@@ -50,7 +50,12 @@ const SaleOrderList = () => {
       fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token } })
         .then((res) => { return res.json() })
         .then((data) => {
-          setData(data.data)
+          if(data.status === "Success"){
+            setData(data.data)
+            data.data.map(obj => {
+              obj.docDate = moment(obj.docDate).format("DD-MM-YYYY")
+            })
+          }
         })
         .catch((e) => { console.log(e) });
     }
@@ -86,31 +91,34 @@ const SaleOrderList = () => {
           <div className="m-3">
             <div className="row">
               <div className="col-md-3 px-2">
-                <p>Form</p>
-                <input type="date" className="form-control" value={start} onChange={(e) => { setStart(e.target.value) }} />
+                <p className="mb-0 p-2">Form</p>
+                <input type="date" className="form-control p-3" value={start} onChange={(e) => { setStart(e.target.value) }} />
               </div>
               <div className="col-md-3 px-2">
-                <p>To</p>
-                <input type="date" className="form-control" value={end} onChange={(e) => setEnd(e.target.value)} />
+                <p className="mb-0 p-2">To</p>
+                <input type="date" className="form-control p-3" value={end} onChange={(e) => setEnd(e.target.value)} />
               </div>
               <div className="col-md-3 px-2">
-                <p>Search Data</p>
-                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control"/>
+                <p className="mb-0 p-2">Search Data</p>
+                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control p-3" />
               </div>
               {/* <div className="col-md-3 px-2">
                 <p style={{ opacity: '0' }}>j</p>
                 <button className="btn btn-success" onClick={fetchrange}>Search</button>
               </div> */}
             </div><br />
-            <div className="row" style={{ maxHeight: '68vh', overflowY: 'scroll' }}>
-              {(filteredData && filteredData.length ? filteredData : data).map(obj => (
-                <div className="col-md-6" key={obj.orderNo}>
-                  <div className="card">
+            <div className="row" style={{ maxHeight: '68vh', overflowY: 'scroll', backgroundColor: 'transparent' }}>
+              {(filteredData && filteredData.length ? filteredData : searchTerm === '' ? data : []).map(obj => (
+                <div className="col-lg-4 col-sm-6" key={obj.orderNo}>
+                  <div className="card p-3 m-3">
                     <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><Info sx={{ color: 'blue' }} /></IconButton></div>
-                    <h4><span style={{ float: 'left' }}>Customer Name</span>   <span style={{ float: 'right' }}>{obj.customerName}</span></h4>
+                    <h4>
+                      <span style={{ float: 'left' }}>Customer</span>
+                      <span style={{ float: 'right', width: '70%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>{obj.customerName}</span>
+                    </h4>
                     <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
                     <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
-                    <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{moment(obj.docDate).format("DD-MM-YYYY")}</span></p>
+                    <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{obj.docDate}</span></p>
                     <p>
                       <span style={{ float: 'left' }}>Address</span>
                       <span style={{ float: 'right', width: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>
@@ -125,56 +133,56 @@ const SaleOrderList = () => {
         </div>
       </div>
 
-      <div>
-        <Dialog
-          open={open}
-          onClose={() => { setOpen(false) }}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          maxWidth="lg"
-          fullWidth
-        >
-          <DialogTitle>
-            Order Details
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {orderDetails.length === 0 ?
-                <Loader />
-                :
-                <>
-                  <div className="row">
-                    <div className="col-md-6 px-4">
-                      <p style={{ color: 'black' }}>Name    <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span>    </p>
-                      <p style={{ color: 'black' }}>Order No         <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span>         </p>
-                    </div>
-                    <div className="col-md-6 px-4">
-                      <p style={{ color: 'black' }}>Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
-                      <p style={{ color: 'black' }}>
-                        Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em', textAlign: 'right' }}>{popupdetails.shippingAddress}</span>
-                      </p>
-                    </div>
-                  </div>
 
-                  <DataTable
-                    columns={prodetails}
-                    data={orderDetails}
-                    pagination
-                    highlightOnHover={true}
-                    fixedHeader={true} fixedHeaderScrollHeight={'50vh'}
-                  />
-                  <div className="text-end">
-                    <p style={{ color: 'black', fontWeight: 'bold' }}>Total Amount: {popupdetails.orderValue}</p>
+      <Dialog
+        open={open}
+        onClose={() => { setOpen(false) }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>
+          Order Details
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {orderDetails.length === 0 ?
+              <Loader />
+              :
+              <>
+                <div className="row">
+                  <div className="col-md-6 px-4">
+                    <p style={{ color: 'black' }}>Name    <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span>    </p>
+                    <p style={{ color: 'black' }}>Order No         <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span>         </p>
                   </div>
-                </>
-              }
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => { setOpen(false) }} color="error">Close</Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+                  <div className="col-md-6 px-4">
+                    <p style={{ color: 'black' }}>Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
+                    <p style={{ color: 'black' }}>
+                      Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em', textAlign: 'right' }}>{popupdetails.shippingAddress}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <DataTable
+                  columns={prodetails}
+                  data={orderDetails}
+                  pagination
+                  highlightOnHover={true}
+                  fixedHeader={true} fixedHeaderScrollHeight={'50vh'}
+                />
+                <div className="text-end">
+                  <p style={{ color: 'black', fontWeight: 'bold' }}>Total Amount: {popupdetails.orderValue}</p>
+                </div>
+              </>
+            }
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setOpen(false) }} color="error">Close</Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }

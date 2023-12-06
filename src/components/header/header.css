@@ -6,9 +6,9 @@
 *{
     box-sizing: border-box;
 }
-.heddiv h2{
-    margin: 0 1em 0 1.7em;
-    padding: 0.8em;
+.tex{
+    margin: 0 1em 0 2em !important;
+    padding: 0.6em !important;
 }
 .logout {
     position: absolute;

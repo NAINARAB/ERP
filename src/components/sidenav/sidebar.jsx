@@ -37,7 +37,7 @@ const MainMenu = (props) => {
 
             {props.MainMenuData.PageUrl === ""
                 && 
-                <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0.2em 0.4em'}}>
+                <Collapse in={open} timeout="auto" unmountOnExit >
                     {props.SubMenuData.map(obj => (
                         props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
                             ? <SubMenu key={obj.Sub_Menu_Id} SubMenuData={obj} ChildMenuData={props.ChildMenuData} subMenuId={props.subMenuId} childMenuId={props.childMenuId} />
@@ -71,13 +71,14 @@ const SubMenu = (props) => {
             </button>
             {props.SubMenuData.PageUrl === ""
                 && 
-                <Collapse in={open} timeout="auto" unmountOnExit sx={{padding: '0em 1em'}}>
+                <Collapse in={open} timeout="auto" unmountOnExit >
                     {props.ChildMenuData.map(obj => (
                         props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id && obj.Read_Rights === 1
                         ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
                         : null
                     ))}
                 </Collapse>
+                // sx={{padding: '0em 1em'}}
             }
         </>
     );
@@ -147,8 +148,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     <AccountCircle sx={{fontSize: '2.7em', marginRight:'0.2em'}} />
                     <div>
                         <h5 style={{ color: 'rgb(64, 38, 236)' }}>{
-                            localStorage.getItem('Name') ||
-                            'Raj Nainaar'
+                            localStorage.getItem('Name')
                         }</h5>
                         <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>
                     </div>
@@ -163,6 +163,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                         ChildMenuData={childMenu} />
                     : null 
                 ))}
+                <div className="custom-height"></div>
             </div>
         </>
     );

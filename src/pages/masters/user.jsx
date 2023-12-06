@@ -74,7 +74,7 @@ const User = () => {
     const [delid, setdelid] = useState(null);
 
     useEffect(() => {
-        pageRights(2, 3).then(rights => {
+        pageRights(2, 1014).then(rights => {
             if (rights.permissions.Read_Rights === 1) {
                 fetch(`${apihost}/api/users`, { headers: { 'Authorization': rights.token } })
                     .then((res) => { return res.json() })
@@ -228,7 +228,7 @@ const User = () => {
     return (
         <>
             <ToastContainer />
-            <div className="row container-fluid">
+            <div className="row">
                 <div className="col-md-12">
                     <Header setting={true} />
                 </div>
@@ -241,7 +241,8 @@ const User = () => {
                         <h5>Users</h5>
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER MASTERS</h6>
                     </div>
-                    <div className="m-4">
+                    <div className="px-4">
+                        <br />
                         {data && data.length
                             ? <div className="box">
                                 <DataTable

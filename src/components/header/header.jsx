@@ -59,7 +59,7 @@ const Header = ({setting}) => {
   return (
     <>
       <div className='heddiv'>
-        <h2>ERP</h2>
+        <p className='h3 tex'>ERP</p>
         <div className='logout'>
           {setting === true && <IconButton sx={{color: 'white'}} onClick={() => setOpen(!open)}><Settings /></IconButton>}
           <IconButton sx={{color: 'white'}} onClick={logout}><Logout /></IconButton>

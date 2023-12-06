@@ -15,10 +15,12 @@ import SFRoutes from './pages/masters/sf/routes';
 import SFDistributors from './pages/masters/sf/distributors';
 import HomeComp from './pages/home';
 import TaskLogout from './components/tasklogout';
+import Employees from './pages/masters/emp';
 
 
 function App() {
   return (
+    <div style={{minHeight: '100vh', backgroundColor: '#f5f6f8'}}>
       <CompanyProvider>
         <BrowserRouter>
           <Routes>
@@ -36,9 +38,11 @@ function App() {
             <Route path='/salesforce/sfdetails' element={<SFDetails />} />
             <Route path='/salesforce/routes' element={<SFRoutes />} />
             <Route path='/salesforce/distributor' element={<SFDistributors />} />
+            <Route path='/empmaster' element={<Employees />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>
+    </div>
   );
 }
 

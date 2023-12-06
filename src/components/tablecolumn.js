@@ -1,4 +1,9 @@
 const customStyles = {
+    table: {
+        style: {
+            width: 'auto'
+        }
+    },
     rows: {
         style: {
             minHeight: '4.6em',

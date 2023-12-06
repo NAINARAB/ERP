@@ -1,22 +1,19 @@
-*{
-    box-sizing: border-box !important;
-}
-.card{
-    padding: 1em !important;
-    margin: 1em !important;
-    transition: all 0.3s;
-    cursor: pointer;
-    border-color: transparent;
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
+* {
+  box-sizing: border-box !important;
 }
 
-.card h4{
-    font-size: 1em;
-    color: rgba(0, 0, 255, 0.863)
+.card {
+  border-color: transparent;
+  /* box-shadow: 4px 8px 8px rgb(0, 0, 0, 0.1); */
 }
 
-.card p{
-    font-size: 0.80em;
+.card h4 {
+  font-size: 1em;
+  color: rgba(0, 0, 255, 0.863)
+}
+
+.card p {
+  font-size: 0.80em;
 }
 
 /* .card:hover{
@@ -25,75 +22,94 @@
 } */
 
 .comhed {
-    background-color: rgb(15, 11, 42);
-    color: white;
-    padding: 0.6em 0.9em;
+  background-color: rgb(15, 11, 42);
+  color: white;
+  padding: 0.6em 0.9em;
+  /* box-shadow: 2px 4px 6px rgb(145, 145, 145); */
 }
 
 .comadbtn {
-    float: right;
-    border: none;
-    border-radius: 3px;
-    background-color: rgb(66, 34, 225);
-    color: white;
-    padding: 0.5em 1.9em;
-    margin-bottom: 3em;
+  float: right;
+  border: none;
+  border-radius: 3px;
+  background-color: rgb(66, 34, 225);
+  color: white;
+  padding: 0.5em 1.9em;
+  margin-bottom: 3em;
 }
 
-.filticon{
-    padding: 0.6em !important;
-    margin-right: 0.5em;
-    margin-bottom: unset !important;
-    border-radius: 30px !important;
+.cancelbtn {
+  background-color: transparent;
+  float: right;
+  border: none;
+  border-radius: 3px;
+  padding: 0.5em 1.9em;
+  cursor: pointer;
+  color: rgb(66, 34, 225);
+  margin-right: 0.5em;
+}
+
+.cancelbtn:hover {
+  background-color: #d9d7d7;
+}
+
+.filticon {
+  padding: 0.6em !important;
+  margin-right: 0.5em;
+  margin-bottom: unset !important;
+  border-radius: 30px !important;
 }
 
 .comhed h6 {
-    font-weight: 400;
+  font-weight: 400;
 }
 
 .cell-content {
-    padding: 4px;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  padding: 4px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-.box{
-    border-radius: 5px;
-    overflow: hidden;
-    box-shadow: 0px 0px 4px grey;
+.box {
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
 }
 
 @keyframes rotateForward {
-    from {
-      transform: rotate(360deg);
-    }
-    to {
-      transform: rotate(0deg);
-    }
+  from {
+    transform: rotate(360deg);
   }
-  
-  .rotate {
-    animation: rotateForward 0.3s linear infinite; 
+
+  to {
+    transform: rotate(0deg);
   }
-  
-  
+}
+
+.rotate {
+  animation: rotateForward 0.3s linear infinite;
+}
+
+
 .icon {
-    padding: 10px;
-    border-radius: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    width: 130px;
-    height: 75px;
-    cursor: pointer;
-  }
-  
-  .icon img {
-    width: 95%;
-    height: 90%;
-    border-radius: inherit;
-    margin: auto 0;
-  }
-  
-  
-  
+  padding: 10px;
+  border-radius: 30px;
+  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
+  width: 130px;
+  height: 75px;
+  cursor: pointer;
+}
+
+.icon img {
+  width: 95%;
+  height: 90%;
+  border-radius: inherit;
+  margin: auto 0;
+}
+
+.b-0{
+  box-shadow: none !important;
+  padding: 0.8em !important;
+}

@@ -1,81 +1,115 @@
-.active{
+.active {
     width: 100%;
     text-align: left;
     border: none;
     cursor: pointer;
     background-color: transparent;
-    padding: 0.7em;
-    background-color: #f1f1f1;
+    padding: 0.65em;
+    margin: 0.2em 0;
+    background: rgba(36, 6, 233, 0.055);
     color: rgb(66, 34, 225);
-    border-radius: 10px;
-    transition: all 0.3s;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
     font-weight: bold !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    border-left: 3px inset rgb(66, 34, 225);
+    margin-left: 1px;
+    font-size: 0.85em;
 }
-.in{
-    background-color: transparent !important;
+
+.in {
+    background: transparent !important;
     color: black;
     font-weight: 400 !important;
+    border: none;
 }
 
-.active:hover{
-    background-color: #f2f2f2 !important;
+.active:hover {
+    background: rgba(36, 6, 233, 0.055) !important;
     color: rgb(66, 34, 225);
     font-weight: bold !important;
+    border-left: 3px inset rgb(66, 34, 225);
 }
 
-.menuhide{
+.menuhide {
     position: absolute;
-    top: 18px;
-    left: 24px;
+    top: 11px;
+    left: 20px;
     display: none;
     z-index: 101;
 }
-.subMenu {
+
+/* .subMenu {
     font-size: 0.75em;
-}
+} */
+
 .subin {
-    color:#000
+    color: #000
 }
 
-.childMenu{
+/* .childMenu {
     font-size: 0.79em;
     background-color: transparent;
-}
+} */
 
-.usrinfo{
+.usrinfo {
     padding: 0.7em;
-    background-color: #f8f6f6;
+    background-color: rgba(36, 6, 233, 0.034) !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.usrinfo i{
+
+.usrinfo i {
     font-size: 30px;
     display: inline;
     margin-right: 0.5em;
     color: #000 !important;
 }
-.usrinfo h5{
+
+.usrinfo h5 {
     margin: 0px;
-    font-size:20px;
-    color:rgb(15, 11, 42) !important;
+    font-size: 20px;
+    color: rgb(15, 11, 42) !important;
 }
-.usrinfo p{
+
+.usrinfo p {
     margin: 0px;
     font-size: 14px;
 }
 
+.hideside {
+    background-color: white !important;
+    padding-bottom: 10px;
+    /* border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px; */
+    box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
+    height: auto;
+    padding-right: 0.4em;
+}
+
+
+
 @media only screen and (max-width: 767px) {
-    .menuhide{
+    .menuhide {
         display: block;
     }
-    .hideside{
+
+    .hideside {
         display: none;
     }
-    .smain, .linkbut{
+
+    .smain,
+    .linkbut {
         font-size: 1rem !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .hideside {
+        min-height: 93vh !important;
+        /* Adjust the 50px according to your header's height */
     }
 }
