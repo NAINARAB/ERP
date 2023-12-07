@@ -13,9 +13,11 @@ import SFRetailers from './pages/masters/sf/sfretailers';
 import SFDetails from './pages/masters/sf/sfdetails';
 import SFRoutes from './pages/masters/sf/routes';
 import SFDistributors from './pages/masters/sf/distributors';
-import HomeComp from './pages/home';
+import HomeComp from './pages/dashboard/home';
 import TaskLogout from './components/tasklogout';
 import Employees from './pages/masters/emp';
+import EmpMyAttendance from './pages/dashboard/empattendance';
+import AttendanceManagement from './pages/masters/attendencemanagement';
 
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
             <Route path='/salesforce/routes' element={<SFRoutes />} />
             <Route path='/salesforce/distributor' element={<SFDistributors />} />
             <Route path='/empmaster' element={<Employees />} />
+            <Route path='/empattendance' element={<EmpMyAttendance />} />
+            <Route path='/attendencemanagement' element={<AttendanceManagement />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>

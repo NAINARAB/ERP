@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Header from '../components/header/header'
-import Sidebar from "../components/sidenav/sidebar"
-import './com.css';
-import { apihost, taskManagementWebAddress } from "../backendAPI";
-import { pageRights } from "../components/rightsCheck";
+import Header from '../../components/header/header'
+import Sidebar from "../../components/sidenav/sidebar"
+import '../com.css';
+import { apihost, taskManagementWebAddress } from "../../backendAPI";
+import { pageRights } from "../../components/rightsCheck";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { PauseCircleOutline, PlayArrow, Done, CalendarMonthTwoTone, ArrowForwardOutlined, ArrowBackOutlined } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify'
-import Logo from '../download.png';
+import Logo from '../../download.png';
 
 
 function formatDate(inputDate) {
@@ -34,7 +34,6 @@ const HomeComp = () => {
         longitude: null,
         error: null,
     });
-    const user = localStorage.getItem('UserId');
     const token = localStorage.getItem('userToken');
     const [attanance, setAttanance] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -46,7 +45,7 @@ const HomeComp = () => {
         pageRights(2, 13).then(per => {
             if (per.permissions.Add_Rights === 1) {
                 setTask(true)
-                fetch(`${apihost}/api/attanance?id=${per.UserId}`, { headers: { 'Authorization': token } })
+                fetch(`${apihost}/api/attendance?id=${per.UserId}`, { headers: { 'Authorization': token } })
                     .then(res => { return res.json() })
                     .then(data => {
                         setAttanance(data.status === 'Success' ? data.data : [])
@@ -96,7 +95,7 @@ const HomeComp = () => {
         getLocation().then((hasLocationAccess) => {
             if (hasLocationAccess) {
                 if (location.latitude && location.latitude) {
-                    fetch(`${apihost}/api/attanance`, {
+                    fetch(`${apihost}/api/attendance`, {
                         method: 'POST',
                         headers: {
                             'Authorization': token,
@@ -126,7 +125,7 @@ const HomeComp = () => {
     };
 
     const EndDay = () => {
-        fetch(`${apihost}/api/attanance`, {
+        fetch(`${apihost}/api/attendance`, {
             method: 'PUT',
             headers: {
                 'Authorization': token,
@@ -170,7 +169,7 @@ const HomeComp = () => {
                             && <div className="card border col-lg-5 col-md-12 float-lg-end mb-3">
                                 <div className="card-header bg-white">
                                     <h3 className="p-2 h4">
-                                        <span className="float-start">Today Attanance</span>
+                                        <span className="float-start">Today Attendance</span>
                                         <span className="float-end">
                                             <Button
                                                 startIcon={<PlayArrow />}

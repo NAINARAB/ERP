@@ -557,6 +557,29 @@ const SF_Routes = [
     },
 ]
 
+const empMyAttendance = [
+    {
+        name: 'Date',
+        selector: (row) => row.Start_Date,
+        sortable: true,
+    },
+    {
+        name: 'In Time',
+        selector: (row) => row.InTime,
+        sortable: true,
+    },
+    {
+        name: 'Out TIme',
+        selector: (row) => row.OutTime,
+        sortable: true,
+    },
+    {
+        name: 'Out Date',
+        selector: (row) => row.OutDate,
+        sortable: true,
+    }
+]
+
 export {
     users,
     products,
@@ -571,5 +594,6 @@ export {
     SF_Details,
     SF_Distributors,
     SF_Routes,
-    subtable2
+    subtable2,
+    empMyAttendance
 };
