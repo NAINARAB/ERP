@@ -577,7 +577,41 @@ const empMyAttendance = [
         name: 'Out Date',
         selector: (row) => row.OutDate,
         sortable: true,
+    },
+    {
+        name: 'Work Summary',
+        selector: (row) => row.Work_Summary,
     }
+]
+
+const TaskDone = [
+    {
+        name: 'S.No',
+        selector: (row, index) => (index + 1),
+        sortable: true,
+        maxWidth: '70px'
+    },
+    {
+        name: 'Task',
+        selector: (row) => row.Worked_Task,
+        sortable: true,
+        minWidth: '30%'
+    },
+    {
+        name: 'Start Time',
+        selector: (row) => row.Start_Time,
+        sortable: true,
+    },
+    {
+        name: 'End Time',
+        selector: (row) => row.End_Time,
+        sortable: true,
+    },
+    {
+        name: 'Status',
+        selector: (row) => row.Work_Done,
+        sortable: true,
+    },
 ]
 
 export {
@@ -595,5 +629,6 @@ export {
     SF_Distributors,
     SF_Routes,
     subtable2,
-    empMyAttendance
+    empMyAttendance,
+    TaskDone
 };

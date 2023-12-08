@@ -100,6 +100,12 @@
   width: 130px;
   height: 75px;
   cursor: pointer;
+  transition: 0.3s all;
+}
+
+.icon:active {
+  box-shadow: none;
+  background-color: white;
 }
 
 .icon img {

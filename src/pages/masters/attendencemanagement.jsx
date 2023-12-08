@@ -6,7 +6,7 @@ import { pageRights } from '../../components/rightsCheck';
 import { NavigateNext, Logout } from '@mui/icons-material';
 import DataTable from "react-data-table-component";
 import { customStyles } from '../../components/tablecolumn';
-import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button, TimePicker } from '@mui/material';
+import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,6 +25,13 @@ const formatTime = (inputTime) => {
     const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     return formattedTime;
 }
+
+function convertDateFormat(inputDate) {
+    const [day, month, year] = inputDate.split('-');
+    const convertedDate = `${year}-${month}-${day}`;
+    return convertedDate;
+}
+
 
 const AttendanceManagement = () => {
     const [activeEmp, setActiveEmp] = useState([])
@@ -118,7 +125,7 @@ const AttendanceManagement = () => {
             cell: (row) => (
                 <div>
                     {modify.edit === true && <IconButton onClick={() => {
-                        setRowDetails({ ...rowDetails, Id: row.Id })
+                        setRowDetails({ ...rowDetails, Id: row.Id, OutDate: convertDateFormat(row.Start_Date) })
                         setdopen(true)
                     }}><Logout sx={{ color: '#FF6865' }} /></IconButton>}
                 </div>
@@ -178,14 +185,14 @@ const AttendanceManagement = () => {
                 </DialogTitle>
                 <DialogContent>
                     <label className='my-2'>Out Date</label>
-                    <input 
-                        type='date' 
-                        onChange={(e) => { setRowDetails({ ...rowDetails, OutDate: e.target.value }) }} 
+                    <input
+                        type='date'
+                        onChange={(e) => { setRowDetails({ ...rowDetails, OutDate: e.target.value }) }}
                         className='form-control p-3' value={rowDetails.OutDate} />
                     <label className='my-2'>Out Time</label>
-                    <input 
+                    <input
                         type='time'
-                        onChange={(e) => { setRowDetails({ ...rowDetails, OutTime: e.target.value }) }} 
+                        onChange={(e) => { setRowDetails({ ...rowDetails, OutTime: e.target.value }) }}
                         className='form-control p-3' value={rowDetails.OutTime} />
                 </DialogContent>
                 <DialogActions>

@@ -5,9 +5,11 @@ import '../com.css';
 import { apihost, taskManagementWebAddress } from "../../backendAPI";
 import { pageRights } from "../../components/rightsCheck";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { PauseCircleOutline, PlayArrow, Done, CalendarMonthTwoTone, ArrowForwardOutlined, ArrowBackOutlined } from '@mui/icons-material';
+import { PlayArrow, Done, CalendarMonthTwoTone, ArrowForwardOutlined, ArrowBackOutlined } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify'
 import Logo from '../../download.png';
+import DataTable from "react-data-table-component";
+import { customStyles, TaskDone } from "../../components/tablecolumn";
 
 
 function formatDate(inputDate) {
@@ -26,6 +28,15 @@ function formatTime(inputTime) {
     return formattedTime;
 }
 
+const getDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+}
+
 
 const HomeComp = () => {
     const [task, setTask] = useState(false);
@@ -40,6 +51,8 @@ const HomeComp = () => {
     const [isEmp, setIsEmp] = useState(false);
     const [workSummary, setWorkSummary] = useState('')
     const [openDialog, setOpenDialog] = useState(false)
+    const [taskSummary, setTaskSummary] = useState([]);
+    const today = new Date();
 
     useEffect(() => {
         pageRights(2, 13).then(per => {
@@ -50,6 +63,11 @@ const HomeComp = () => {
                     .then(data => {
                         setAttanance(data.status === 'Success' ? data.data : [])
                         setIsEmp(!(data.message === 'Not An Employee'))
+                    })
+                fetch(`${apihost}/api/TaskList?UserId=${per.UserId}&Fromdate=${getDate()}`, { headers: { 'Authorization': token } })
+                    .then(res => { return res.json() })
+                    .then(data => {
+                        setTaskSummary(data.status === 'Success' ? data.data : [])
                     })
             } else {
                 setTask(false)
@@ -147,7 +165,7 @@ const HomeComp = () => {
             })
     }
 
-    
+
 
     return (
         <>  <ToastContainer />
@@ -164,7 +182,7 @@ const HomeComp = () => {
                     </div>
                     <div className="px-4">
                         <br />
-                        
+
                         {isEmp
                             && <div className="card border col-lg-5 col-md-12 float-lg-end mb-3">
                                 <div className="card-header bg-white">
@@ -214,7 +232,7 @@ const HomeComp = () => {
                                         </div></>}
                             </div>}
 
-                            {task
+                        {task
                             && <div className="icon" onClick={navtoTask}>
                                 <img src={Logo} alt="SMT TASK ICON" /><br /><br />
                                 <p style={{ textAlign: 'center' }}>SMT TASK</p>
@@ -232,8 +250,18 @@ const HomeComp = () => {
                 <DialogTitle>
                     Add Work Summary
                 </DialogTitle>
-                <DialogContent>
-                    <textarea className="form-control" onChange={(e) => setWorkSummary(e.target.value)} rows={10} autoFocus placeholder="Type Something About Today Work..." maxLength={1300} />
+                <DialogContent >
+                    <DataTable
+                        title={'Completed Tasks List'}
+                        columns={TaskDone}
+                        data={taskSummary}
+                        pagination
+                        highlightOnHover={true}
+                        fixedHeader={true}
+                        fixedHeaderScrollHeight={'35vh'}
+                        customStyles={customStyles}
+                    /><br /> 
+                    <textarea className="form-control" onChange={(e) => setWorkSummary(e.target.value)} rows={7} autoFocus placeholder="Type Something About Today Work..." maxLength={1300} />
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={() => setOpenDialog(false)} color='error'>Cancel</Button>
