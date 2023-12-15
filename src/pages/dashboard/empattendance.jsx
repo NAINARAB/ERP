@@ -8,6 +8,7 @@ import { pageRights } from "../../components/rightsCheck";
 import DataTable from "react-data-table-component";
 import { customStyles, empMyAttendance } from "../../components/tablecolumn";
 
+
 const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     const day = date.getUTCDate().toString().padStart(2, '0');
@@ -28,10 +29,10 @@ const EmpMyAttendance = () => {
     const [attendanceData, setAttendanceData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [search, setSearch] = useState('')
+   
 
     useEffect(() => {
         pageRights(2, 1015).then((per) => {
-            console.log(per);
             fetch(`${apihost}/api/UserAttendanceHistory?UserId=${localStorage.getItem("UserId")}`, { headers: { Authorization: per.token } })
                 .then((res) => res.json())
                 .then((data) => {
@@ -61,9 +62,12 @@ const EmpMyAttendance = () => {
         setFilteredData(filteredResults);
     }
 
+    
+
+    
 
     return (
-        <>
+        <> 
             <div className="row">
                 <div className="col-md-12">
                     <Header />
@@ -85,7 +89,7 @@ const EmpMyAttendance = () => {
                                 <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} autoFocus />
                             </span>
                         </h2><br />
-                        <div className="box mt-5">
+                        <div className={((filteredData && filteredData.length) || (attendanceData && attendanceData.length)) ? 'box mt-5' : 'mt-5'}>
                             <DataTable
                                 columns={empMyAttendance}
                                 data={filteredData && filteredData.length ? filteredData : search === '' ? attendanceData : []}

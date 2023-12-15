@@ -153,11 +153,11 @@ const SaleOrderList = () => {
               <>
                 <div className="row">
                   <div className="col-md-6 px-4">
-                    <p style={{ color: 'black' }}>Name    <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span>    </p>
-                    <p style={{ color: 'black' }}>Order No         <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span>         </p>
+                    <p style={{ color: 'black' }}>Name <span className="text-primary" style={{ float: 'right' }}>{popupdetails.customerName}</span></p>
+                    <p style={{ color: 'black' }}>Order No <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span></p>
                   </div>
                   <div className="col-md-6 px-4">
-                    <p style={{ color: 'black' }}>Date         <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span>         </p>
+                    <p style={{ color: 'black' }}>Date <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span></p>
                     <p style={{ color: 'black' }}>
                       Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em', textAlign: 'right' }}>{popupdetails.shippingAddress}</span>
                     </p>

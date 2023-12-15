@@ -11,7 +11,6 @@ import Logo from '../../download.png';
 import DataTable from "react-data-table-component";
 import { customStyles, TaskDone } from "../../components/tablecolumn";
 
-
 function formatDate(inputDate) {
     const date = new Date(inputDate);
     const day = date.getUTCDate().toString().padStart(2, '0');
@@ -52,7 +51,6 @@ const HomeComp = () => {
     const [workSummary, setWorkSummary] = useState('')
     const [openDialog, setOpenDialog] = useState(false)
     const [taskSummary, setTaskSummary] = useState([]);
-    const today = new Date();
 
     useEffect(() => {
         pageRights(2, 13).then(per => {
@@ -79,11 +77,11 @@ const HomeComp = () => {
     const loginInfo = JSON.parse(loginResponse)
     const name = localStorage.getItem('Name')
     const branch = localStorage.getItem('branchId')
+    const uType = localStorage.getItem('uType')
 
     const navtoTask = () => {
-        window.location.href = `${taskManagementWebAddress}?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${name}&branch=${branch}`
+        window.location.href = `${taskManagementWebAddress}?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${name}&branch=${branch}&uType=${uType}`
     }
-
 
     const getLocation = async () => {
         try {
@@ -99,7 +97,7 @@ const HomeComp = () => {
                 setLocation({
                     latitude: null,
                     longitude: null,
-                    error: 'Location access denied by the user',
+                    error: 'Location access denied',
                 });
                 toast.warn('Allow Location Access');
             } else {
@@ -122,7 +120,8 @@ const HomeComp = () => {
                         body: JSON.stringify({
                             UserId: loginInfo.UserId,
                             Latitude: location.latitude,
-                            Longitude: location.longitude
+                            Longitude: location.longitude,
+                            Creater: 'Employee'
                         })
                     }).then(res => { return res.json() })
                         .then(data => {
@@ -165,6 +164,24 @@ const HomeComp = () => {
             })
     }
 
+    async function getLocationByIP() {
+        try {
+            const response = await fetch('ipinfo.io?token=9403edf4615081');
+            const data = await response.json();
+
+            if (data && data.loc) {
+                const [latitude, longitude] = data.loc.split(',');
+                console.log('Approximate Location:', { latitude, longitude });
+            } else {
+                console.error('Location data not available.');
+            }
+        } catch (error) {
+            console.error('Error fetching location:', error.message);
+        }
+    }
+
+    getLocationByIP();
+
 
 
     return (
@@ -180,64 +197,79 @@ const HomeComp = () => {
                     <div className="comhed">
                         <h4>HOME</h4>
                     </div>
-                    <div className="px-4">
-                        <br />
+                    <div className="row p-3">
+                        <div className="col-md-6 p-2">
+                            <div className="card border">
+                                <div className="card-header bg-white">
+                                    <h3 className="h4 p-2 mb-0">SMT Apps</h3>
+                                </div>
+                                <div className="card-body row mb-2">
+                                    {task &&
+                                        <>
+                                            <div className="icon-slot border-0 m-2 mb-3">
+                                                <div className="icon" onClick={navtoTask}>
+                                                    <img src={Logo} alt="SMT TASK ICON" />
+                                                </div>
+                                                <p className="text-center mt-1">SMT TASK</p>
+                                            </div>
+                                        </>
+                                    }
+                                    <div className="icon-slot m-2 mb-3"></div>
+                                    <div className="icon-slot m-2 mb-3"></div>
+                                </div>
+                            </div>
+                        </div>
 
                         {isEmp
-                            && <div className="card border col-lg-5 col-md-12 float-lg-end mb-3">
-                                <div className="card-header bg-white">
-                                    <h3 className="p-2 h4">
-                                        <span className="float-start">Today Attendance</span>
-                                        <span className="float-end">
-                                            <Button
-                                                startIcon={<PlayArrow />}
-                                                disabled={attanance[0]?.Start_Date}
-                                                onClick={StartDay} >Start Day</Button>
-                                        </span>
-                                    </h3>
-                                </div>
-                                {attanance.length > 0
-                                    && <><div className="card-body row p-3">
-                                        <h5>
-                                            <span className="float-start"><CalendarMonthTwoTone /> Date</span>
+                            && <div className="col-md-6 p-2">
+                                <div className="card border">
+                                    <div className="card-header bg-white">
+                                        <h3 className="p-2 h4">
+                                            <span className="float-start">Today Attendance</span>
                                             <span className="float-end">
-                                                {attanance[0]?.Start_Date ? formatDate(attanance[0]?.Start_Date) : '-'}
+                                                <Button
+                                                    startIcon={<PlayArrow />}
+                                                    disabled={attanance[0]?.Start_Date ? true : false}
+                                                    onClick={StartDay} >Start Day</Button>
                                             </span>
-                                        </h5><br />
-                                        <h5>
-                                            <span className="float-start"><ArrowForwardOutlined /> In Time</span>
-                                            <span className="float-end">
-                                                {attanance[0]?.InTime ? formatTime(attanance[0]?.InTime) : '-'}
-                                            </span>
-                                        </h5><br />
-                                        <h5>
-                                            <span className="float-start"><CalendarMonthTwoTone /> Out Date</span>
-                                            <span className="float-end">
-                                                {attanance[0]?.OutDate ? formatDate(attanance[0]?.OutDate) : '-'}
-                                            </span>
-                                        </h5><br />
-                                        <h5>
-                                            <span className="float-start"><ArrowBackOutlined /> Out Time</span>
-                                            <span className="float-end">
-                                                {attanance[0]?.OutTime ? formatTime(attanance[0]?.OutTime) : '-'}
-                                            </span>
-                                        </h5>
+                                        </h3>
                                     </div>
-                                        <div className="card-footer text-end">
-                                            <Button
-                                                startIcon={<Done />}
-                                                disabled={(attanance.length > 0) && (attanance[0]?.Current_St === 1)}
-                                                variant="outlined"
-                                                onClick={() => setOpenDialog(true)}>END day</Button>
-                                        </div></>}
+                                    {attanance.length > 0
+                                        && <><div className="card-body row p-3">
+                                            <h5>
+                                                <span className="float-start"><CalendarMonthTwoTone /> Date</span>
+                                                <span className="float-end">
+                                                    {attanance[0]?.Start_Date ? formatDate(attanance[0]?.Start_Date) : '-'}
+                                                </span>
+                                            </h5><br />
+                                            <h5>
+                                                <span className="float-start"><ArrowForwardOutlined /> In Time</span>
+                                                <span className="float-end">
+                                                    {attanance[0]?.InTime ? formatTime(attanance[0]?.InTime) : '-'}
+                                                </span>
+                                            </h5><br />
+                                            <h5>
+                                                <span className="float-start"><CalendarMonthTwoTone /> Out Date</span>
+                                                <span className="float-end">
+                                                    {attanance[0]?.OutDate ? formatDate(attanance[0]?.OutDate) : '-'}
+                                                </span>
+                                            </h5><br />
+                                            <h5>
+                                                <span className="float-start"><ArrowBackOutlined /> Out Time</span>
+                                                <span className="float-end">
+                                                    {attanance[0]?.OutTime ? formatTime(attanance[0]?.OutTime) : '-'}
+                                                </span>
+                                            </h5>
+                                        </div>
+                                            <div className="card-footer text-end">
+                                                <Button
+                                                    startIcon={<Done />}
+                                                    disabled={(attanance.length > 0) && (attanance[0]?.Current_St === 1)}
+                                                    variant="outlined"
+                                                    onClick={() => setOpenDialog(true)}>END day</Button>
+                                            </div></>}
+                                </div>
                             </div>}
-
-                        {task
-                            && <div className="icon" onClick={navtoTask}>
-                                <img src={Logo} alt="SMT TASK ICON" /><br /><br />
-                                <p style={{ textAlign: 'center' }}>SMT TASK</p>
-                            </div>
-                        }
                     </div>
                 </div>
             </div>
@@ -260,7 +292,7 @@ const HomeComp = () => {
                         fixedHeader={true}
                         fixedHeaderScrollHeight={'35vh'}
                         customStyles={customStyles}
-                    /><br /> 
+                    /><br />
                     <textarea className="form-control" onChange={(e) => setWorkSummary(e.target.value)} rows={7} autoFocus placeholder="Type Something About Today Work..." maxLength={1300} />
                 </DialogContent>
                 <DialogActions>

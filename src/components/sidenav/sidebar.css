@@ -41,18 +41,9 @@
     z-index: 101;
 }
 
-/* .subMenu {
-    font-size: 0.75em;
-} */
-
 .subin {
     color: #000
 }
-
-/* .childMenu {
-    font-size: 0.79em;
-    background-color: transparent;
-} */
 
 .usrinfo {
     padding: 0.7em;
@@ -83,8 +74,6 @@
 .hideside {
     background-color: white !important;
     padding-bottom: 10px;
-    /* border-bottom-right-radius: 6px;
-    border-bottom-left-radius: 6px; */
     box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
     height: auto;
     padding-right: 0.4em;
@@ -110,6 +99,5 @@
 @media (min-width: 768px) {
     .hideside {
         min-height: 93vh !important;
-        /* Adjust the 50px according to your header's height */
     }
 }

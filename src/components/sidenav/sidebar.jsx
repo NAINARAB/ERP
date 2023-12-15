@@ -13,30 +13,30 @@ const MainMenu = (props) => {
     return (
         <>
             <button
-              className={open ? 'active' : 'in active'}
-              onClick={
-                props.MainMenuData.PageUrl === ""
-                    ? () => setOpen(!open)
-                    : () => nav(props.MainMenuData.PageUrl)
-            }
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
+                className={open ? 'active' : 'in active'}
+                onClick={
+                    props.MainMenuData.PageUrl === ""
+                        ? () => setOpen(!open)
+                        : () => nav(props.MainMenuData.PageUrl)
+                }
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             >
-              <span style={{ textAlign: 'left' }}>
-                {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.MenuName === "MASTERS" && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                {' ' + props.MainMenuData.MenuName}
-              </span>
-              <div style={{ textAlign: 'right' }}>
-                {props.MainMenuData.PageUrl === "" && (open ? <KeyboardArrowDown /> : <KeyboardArrowRight />)}
-              </div>
+                <span style={{ textAlign: 'left' }}>
+                    {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {props.MainMenuData.MenuName === "MASTERS" && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
+                    {' ' + props.MainMenuData.MenuName}
+                </span>
+                <div style={{ textAlign: 'right' }}>
+                    {props.MainMenuData.PageUrl === "" && (open ? <KeyboardArrowDown /> : <KeyboardArrowRight />)}
+                </div>
             </button>
 
             {props.MainMenuData.PageUrl === ""
-                && 
+                &&
                 <Collapse in={open} timeout="auto" unmountOnExit >
                     {props.SubMenuData.map(obj => (
                         props.MainMenuData.Main_Menu_Id === obj.Main_Menu_Id && obj.Read_Rights === 1
@@ -56,26 +56,26 @@ const SubMenu = (props) => {
         <>
             <button
                 className={open ? 'active subMenu' : 'in active subMenu'}
-                style={props.SubMenuData.PageUrl !== "" ? {backgroundColor: 'transparent'} : {} }
+                style={props.SubMenuData.PageUrl !== "" ? { backgroundColor: 'transparent' } : {}}
                 onClick={
                     props.SubMenuData.PageUrl === ""
                         ? () => setOpen(!open)
                         : () => nav(props.SubMenuData.PageUrl)
                 }>
-                {props.SubMenuData.PageUrl === "" 
-                ?   open === false  ? <ArrowRight sx={{color:'rgb(66, 34, 225)'}} /> 
-                                    : <ArrowDropDown sx={{color:'rgb(66, 34, 225)'}} />
-                :   null}
-                
+                {props.SubMenuData.PageUrl === ""
+                    ? open === false ? <ArrowRight sx={{ color: 'rgb(66, 34, 225)' }} />
+                        : <ArrowDropDown sx={{ color: 'rgb(66, 34, 225)' }} />
+                    : null}
+
                 {props.SubMenuData.SubMenuName}
             </button>
             {props.SubMenuData.PageUrl === ""
-                && 
+                &&
                 <Collapse in={open} timeout="auto" unmountOnExit >
                     {props.ChildMenuData.map(obj => (
                         props.SubMenuData.Sub_Menu_Id === obj.Sub_Menu_Id && obj.Read_Rights === 1
-                        ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
-                        : null
+                            ? <ChildMenu key={obj.Child_Menu_Id} childMenuId={props.childMenuId} ChildMenuData={obj} />
+                            : null
                     ))}
                 </Collapse>
                 // sx={{padding: '0em 1em'}}
@@ -88,8 +88,8 @@ const ChildMenu = (props) => {
     const nav = useNavigate()
     return (
         <>
-            <button 
-                className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu': 'in active childMenu'} 
+            <button
+                className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu' : 'in active childMenu'}
                 onClick={() => nav(props.ChildMenuData.PageUrl)} >
                 {'-  ' + props.ChildMenuData.ChildMenuName}
             </button>
@@ -105,7 +105,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
     const [childMenu, setChildMenu] = useState([]);
 
     useEffect(() => {
-        if(token) {
+        if (token) {
             fetch(`${apihost}/api/sidebar`, {
                 headers: {
                     'Authorization': token,
@@ -113,28 +113,28 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
             })
                 .then((res) => { return res.json() })
                 .then((data) => {
-                    if(data.status === "Success"){
+                    if (data.status === "Success") {
                         data.data[1].sort((a, b) => {
                             if (a.PageUrl === '' && b.PageUrl !== '') {
-                              return -1;
+                                return -1;
                             } else if (a.PageUrl !== '' && b.PageUrl === '') {
-                              return 1;
+                                return 1;
                             } else {
-                              return 0;
+                                return 0;
                             }
-                          });
+                        });
                         setMainMenu(data.data[0])
                         setSubMenu(data.data[1])
                         setChildMenu(data.data[2])
-                    }    
+                    }
                 })
                 .catch((e) => { console.log(e) })
-        } 
-    },[])
+        }
+    }, [])
 
     return (
         <>
-            <div className='menuhide'>
+            {/* <div className='menuhide'>
                 {opncond === false ? <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                     onClick={() => { document.getElementById('sid').style.display = 'block'; setopencond(true) }}
                 ><Menu /></IconButton> :
@@ -142,10 +142,10 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                         onClick={() => { document.getElementById('sid').style.display = 'none'; setopencond(false) }}
                     ><Close /></IconButton>}
-            </div>
-            <div className='hideside' id="sid">
+            </div> */}
+            <div className='hideside bg-white' id="sid">
                 <div className='usrinfo' style={{ display: 'flex' }}>
-                    <AccountCircle sx={{fontSize: '2.7em', marginRight:'0.2em'}} />
+                    <AccountCircle sx={{ fontSize: '2.7em', marginRight: '0.2em' }} />
                     <div>
                         <h5 style={{ color: 'rgb(64, 38, 236)' }}>{
                             localStorage.getItem('Name')
@@ -153,17 +153,19 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                         <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>
                     </div>
                 </div>
-                {mainMenu.map(obj => (
-                    obj.Read_Rights === 1 
-                    ? <MainMenu
-                        key={obj.Main_Menu_Id}
-                        mainMenuId={mainMenuId} subMenuId={subMenuId} childMenuId={childMenuId}
-                        MainMenuData={obj}
-                        SubMenuData={subMenu}
-                        ChildMenuData={childMenu} />
-                    : null 
-                ))}
-                <div className="custom-height"></div>
+                <div style={{paddingRight: '5px'}}>
+                    {mainMenu.map(obj => (
+                        obj.Read_Rights === 1
+                            ? <MainMenu
+                                key={obj.Main_Menu_Id}
+                                mainMenuId={mainMenuId} subMenuId={subMenuId} childMenuId={childMenuId}
+                                MainMenuData={obj}
+                                SubMenuData={subMenu}
+                                ChildMenuData={childMenu} />
+                            : null
+                    ))}
+                </div>
+                {/* <div className="custom-height"></div> */}
             </div>
         </>
     );

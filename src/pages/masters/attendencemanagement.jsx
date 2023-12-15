@@ -5,10 +5,12 @@ import { apihost } from '../../backendAPI';
 import { pageRights } from '../../components/rightsCheck';
 import { NavigateNext, Logout } from '@mui/icons-material';
 import DataTable from "react-data-table-component";
-import { customStyles } from '../../components/tablecolumn';
-import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { customStyles, customSelectStyles } from '../../components/tablecolumn';
+import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button, Autocomplete, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
+
 
 const formatDate = (inputDate) => {
     const date = new Date(inputDate);
@@ -34,17 +36,26 @@ function convertDateFormat(inputDate) {
 
 
 const AttendanceManagement = () => {
+    const token = localStorage.getItem('userToken')
     const [activeEmp, setActiveEmp] = useState([])
     const [filteredData, setFilteredData] = useState([]);
     const [search, setSearch] = useState('')
-    const [refresh, setRefresh] = useState(false);
     const [modify, setModify] = useState({
         add: false,
         edit: false,
         delete: false
     })
     const [dopen, setdopen] = useState(false);
+    const [addDialog, setAddDialog] = useState(false)
     const [rowDetails, setRowDetails] = useState({ Id: '', OutDate: '', OutTime: '' });
+    const [empData, setEmpData] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+    const [selectedEmp, setSelectedEmp] = useState({
+        Emp_Id: '',
+        Emp_Name: '',
+        Start_Date: '',
+        InTime: ''
+    })
 
     useEffect(() => {
         pageRights(2, 1016).then(per => {
@@ -63,6 +74,13 @@ const AttendanceManagement = () => {
                 edit: per.permissions.Edit_Rights === 1,
                 delete: per.permissions.Delete_Rights === 1,
             });
+            fetch(`${apihost}/api/employeeDropDown`, { headers: { 'Authorization': per.token } })
+                .then((res) => { return res.json() })
+                .then((data) => {
+                    if (data.status === "Success") {
+                        setEmpData(data.data)
+                    }
+                })
         })
     }, [refresh])
 
@@ -134,6 +152,48 @@ const AttendanceManagement = () => {
     ]
 
 
+    const PostWithoutLocation = () => {
+        if ((selectedEmp.Emp_Name && selectedEmp.Emp_Name !== '')
+            && (selectedEmp.Start_Date && selectedEmp.Start_Date !== '')
+            && (selectedEmp.InTime && selectedEmp.InTime !== '')) {
+            fetch(`${apihost}/api/attendance`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    UserId: selectedEmp.Emp_Id,
+                    Start_Date: selectedEmp.Start_Date,
+                    InTime: selectedEmp.InTime,
+                    Creater: 'Admin'
+                })
+            }).then(res => { return res.json() })
+                .then(data => {
+                    setRefresh(!refresh)
+                    setAddDialog(false)
+                    setSelectedEmp({Emp_Id: '', Emp_Name: '', Start_Date: '', InTime: '' })
+                    if (data.status === 'Success') {
+                        toast.success(data.message)
+                    } else {
+                        toast.error(data.message)
+                    }
+                })
+        } else {
+            toast.error(
+                (!selectedEmp.Emp_Name || selectedEmp.Emp_Name === '')
+                    ? "Select Employee"
+                    : (!selectedEmp.Start_Date || selectedEmp.Start_Date === '')
+                        ? "Date is Required"
+                        : (!selectedEmp.InTime || selectedEmp.InTime === '')
+                            ? "InTime is Required"
+                            : null
+            );
+
+        }
+    }
+
+
     return (
         <>
             <ToastContainer />
@@ -146,10 +206,11 @@ const AttendanceManagement = () => {
                 </div>
                 <div className="col-md-10">
                     <div className="comhed shadow-lg">
+                        <button className="comadbtn" onClick={() => setAddDialog(true)}>Add Attendance</button>
                         <h4 className='h5'>ATTENDANCE MANAGEMENT</h4>
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; ATTENDANCE MANAGEMENT</h6>
                     </div>
-                    <div className="p-3">
+                    <div className="p-3 mt-1">
                         <h2 className='h3 mb-5'>
                             <span className="float-start p-2">
                                 Active Employees {'( ' + activeEmp.length + ' )'}
@@ -158,7 +219,7 @@ const AttendanceManagement = () => {
                                 <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} autoFocus />
                             </span>
                         </h2><br />
-                        <div className="box mt-5">
+                        <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box mt-5' : 'mt-5'}>
                             <DataTable
                                 columns={TblColumn}
                                 data={filteredData && filteredData.length ? filteredData : search === '' ? activeEmp : []}
@@ -199,6 +260,54 @@ const AttendanceManagement = () => {
                     <Button onClick={() => setdopen(false)}>Cancel</Button>
                     <Button onClick={closeAttendence} autoFocus sx={{ color: 'red' }}>
                         Close Attendance
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={addDialog}
+                onClose={() => { setAddDialog(false) }}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                maxWidth="sm"
+                fullWidth>
+                <DialogTitle id="alert-dialog-title">
+                    {"Add Employee Attendance"}
+                </DialogTitle>
+                <DialogContent className='pt-3 pb-5 m-2'>
+                    <label>Select Employee</label>
+                    <Select
+                        options={[...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
+                        isSearchable={true}
+                        placeholder={'Select Employee'}
+                        styles={customSelectStyles}
+                        value={{ value: selectedEmp.Emp_Id, label: selectedEmp.Emp_Name }}
+                        onChange={(e) => { setSelectedEmp({ ...selectedEmp, Emp_Id: e.value, Emp_Name: e.label }) }}
+                    />
+                    <label className="p-2 mt-2">Date And Time</label>
+                    <div className="row pb-5 mb-5">
+                        <div className="col-md-6 pe-md-2">
+                            <input
+                                type='date'
+                                className="form-control p-3"
+                                style={{ border: '1px solid lightgrey' }}
+                                onChange={(e) => setSelectedEmp({ ...selectedEmp, Start_Date: e.target.value })}
+                                value={selectedEmp.Start_Date} />
+                        </div>
+                        <div className="d-md-none d-sm-block p-2"></div>
+                        <div className="col-md-6 ps-md-2">
+                            <input
+                                type='time'
+                                className="form-control p-3"
+                                style={{ border: '1px solid lightgrey' }}
+                                onChange={(e) => setSelectedEmp({ ...selectedEmp, InTime: e.target.value })}
+                                value={selectedEmp.InTime} />
+                        </div>
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setdopen(false)}>Cancel</Button>
+                    <Button onClick={PostWithoutLocation} autoFocus sx={{ color: 'red' }}>
+                        Add Attendance
                     </Button>
                 </DialogActions>
             </Dialog>

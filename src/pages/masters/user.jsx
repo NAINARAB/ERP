@@ -235,6 +235,7 @@ const User = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'USER MASTER'} />
                 </div>
+                
                 <div className="col-md-10">
                     <div className="comhed">
                         {modify.add === true && <button className="comadbtn" onClick={() => setOpen(true)}>Add User</button>}

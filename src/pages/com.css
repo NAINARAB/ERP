@@ -92,6 +92,13 @@
   animation: rotateForward 0.3s linear infinite;
 }
 
+.icon-slot {
+  width: 130px;
+  height: 75px;
+  border-radius: 30px;
+  border: 2px dashed #c0bebe;
+  cursor:not-allowed;
+}
 
 .icon {
   padding: 10px;

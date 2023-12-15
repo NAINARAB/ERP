@@ -32,6 +32,7 @@ function Login() {
                     localStorage.setItem('UserId', data.user.UserId)
                     localStorage.setItem('branchId', data.user.BranchId)
                     localStorage.setItem('loginResponse', JSON.stringify(data.sessionInfo))
+                    localStorage.setItem('uType', data.user.UserTypeId)
                     navigate('home')
                 } else {
                     toast.error("Login Failed")
