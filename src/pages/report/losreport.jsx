@@ -149,7 +149,7 @@ const LOSReport = () => {
     }, [pageInfo, compData])
 
     useEffect(() => {
-        if (pageInfo.permissions.Read_Rights === 1) {
+        if (pageInfo?.permissions?.Read_Rights === 1) {
             setAllReport(null)
             fetch(`${apihost}/api/stockabstract?Fromdate=${selectedValue.date}&Todate=${selectedValue.todate}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
                 headers: {
@@ -333,9 +333,9 @@ const LOSReport = () => {
                             REPORT OF
                             <span style={{ color: 'rgb(66, 34, 225)' }}> &nbsp;{compData.Company_Name}</span> &nbsp;
                             FROM :
-                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.date.split('-').reverse().join('-')}</span> &nbsp;
+                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue?.date.split('-').reverse().join('-')}</span> &nbsp;
                             TO :
-                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue.todate.split('-').reverse().join('-')}</span>
+                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue?.todate.split('-').reverse().join('-')}</span>
                         </h5>
                         {allReport === null ? <Loader /> : <MaterialReactTable table={table} />}
                     </div>

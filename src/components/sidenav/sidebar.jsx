@@ -134,7 +134,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
 
     return (
         <>
-            {/* <div className='menuhide'>
+            <div className='menuhide'>
                 {opncond === false ? <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                     onClick={() => { document.getElementById('sid').style.display = 'block'; setopencond(true) }}
                 ><Menu /></IconButton> :
@@ -142,7 +142,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                         onClick={() => { document.getElementById('sid').style.display = 'none'; setopencond(false) }}
                     ><Close /></IconButton>}
-            </div> */}
+            </div>
             <div className='hideside bg-white' id="sid">
                 <div className='usrinfo' style={{ display: 'flex' }}>
                     <AccountCircle sx={{ fontSize: '2.7em', marginRight: '0.2em' }} />

@@ -18,6 +18,7 @@ import TaskLogout from './components/tasklogout';
 import Employees from './pages/masters/emp';
 import EmpMyAttendance from './pages/dashboard/empattendance';
 import AttendanceManagement from './pages/masters/attendencemanagement';
+import PurchaseReport from './pages/report/purchasereport';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
             <Route path='/empmaster' element={<Employees />} />
             <Route path='/empattendance' element={<EmpMyAttendance />} />
             <Route path='/attendencemanagement' element={<AttendanceManagement />} />
+            <Route path='/purchasereport' element={<PurchaseReport />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>
