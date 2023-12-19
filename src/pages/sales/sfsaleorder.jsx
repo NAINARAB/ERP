@@ -84,7 +84,6 @@ const Product = () => {
     const ExpandedComponent = ({ data }) => {
         return (
             <Box sx={{ padding: '2em' }}>
-                {/* <h5>Transaction Details ({data.orderNo})</h5> */}
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                         <TableHead>
@@ -215,7 +214,7 @@ const Product = () => {
                             <div className="col-sm-3 p-2">
                                 <label>From Date</label><br />
                                 <input
-                                    className="form-control"
+                                    className="form-control py-2"
                                     type='date'
                                     value={from}
                                     onChange={(e) => {
@@ -225,7 +224,7 @@ const Product = () => {
                             <div className="col-sm-3 p-2">
                                 <label>To Date</label><br />
                                 <input
-                                    className="form-control"
+                                    className="form-control py-2"
                                     type='date'
                                     value={date}
                                     onChange={(e) => {

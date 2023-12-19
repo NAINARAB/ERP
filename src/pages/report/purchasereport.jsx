@@ -8,6 +8,7 @@ import { customSelectStyles } from "../../components/tablecolumn";
 import Select from 'react-select';
 import { CurrentCompany } from "../../components/context/contextData";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material";
+import { Search } from '@mui/icons-material'
 
 
 const Dropdown = ({ label, options, value, onChange, placeholder }) => (
@@ -47,13 +48,13 @@ const PurchaseReport = () => {
         BillNo: '',
         CustomerGet: allOption.label,
         ItemGet: allOption.label,
-        ReportGet: allOption.label
+        ReportGet: 'ITEM BASED'
     });
     const [dialog, setDialog] = useState(false)
     const [refresh, setRefresh] = useState(false);
     const [pageAccess, setPageAccess] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredData, setFilteredData] = useState(purchaseOrderData);
+    // const [filteredData, setFilteredData] = useState(purchaseOrderData);
 
 
     useEffect(() => {
@@ -117,13 +118,25 @@ const PurchaseReport = () => {
     //     setFilteredData(filteredResults);
     // }
 
-    const searchItem = () => {
-        const filteredData = purchaseOrderData.filter(mainobj => {
-            mainobj.product_details.some(obj => obj.stock_item_name === searchTerm)
-            return mainobj
-        });
-    }
+    // const searchItem = () => {
+    //     const filteredData = purchaseOrderData.filter(mainobj => {
+    //         mainobj.product_details.some(obj => obj.stock_item_name === searchTerm)
+    //     });
+    //     return filteredData
+    // }
 
+    const filteredData = purchaseOrderData.filter(item => {
+        const productDetailsMatch = item.product_details.some(product =>
+            product?.stock_item_name?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        const mainObjectMatch =
+            item?.po_no?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.po_date?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.ledger_name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return productDetailsMatch || mainObjectMatch;
+    });
+    //&& filteredData.length ? filteredData : searchTerm === '' ? purchaseOrderData : []
 
 
     return (
@@ -157,7 +170,19 @@ const PurchaseReport = () => {
                                 {selectedValue?.Todate?.split('-').reverse().join('-')}
                             </span>
                         </h5>
-                        <div className="row" style={{ maxHeight: '74vh', overflowY: 'scroll' }}>
+                        {selectedValue.Report_Type !== 3 &&
+                            <div className="col-md-4 col-sm-12 px-2 pb-0" style={{ marginBottom: 'unset' }}>
+                                <input type={'search'} className='micardinpt'
+                                    placeholder="Search Here..."
+                                    onChange={(e) => {
+                                        setSearchTerm((e.target.value).toLowerCase());
+                                    }} style={{ paddingLeft: '3em' }} />
+                                <div className="sIcon">
+                                    <Search sx={{ fontSize: '2em' }} />
+                                </div>
+                            </div>
+                        }
+                        <div className="row" style={{ maxHeight: '69vh', overflowY: 'scroll' }}>
                             {selectedValue.Report_Type === 3 && purchaseOrderData.map((obj, index) => (
                                 <div className="col-12 col-md-6 col-lg-4 col-xxl-3 p-2" key={index}>
                                     <div className="card">
@@ -184,7 +209,7 @@ const PurchaseReport = () => {
                                     </div>
                                 </div>
                             ))}
-                            {selectedValue.Report_Type !== 3 && (filteredData && filteredData.length ? filteredData : searchTerm === '' ? purchaseOrderData : []).map((obj, index) => (
+                            {selectedValue.Report_Type !== 3 && filteredData.map((obj, index) => (
                                 <div className="col-12 col-lg-6 p-2" key={index}>
                                     <div className="card overflow-hidden" style={{ boxSizing: 'border-box' }}>
                                         <div className="card-header pb-0">
@@ -240,38 +265,28 @@ const PurchaseReport = () => {
                 fullWidth>
                 <DialogTitle>Filter Options</DialogTitle><hr className="m-0" />
                 <DialogContent className="row">
-                    <Dropdown
-                        label="LEDGER"
-                        options={[allOption, ...LedgerList.map(obj => ({ value: obj?.tally_id, label: obj?.Master_Name }))]}
-                        value={{ value: selectedValue.Customer_Id, label: selectedValue.CustomerGet }}
-                        onChange={(value) => setSelectedValue({ ...selectedValue, Customer_Id: value.value, CustomerGet: value.label })}
-                    />
-                    <Dropdown
-                        label="STOCK ITEM"
-                        options={[allOption, ...StockItemList.map(obj => ({ value: obj?.tally_id, label: obj?.Master_Name }))]}
-                        value={{ value: selectedValue?.Item_Id, label: selectedValue?.ItemGet }}
-                        onChange={(value) => setSelectedValue({ ...selectedValue, Item_Id: value.value, ItemGet: value.label })}
-                    />
-                    <Dropdown
-                        label="REPORT TYPE"
-                        options={[
-                            { value: 0, label: 'ITEM BASED' },
-                            // { value: 1, label: 'INVOICED PURCHASE' }, 
-                            { value: 2, label: 'PENDING PURCHASE ORDER' },
-                            { value: 3, label: 'PURCHASE ORDER' }]}
-                        value={{ value: selectedValue.Report_Type, label: selectedValue.ReportGet }}
-                        onChange={(value) => setSelectedValue({ ...selectedValue, Report_Type: value.value, ReportGet: value.label })}
-                    />
-
-                    <div className="col-md-12"><br /></div><hr />
                     <div className="col-md-4 p-2">
-                        <label className="p p-2 text-uppercase">From DATE</label>
+                        <label className="p-2">REPORT TYPE</label>
+                        <select 
+                            className="form-select" 
+                            value={selectedValue.Report_Type} 
+                            style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }}
+                            onChange={(e) => setSelectedValue({...selectedValue, Report_Type: e.target.value })}>
+                                <option value={0}>ITEM BASED</option>
+                                <option value={2}>PENDING PURCHASE ORDER</option>
+                                <option value={3}>PURCHASE ORDER</option>
+                        </select>
+                    </div>
+
+                    <div className="col-md-4 p-2">
+                        <label className="p-2 text-uppercase">From DATE</label>
                         <input
                             type="date"
                             className="form-control"
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue?.Fromdate}
                             onChange={(e) => setSelectedValue({ ...selectedValue, Fromdate: e.target.value })} />
                     </div>
+
                     <div className="col-md-4 p-2">
                         <label className="p p-2 text-uppercase">To DATE</label>
                         <input
@@ -280,14 +295,6 @@ const PurchaseReport = () => {
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue?.Todate}
                             onChange={(e) => setSelectedValue({ ...selectedValue, Todate: e.target.value })} />
                     </div>
-                    <div className="col-md-4 p-2">
-                        <label className="p p-2 text-uppercase">Bill No</label>
-                        <input
-                            className="form-control"
-                            style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue?.BillNo}
-                            onChange={(e) => setSelectedValue({ ...selectedValue, BillNo: e.target.value })} />
-                    </div>
-                    <div className="p-5 mb-5"></div>
                 </DialogContent><hr className="m-0" />
                 <DialogActions>
                     <Button variant="contained" onClick={() => { setDialog(!dialog); setRefresh(!refresh) }}>Apply</Button>

@@ -92,15 +92,15 @@ const SaleOrderList = () => {
             <div className="row">
               <div className="col-md-3 px-2">
                 <p className="mb-0 p-2">Form</p>
-                <input type="date" className="form-control p-3" value={start} onChange={(e) => { setStart(e.target.value) }} />
+                <input type="date" className="form-control p-2" value={start} onChange={(e) => { setStart(e.target.value) }} />
               </div>
               <div className="col-md-3 px-2">
                 <p className="mb-0 p-2">To</p>
-                <input type="date" className="form-control p-3" value={end} onChange={(e) => setEnd(e.target.value)} />
+                <input type="date" className="form-control p-2" value={end} onChange={(e) => setEnd(e.target.value)} />
               </div>
               <div className="col-md-3 px-2">
                 <p className="mb-0 p-2">Search Data</p>
-                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control p-3" />
+                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control p-2" />
               </div>
               {/* <div className="col-md-3 px-2">
                 <p style={{ opacity: '0' }}>j</p>

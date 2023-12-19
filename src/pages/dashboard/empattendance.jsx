@@ -86,7 +86,7 @@ const EmpMyAttendance = () => {
                                 Attendance {'( ' + attendanceData.length + ' - Days)'}
                             </span>
                             <span className='float-end col-lg-4'>
-                                <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} autoFocus />
+                                <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} />
                             </span>
                         </h2><br />
                         <div className={((filteredData && filteredData.length) || (attendanceData && attendanceData.length)) ? 'box mt-5' : 'mt-5'}>

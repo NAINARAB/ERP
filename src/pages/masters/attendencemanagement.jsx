@@ -6,7 +6,7 @@ import { pageRights } from '../../components/rightsCheck';
 import { NavigateNext, Logout } from '@mui/icons-material';
 import DataTable from "react-data-table-component";
 import { customStyles, customSelectStyles } from '../../components/tablecolumn';
-import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button, Autocomplete, TextField } from '@mui/material';
+import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
@@ -216,7 +216,7 @@ const AttendanceManagement = () => {
                                 Active Employees {'( ' + activeEmp.length + ' )'}
                             </span>
                             <span className='float-end col-lg-4'>
-                                <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} autoFocus />
+                                <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} />
                             </span>
                         </h2><br />
                         <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box mt-5' : 'mt-5'}>
