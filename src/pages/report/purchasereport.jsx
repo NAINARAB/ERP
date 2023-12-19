@@ -146,7 +146,7 @@ const PurchaseReport = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'LOS REPORT'} />
+                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'PURCHASE REPORT'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">
