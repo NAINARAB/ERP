@@ -33,9 +33,16 @@ const csvConfig = mkConfig({
     useKeysAsHeaders: true,
 });
 
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 const LOSReport = () => {
     const today = new Date();
-    today.setDate(today.getDate() - 35);
+    today.setDate(today.getDate() - 50);
     const [pageInfo, setPageInfo] = useState({ permissions: { Read_Rights: 0, Add_Rights: 0, Edit_Rights: 0, Delete_Rights: 0 } });
     const { compData } = useContext(CurrentCompany)
     const [open, setOpen] = useState(false)
@@ -43,12 +50,6 @@ const LOSReport = () => {
     const [allDropDown, setAllDropDown] = useState([])
     const [allReport, setAllReport] = useState(null);
     const allOption = { value: 'ALL', label: 'ALL' };
-    const formatDate = (date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
     const dateFormatted = formatDate(today);
     const todateFormatted = formatDate(new Date());
     const [selectedValue, setSelectedValue] = useState({
@@ -58,7 +59,7 @@ const LOSReport = () => {
         stock_group: allOption.value,
         inm: allOption.value,
         date: dateFormatted,
-        todate: dateFormatted,
+        todate: todateFormatted,
         zero: false
     });
 
@@ -196,7 +197,7 @@ const LOSReport = () => {
     const table = useMaterialReactTable({
         columns: ReportMenu,
         data: allReport === null ? [] : allReport,
-        enableRowSelection: true,
+        // enableRowSelection: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,

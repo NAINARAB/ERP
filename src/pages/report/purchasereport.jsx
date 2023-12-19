@@ -4,26 +4,10 @@ import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
 import { NavigateNext, FilterAlt } from '@mui/icons-material';
-import { customSelectStyles } from "../../components/tablecolumn";
-import Select from 'react-select';
 import { CurrentCompany } from "../../components/context/contextData";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import { Search } from '@mui/icons-material'
 
-
-const Dropdown = ({ label, options, value, onChange, placeholder }) => (
-    <div className="col-md-4 p-2">
-        <label className="p p-2">{label}</label>
-        <Select
-            options={options}
-            isSearchable={true}
-            placeholder={placeholder}
-            styles={customSelectStyles}
-            value={value}
-            onChange={(selectedOption) => onChange(selectedOption)}
-        />
-    </div>
-);
 
 const formatDate = (date) => {
     const year = date.getFullYear();
@@ -35,8 +19,6 @@ const today = formatDate(new Date());
 
 const PurchaseReport = () => {
     const { compData } = useContext(CurrentCompany)
-    const [LedgerList, setLedgerList] = useState([]);
-    const [StockItemList, setStockItemList] = useState([]);
     const [purchaseOrderData, setPurchaseOrderData] = useState([]);
     const allOption = { value: 0, label: 'ALL' };
     const [selectedValue, setSelectedValue] = useState({
@@ -54,32 +36,13 @@ const PurchaseReport = () => {
     const [refresh, setRefresh] = useState(false);
     const [pageAccess, setPageAccess] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
-    // const [filteredData, setFilteredData] = useState(purchaseOrderData);
 
 
     useEffect(() => {
         pageRights(2, 1017).then(per => {
             setPageAccess(per)
-            if (per?.permissions?.Read_Rights === 1) {
-                fetch(`${apihost}/api/ledgerList`, {
-                    headers: {
-                        'Authorization': per.token,
-                        'Db': compData.id
-                    }
-                }).then(res => { return res.json() }).then(data => {
-                    setLedgerList(data.status === 'Success' ? data.data : [])
-                })
-                fetch(`${apihost}/api/StockItemList`, {
-                    headers: {
-                        'Authorization': per.token,
-                        'Db': compData.id
-                    }
-                }).then(res => { return res.json() }).then(data => {
-                    setStockItemList(data.status === 'Success' ? data.data : [])
-                })
-            }
         })
-    }, [compData])
+    }, [])
 
     useEffect(() => {
         if (pageAccess?.permissions?.Read_Rights === 1) {
@@ -106,24 +69,6 @@ const PurchaseReport = () => {
         }
     }, [pageAccess, compData, selectedValue.Report_Type, selectedValue.Fromdate, selectedValue.Todate])
 
-    // function handleSearchChange(event) {
-    //     const term = event.target.value;
-    //     setSearchTerm(term);
-    //     const filteredResults = purchaseOrderData.filter(item => {
-    //         return Object.values(item).some(value =>
-    //             String(value).toLowerCase().includes(term.toLowerCase())
-    //         );
-    //     });
-
-    //     setFilteredData(filteredResults);
-    // }
-
-    // const searchItem = () => {
-    //     const filteredData = purchaseOrderData.filter(mainobj => {
-    //         mainobj.product_details.some(obj => obj.stock_item_name === searchTerm)
-    //     });
-    //     return filteredData
-    // }
 
     const filteredData = purchaseOrderData.filter(item => {
         const productDetailsMatch = item.product_details.some(product =>
@@ -136,7 +81,6 @@ const PurchaseReport = () => {
 
         return productDetailsMatch || mainObjectMatch;
     });
-    //&& filteredData.length ? filteredData : searchTerm === '' ? purchaseOrderData : []
 
 
     return (
