@@ -29,8 +29,9 @@ function Login() {
         const uTypeId = queryParams.get('uTypeId')
         const uTypeGet = queryParams.get('uTypeGet')
         const userToken = queryParams.get('userToken')
+        const SessionId = queryParams.get('SessionId')
     
-        if (inTime && userId && username && branch && uTypeId && uTypeGet && userToken) {
+        if (inTime && userId && username && branch && uTypeId && uTypeGet && userToken && SessionId) {
           const loginResponse = {
             data: {
               InTime: inTime,
@@ -38,6 +39,7 @@ function Login() {
               message: 'Login Successfully',
               userId: userId,
               username: username,
+              SessionId: SessionId
             },
           };
           // for ERP
