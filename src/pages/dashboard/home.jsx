@@ -249,7 +249,7 @@ const HomeComp = () => {
                                                 </span>
                                             </h5><br />
                                             <h5>
-                                                <span className="float-start"><CalendarMonthTwoTone /> Out Date</span>
+                                                <span className="float-start"><CalendarMonthTwoTone /> End Date</span>
                                                 <span className="float-end">
                                                     {attanance[0]?.OutDate ? formatDate(attanance[0]?.OutDate) : '-'}
                                                 </span>
@@ -269,7 +269,8 @@ const HomeComp = () => {
                                                     onClick={() => setOpenDialog(true)}>END day</Button>
                                             </div></>}
                                 </div>
-                            </div>}
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

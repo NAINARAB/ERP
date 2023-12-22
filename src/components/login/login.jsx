@@ -14,11 +14,49 @@ function Login() {
     const [password, setpassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
+    const clearQueryParameters = () => {
+        const newUrl = window.location.pathname;
+        window.history.pushState({}, document.title, newUrl);
+      };
+    
+      useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const inTime = queryParams.get('InTime');
+        const userId = queryParams.get('UserId');
+        const username = queryParams.get('username');
+        const branch = queryParams.get('branch')
+        
+        const uTypeId = queryParams.get('uTypeId')
+        const uTypeGet = queryParams.get('uTypeGet')
+        const userToken = queryParams.get('userToken')
+    
+        if (inTime && userId && username && branch && uTypeId && uTypeGet && userToken) {
+          const loginResponse = {
+            data: {
+              InTime: inTime,
+              branchid: branch,
+              message: 'Login Successfully',
+              userId: userId,
+              username: username,
+            },
+          };
+          // for ERP
+          localStorage.setItem('UserType', uTypeGet); // 2
+          localStorage.setItem('Name', username); // 3
+          localStorage.setItem('userToken', userToken); // 4
+          localStorage.setItem('branchId', branch); // 5
+          localStorage.setItem('uType', uTypeId) // 6
+          localStorage.setItem('UserId', userId); // 7
+          // for Task management
+          localStorage.setItem('loginResponse', JSON.stringify(loginResponse)); // 1
+          clearQueryParameters();
+          navigate('home')
+        } 
         if(localStorage.getItem('userToken')){
             navigate('home')
-        } 
-    }, [])
+        }
+      }, []);
+
 
     const getLogin = async () => {
         fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
