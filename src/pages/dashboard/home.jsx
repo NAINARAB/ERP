@@ -164,25 +164,6 @@ const HomeComp = () => {
             })
     }
 
-    async function getLocationByIP() {
-        try {
-            const response = await fetch('ipinfo.io?token=9403edf4615081');
-            const data = await response.json();
-
-            if (data && data.loc) {
-                const [latitude, longitude] = data.loc.split(',');
-                console.log('Approximate Location:', { latitude, longitude });
-            } else {
-                console.error('Location data not available.');
-            }
-        } catch (error) {
-            console.error('Error fetching location:', error.message);
-        }
-    }
-
-    getLocationByIP();
-
-
 
     return (
         <>  <ToastContainer />
