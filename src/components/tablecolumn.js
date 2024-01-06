@@ -616,6 +616,35 @@ const TaskDone = [
     },
 ]
 
+const CustomerBalance = [
+    {
+        header: 'Customer Id',
+        accessorKey: 'Cust_Id',
+        size: 170
+    },
+    {
+        header: 'Ledger Name',
+        accessorKey: 'ledger_name',
+        size: 330
+    },
+    {
+        header: 'Company',
+        accessorKey: 'Company_Name'
+    },
+    {
+        header: 'Name',
+        accessorKey: 'Customer_name'
+    },
+    {
+        header: 'Balance',
+        accessorKey: 'Bal_Amount',
+    },
+    {
+        header: 'Dr/Cr',
+        accessorKey: 'CR_DR'
+    }
+]
+
 export {
     users,
     products,
@@ -632,5 +661,6 @@ export {
     SF_Routes,
     subtable2,
     empMyAttendance,
-    TaskDone
+    TaskDone,
+    CustomerBalance
 };

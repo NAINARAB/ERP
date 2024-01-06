@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import Logo from '../../download.png';
 import DataTable from "react-data-table-component";
 import { customStyles, TaskDone } from "../../components/tablecolumn";
+import CustomerScreen from "./customer";
 
 function formatDate(inputDate) {
     const date = new Date(inputDate);
@@ -178,6 +179,7 @@ const HomeComp = () => {
                     <div className="comhed">
                         <h4>HOME</h4>
                     </div>
+
                     <div className="row p-3">
                         <div className="col-md-6 p-2">
                             <div className="card border">
@@ -252,7 +254,13 @@ const HomeComp = () => {
                                 </div>
                             </div>
                         }
+
+                        <div className="col-12 p-2">
+                            <CustomerScreen />
+                        </div>
                     </div>
+
+
                 </div>
             </div>
             <Dialog
