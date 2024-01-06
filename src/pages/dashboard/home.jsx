@@ -181,27 +181,29 @@ const HomeComp = () => {
                     </div>
 
                     <div className="row p-3">
-                        <div className="col-md-6 p-2">
-                            <div className="card border">
-                                <div className="card-header bg-white">
-                                    <h3 className="h4 p-2 mb-0">SMT Apps</h3>
-                                </div>
-                                <div className="card-body row mb-2">
-                                    {task &&
-                                        <>
-                                            <div className="icon-slot border-0 m-2 mb-3">
-                                                <div className="icon" onClick={navtoTask}>
-                                                    <img src={Logo} alt="SMT TASK ICON" />
+                        {task &&
+                            <div className="col-md-6 p-2">
+                                <div className="card border">
+                                    <div className="card-header bg-white">
+                                        <h3 className="h4 p-2 mb-0">SMT Apps</h3>
+                                    </div>
+                                    <div className="card-body row mb-2">
+                                        {task &&
+                                            <>
+                                                <div className="icon-slot border-0 m-2 mb-3">
+                                                    <div className="icon" onClick={navtoTask}>
+                                                        <img src={Logo} alt="SMT TASK ICON" />
+                                                    </div>
+                                                    <p className="text-center mt-1">SMT TASK</p>
                                                 </div>
-                                                <p className="text-center mt-1">SMT TASK</p>
-                                            </div>
-                                        </>
-                                    }
-                                    <div className="icon-slot m-2 mb-3"></div>
-                                    <div className="icon-slot m-2 mb-3"></div>
+                                            </>
+                                        }
+                                        <div className="icon-slot m-2 mb-3"></div>
+                                        <div className="icon-slot m-2 mb-3"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
 
                         {isEmp
                             && <div className="col-md-6 p-2">
