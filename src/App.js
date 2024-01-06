@@ -19,11 +19,13 @@ import Employees from './pages/masters/emp';
 import EmpMyAttendance from './pages/dashboard/empattendance';
 import AttendanceManagement from './pages/masters/attendencemanagement';
 import PurchaseReport from './pages/report/purchasereport';
+import CustomerCategories from './pages/masters/customers/customerCategories';
+import CostCenter from './pages/masters/customers/costCenter';
 
 
 function App() {
   return (
-    <div style={{minHeight: '100vh', backgroundColor: '#f5f6f8'}}>
+    <div>
       <CompanyProvider>
         <BrowserRouter>
           <Routes>
@@ -45,6 +47,8 @@ function App() {
             <Route path='/empattendance' element={<EmpMyAttendance />} />
             <Route path='/attendencemanagement' element={<AttendanceManagement />} />
             <Route path='/purchasereport' element={<PurchaseReport />} />
+            <Route path='/masters/customers/category' element={<CustomerCategories />} />
+            <Route path='/masters/customers/costcenter' element={<CostCenter />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>

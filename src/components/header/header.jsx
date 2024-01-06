@@ -5,8 +5,6 @@ import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, 
 import { useEffect, useState, useContext } from 'react';
 import { apihost } from "../../backendAPI";
 import { CurrentCompany } from '../context/contextData';
-// import Select from 'react-select';
-// import { customSelectStyles } from '../tablecolumn';
 
 
 const Header = ({setting}) => {

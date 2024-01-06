@@ -379,16 +379,6 @@ const Employees = () => {
             event: (e) => setEmpFormData({ ...empFormData, address2: e.target.value }),
             value: empFormData.address2,
         },
-        // {
-        //     label: 'Entered By',
-        //     elem: 'input',
-        //     type: 'text',
-        //     class: inputclass,
-        //     placeholder: "Enter Entered By",
-        //     event: (e) => setEmpFormData({ ...empFormData, enter_by: e.target.value }),
-        //     disabled: true,
-        //     value: localStorage.getItem('Name'),
-        // },
     ];
 
     const validateForm = () => {

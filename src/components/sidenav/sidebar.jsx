@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../backendAPI';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount, Circle } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.MenuName ? true : false);
@@ -65,7 +65,7 @@ const SubMenu = (props) => {
                 {props.SubMenuData.PageUrl === ""
                     ? open === false ? <ArrowRight sx={{ color: 'rgb(66, 34, 225)' }} />
                         : <ArrowDropDown sx={{ color: 'rgb(66, 34, 225)' }} />
-                    : null}
+                    : <Circle sx={{fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '10px'}} />}
 
                 {props.SubMenuData.SubMenuName}
             </button>
@@ -89,9 +89,9 @@ const ChildMenu = (props) => {
     return (
         <>
             <button
-                className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu' : 'in active childMenu'}
+                className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu ps-4' : 'in active childMenu ps-4'}
                 onClick={() => nav(props.ChildMenuData.PageUrl)} >
-                {'-  ' + props.ChildMenuData.ChildMenuName}
+                <Circle sx={{fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '5px'}} />{' ' + props.ChildMenuData.ChildMenuName}
             </button>
         </>
     );

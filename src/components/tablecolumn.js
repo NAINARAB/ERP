@@ -1,12 +1,14 @@
 const customStyles = {
     table: {
         style: {
-            width: 'auto'
+            width: 'auto',
+            backgroundColor: 'transparent',
         }
     },
     rows: {
         style: {
             minHeight: '4.6em',
+            backgroundColor: 'transparent',
         },
     },
     headCells: {

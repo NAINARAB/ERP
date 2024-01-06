@@ -16,6 +16,7 @@
     "axios": "^1.5.1",
     "export-to-csv": "^1.2.1",
     "formik": "^2.4.5",
+    "jquery": "^3.7.1",
     "linq": "^4.0.2",
     "material-react-table": "^2.0.0",
     "moment": "^2.29.4",

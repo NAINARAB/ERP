@@ -72,11 +72,11 @@
 }
 
 .hideside {
-    background-color: white !important;
+    background-color: transparent !important;
     padding-bottom: 10px;
-    box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
+    /* box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1); */
     height: auto;
-    padding-right: 0.4em;
+    /* padding-right: 0.4em; */
 }
 
 
@@ -96,8 +96,8 @@
     }
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
     .hideside {
         min-height: 93vh !important;
     }
-}
+} */
