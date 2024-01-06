@@ -115,14 +115,18 @@ const CustomerCategories = () => {
         {
             header: 'No',
             accessorKey: 'Cust_No',
+            size: 110,
+            
         },
         {
             header: 'Name',
             accessorKey: 'Customer_name',
+            size: 250
         },
         {
             header: 'Phone',
             accessorKey: 'Mobile_no',
+            size: 140
         },
         {
             header: 'Type',
@@ -161,7 +165,6 @@ const CustomerCategories = () => {
     const table = useMaterialReactTable({
         columns: CustomerColumn,
         data: customers,
-        // enableEditing: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
@@ -169,14 +172,14 @@ const CustomerCategories = () => {
         enableRowVirtualization: true,
         enableColumnOrdering: true,
         enableColumnPinning: true,
-        // enableRowNumbers: true,
+        enableRowNumbers: true,
         initialState: {
             density: 'compact',
             expanded: true,
             grouping: [],
             pagination: { pageIndex: 0, pageSize: 100 },
-            sorting: [{ id: 'Cust_No', desc: false }],
-            columnVisibility: { EnteyByGet: false, Gstin: false, Pincode: false },
+            sorting: [{ id: 'Customer_name', desc: false }],
+            columnVisibility: { EnteyByGet: false, Gstin: false, Pincode: false, State: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
