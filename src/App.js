@@ -20,7 +20,6 @@ import EmpMyAttendance from './pages/dashboard/empattendance';
 import AttendanceManagement from './pages/masters/attendencemanagement';
 import PurchaseReport from './pages/report/purchasereport';
 import CustomerCategories from './pages/masters/customers/customerCategories';
-import CostCenter from './pages/masters/customers/costCenter';
 
 
 function App() {
@@ -47,8 +46,7 @@ function App() {
             <Route path='/empattendance' element={<EmpMyAttendance />} />
             <Route path='/attendencemanagement' element={<AttendanceManagement />} />
             <Route path='/purchasereport' element={<PurchaseReport />} />
-            <Route path='/masters/customers/category' element={<CustomerCategories />} />
-            <Route path='/masters/customers/costcenter' element={<CostCenter />} />
+            <Route path='/masters/customers' element={<CustomerCategories />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>

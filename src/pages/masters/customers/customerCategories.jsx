@@ -199,7 +199,7 @@ const CustomerCategories = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'CUSTOMER MASTER'} childMenuId={'CUSTOMER CONFIG'} />
+                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'CUSTOMER MASTER'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

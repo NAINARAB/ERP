@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../backendAPI';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount, Circle } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount, Circle, AddTask } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.MenuName ? true : false);
@@ -22,13 +22,13 @@ const MainMenu = (props) => {
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             >
                 <span style={{ textAlign: 'left' }}>
-                    {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {props.MainMenuData.MenuName === "MASTERS" && <Tune sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.3em', color: 'rgb(66, 34, 225)' }} />}
-                    {' ' + props.MainMenuData.MenuName}
+                    {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "MASTERS" && <AddTask sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    &nbsp;&nbsp;{' ' + props.MainMenuData.MenuName}
                 </span>
                 <div style={{ textAlign: 'right' }}>
                     {props.MainMenuData.PageUrl === "" && (open ? <KeyboardArrowDown /> : <KeyboardArrowRight />)}
@@ -65,7 +65,7 @@ const SubMenu = (props) => {
                 {props.SubMenuData.PageUrl === ""
                     ? open === false ? <ArrowRight sx={{ color: 'rgb(66, 34, 225)' }} />
                         : <ArrowDropDown sx={{ color: 'rgb(66, 34, 225)' }} />
-                    : <Circle sx={{fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '10px'}} />}
+                    : <Circle sx={{ fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '10px'}} />}
 
                 {props.SubMenuData.SubMenuName}
             </button>
