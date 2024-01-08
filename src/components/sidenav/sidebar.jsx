@@ -22,12 +22,12 @@ const MainMenu = (props) => {
                 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}
             >
                 <span style={{ textAlign: 'left' }}>
-                    {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
-                    {props.MainMenuData.MenuName === "MASTERS" && <AddTask sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
-                    {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
-                    {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
-                    {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
-                    {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)',  }} />}
+                    {props.MainMenuData.MenuName === "DASHBOARD" && <GridView sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "MASTERS" && <AddTask sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "PURCHASE" && <ShoppingCart sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
                     &nbsp;&nbsp;{' ' + props.MainMenuData.MenuName}
                 </span>
                 <div style={{ textAlign: 'right' }}>
@@ -65,7 +65,7 @@ const SubMenu = (props) => {
                 {props.SubMenuData.PageUrl === ""
                     ? open === false ? <ArrowRight sx={{ color: 'rgb(66, 34, 225)' }} />
                         : <ArrowDropDown sx={{ color: 'rgb(66, 34, 225)' }} />
-                    : <Circle sx={{ fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '10px'}} />}
+                    : <Circle sx={{ fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '10px' }} />}
 
                 {props.SubMenuData.SubMenuName}
             </button>
@@ -91,7 +91,7 @@ const ChildMenu = (props) => {
             <button
                 className={props.childMenuId === props.ChildMenuData.ChildMenuName ? 'active childMenu ps-4' : 'in active childMenu ps-4'}
                 onClick={() => nav(props.ChildMenuData.PageUrl)} >
-                <Circle sx={{fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '5px'}} />{' ' + props.ChildMenuData.ChildMenuName}
+                <Circle sx={{ fontSize: '6px', color: 'rgb(66, 34, 225)', marginRight: '5px' }} />{' ' + props.ChildMenuData.ChildMenuName}
             </button>
         </>
     );
@@ -135,14 +135,18 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
     return (
         <>
             <div className='menuhide'>
-                {opncond === false ? <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
+                {/* {opncond === false ? <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                     onClick={() => { document.getElementById('sid').style.display = 'block'; setopencond(true) }}
                 ><Menu /></IconButton> :
 
                     <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
                         onClick={() => { document.getElementById('sid').style.display = 'none'; setopencond(false) }}
-                    ><Close /></IconButton>}
+                    ><Close /></IconButton>} */}
+                <IconButton data-bs-toggle="offcanvas" data-bs-target="#sidenav" size='small' sx={{ color: 'white', fontWeight: 'bold' }}>
+                    {opncond ? <Close /> : <Menu />}
+                </IconButton>
             </div>
+
             <div className='hideside bg-white' id="sid">
                 <div className='usrinfo' style={{ display: 'flex' }}>
                     <AccountCircle sx={{ fontSize: '2.7em', marginRight: '0.2em' }} />
@@ -153,7 +157,7 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                         <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>
                     </div>
                 </div>
-                <div style={{paddingRight: '5px'}}>
+                <div style={{ paddingRight: '5px' }}>
                     {mainMenu.map(obj => (
                         obj.Read_Rights === 1
                             ? <MainMenu
@@ -166,6 +170,36 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
                     ))}
                 </div>
                 {/* <div className="custom-height"></div> */}
+            </div>
+
+            <div className="offcanvas offcanvas-start" tabIndex="-1" id="sidenav" aria-labelledby="Label">
+                <div className="offcanvas-header">
+                    <h5 className="offcanvas-title" id="Label">Menu</h5>
+                    <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div className="offcanvas-body p-0">
+                    <div className='usrinfo' style={{ display: 'flex' }}>
+                        <AccountCircle sx={{ fontSize: '2.7em', marginRight: '0.2em' }} />
+                        <div>
+                            <h5 style={{ color: 'rgb(64, 38, 236)' }}>{
+                                localStorage.getItem('Name')
+                            }</h5>
+                            <p style={{ color: 'rgb(66, 34, 225)' }}>{localStorage.getItem('UserType') || "Null"}</p>
+                        </div>
+                    </div>
+                    <div style={{ paddingRight: '5px' }}>
+                        {mainMenu.map(obj => (
+                            obj.Read_Rights === 1
+                                ? <MainMenu
+                                    key={obj.Main_Menu_Id}
+                                    mainMenuId={mainMenuId} subMenuId={subMenuId} childMenuId={childMenuId}
+                                    MainMenuData={obj}
+                                    SubMenuData={subMenu}
+                                    ChildMenuData={childMenu} />
+                                : null
+                        ))}
+                    </div>
+                </div>
             </div>
         </>
     );

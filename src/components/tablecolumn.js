@@ -618,9 +618,8 @@ const TaskDone = [
 
 const CustomerBalance = [
     {
-        header: 'Customer Id',
-        accessorKey: 'Cust_Id',
-        size: 170
+        header: 'Company',
+        accessorKey: 'Company_Name'
     },
     {
         header: 'Ledger Name',
@@ -628,16 +627,12 @@ const CustomerBalance = [
         size: 330
     },
     {
-        header: 'Company',
-        accessorKey: 'Company_Name'
-    },
-    {
-        header: 'Name',
-        accessorKey: 'Customer_name'
-    },
-    {
         header: 'Balance',
-        accessorKey: 'Bal_Amount',
+        Cell: (({ row }) =>
+            <span className={`${row?.original?.Bal_Amount < 0 ? 'text-danger': 'text-success'} fw-bold w-100 text-end`} >
+                {row?.original?.Bal_Amount.toLocaleString('en-IN')}
+            </span>
+        )
     },
     {
         header: 'Dr/Cr',

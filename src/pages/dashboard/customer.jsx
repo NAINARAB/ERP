@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { apihost } from "../../backendAPI";
-import { CustomerBalance } from "../../components/tablecolumn";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import { CustomerBalance } from "../../components/tablecolumn";
 
 
 const CustomerScreen = () => {
@@ -9,6 +9,7 @@ const CustomerScreen = () => {
     const [dataArray, setDataArray] = useState([])
     const UserId = localStorage.getItem('UserId');
     const token = localStorage.getItem('userToken');
+    const [total, setTotal] = useState(0)
 
     useEffect(() => {
         fetch(`${apihost}/api/getBalance?UserId=${UserId}`, {
@@ -19,6 +20,11 @@ const CustomerScreen = () => {
         }).then(res => res.json()).then(data => {
             if (data.status === 'Success') {
                 setDataArray(data.data)
+                let temp = 0;
+                data.data.map(obj => {
+                    temp += parseInt(obj.Bal_Amount)
+                })
+                setTotal(temp)
             }
             if (data?.isCustomer) {
                 setIsCustomer(true)
@@ -44,8 +50,6 @@ const CustomerScreen = () => {
             expanded: true,
             grouping: [],
             pagination: { pageIndex: 0, pageSize: 100 },
-            // sorting: [{ id: 'Item_Name_Modified', desc: false }],
-            // columnVisibility: { month: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
@@ -55,18 +59,11 @@ const CustomerScreen = () => {
         <>
             <div className="card">
                 <div className="card-header py-3 bg-white" >
-                    <h5 className="mb-0">Customer Ballance</h5>
+                    <h5 className="mb-0">
+                        Balance of {localStorage.getItem('Name') + ' ' + total.toLocaleString('en-IN') + (total < 0 ? ' CR' : ' DR')}
+                    </h5>
                 </div>
                 <div className="card-body p-0">
-                    {/* <DataTable
-                        title={'Completed Tasks List'}
-                        columns={TaskDone}
-                        data={dataArray}
-                        pagination
-                        highlightOnHover={true}
-                        fixedHeader={true}
-                        fixedHeaderScrollHeight={'35vh'}
-                        customStyles={customStyles} /> */}
                     <MaterialReactTable table={table} />
                 </div>
             </div>
