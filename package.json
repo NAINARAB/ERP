@@ -19,7 +19,6 @@
     "jquery": "^3.7.1",
     "linq": "^4.0.2",
     "material-react-table": "^2.0.0",
-    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-calendar": "^4.6.1",
     "react-data-table-component": "^7.5.4",

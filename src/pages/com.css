@@ -149,3 +149,8 @@
   box-shadow: none !important;
   padding: 0.8em !important;
 }
+
+.smtlogo {
+  width: 150px;
+  height: 150px;
+}

@@ -618,6 +618,14 @@ const TaskDone = [
 
 const CustomerBalance = [
     {
+        header: 'Action',
+        Cell: (({row}) => (
+            <>
+            
+            </>
+        ))
+    },
+    {
         header: 'Company',
         accessorKey: 'Company_Name'
     },
@@ -638,6 +646,10 @@ const CustomerBalance = [
         header: 'Dr/Cr',
         accessorKey: 'CR_DR'
     }
+]
+
+const StatementOfAccount = [
+    
 ]
 
 export {
