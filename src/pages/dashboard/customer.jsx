@@ -23,7 +23,7 @@ const CustomerScreen = () => {
         to: new Date().toISOString().split('T')[0],
     });
 
-    const [closingBalance, setClosingBalance] = useState({debit: 0, credit: 0})
+    const [closingBalance, setClosingBalance] = useState({ debit: 0, credit: 0 });
 
 
     useEffect(() => {
@@ -175,7 +175,11 @@ const CustomerScreen = () => {
     const handleClose = () => {
         setDialog(false);
         setSOA([]);
-        setClickedRow({})
+        setClickedRow({});
+        setSelectedRange({
+            from: firstDayOfMonth.toISOString().split('T')[0],
+            to: new Date().toISOString().split('T')[0],
+        })
     }
 
     const table = useMaterialReactTable({
@@ -280,10 +284,10 @@ const CustomerScreen = () => {
                                     <tr>
                                         <td className="border-0">Closing Balance</td>
                                         <td className="border-0 text-primary">{
-                                            (closingBalance?.debit - closingBalance?.credit) < 0 
-                                            ? (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + " CR" 
-                                            : (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + ' DR'
-                                            }
+                                            (closingBalance?.debit - closingBalance?.credit) < 0
+                                                ? (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + " CR"
+                                                : (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + ' DR'
+                                        }
                                         </td>
                                     </tr>
                                 </tbody>
