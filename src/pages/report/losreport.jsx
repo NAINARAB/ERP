@@ -58,7 +58,7 @@ const LOSReport = () => {
         brand: allOption.value,
         stock_group: allOption.value,
         inm: allOption.value,
-        date: dateFormatted,
+        date: todateFormatted,
         todate: todateFormatted,
         zero: false
     });
@@ -82,20 +82,47 @@ const LOSReport = () => {
             accessorKey: 'Bal_Qty',
             aggregationFn: 'sum',
             size: 210,
-            AggregatedCell: ({ cell }) => <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{parseInt(cell.getValue())}</div>,
-            Footer: () => <div style={{ color: 'blue' }}>Total ( {totalbalance.baltotal} )</div>,
+            Cell: (({ row }) => {
+                let obj = row.original;
+                if (obj?.Bal_Qty) {
+                    return obj.Bal_Qty.toLocaleString('en-IN')
+                }
+            }),
+            AggregatedCell: ({ cell }) => (
+                <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{(parseFloat(cell.getValue()).toLocaleString('en-IN'))}</div>
+            ),
+            Footer: () => <div style={{ color: 'blue' }}>Total ( {(totalbalance.baltotal).toLocaleString('en-IN')} )</div>,
         },
         {
             header: 'Closing Rate',
             accessorKey: 'CL_Rate',
+            aggregationFn: 'mean',
+            size: 240,
+            Cell: (({ row }) => {
+                let obj = row.original;
+                if (obj?.CL_Rate) {
+                    return obj.CL_Rate.toLocaleString('en-IN')
+                }
+            }),
+            AggregatedCell: ({ cell }) => (
+                <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{(parseFloat(cell.getValue())).toLocaleString('en-IN')}</div>
+            ),
         },
         {
             header: 'Stock Value',
             accessorKey: 'Stock_Value',
             aggregationFn: 'sum',
             size: 240,
-            AggregatedCell: ({ cell }) => <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{parseInt(cell.getValue())}</div>,
-            Footer: () => <div style={{ color: 'blue' }}>Total ( {totalbalance.stocktotal} )</div>,
+            Cell: (({ row }) => {
+                let obj = row.original;
+                if (obj?.Stock_Value) {
+                    return obj.Stock_Value.toLocaleString('en-IN')
+                }
+            }),
+            AggregatedCell: ({ cell }) => (
+                <div style={{ color: 'blue', fontWeight: 'bold', float: 'right', width: '100%' }}>{(parseFloat(cell.getValue())).toLocaleString('en-IN')}</div>
+            ),
+            Footer: () => <div style={{ color: 'blue' }}>Total ( {(totalbalance.stocktotal).toLocaleString('en-IN')} )</div>,
         },
         {
             header: 'Month',
@@ -197,7 +224,6 @@ const LOSReport = () => {
     const table = useMaterialReactTable({
         columns: ReportMenu,
         data: allReport === null ? [] : allReport,
-        // enableRowSelection: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
@@ -205,14 +231,12 @@ const LOSReport = () => {
         enableRowVirtualization: true,
         enableColumnOrdering: true,
         enableColumnPinning: true,
-        enableRowNumbers: true,
         initialState: {
             density: 'compact',
-            expanded: true,
+            expanded: false,
             grouping: ['Stock_Group'],
             pagination: { pageIndex: 0, pageSize: 100 },
-            sorting: [{ id: 'Item_Name_Modified', desc: false }],
-            columnVisibility: { month: false },
+            columnVisibility: { month: false, Item_Name_Modified: false, Trans_Date: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
@@ -225,12 +249,6 @@ const LOSReport = () => {
                     flexWrap: 'wrap',
                 }}
             >
-                {/* <Button
-                    onClick={handleExportData}
-                    startIcon={<FileDownload />}
-                >
-                    Export All Data
-                </Button> */}
                 <Button
                     disabled={table.getRowModel().rows.length === 0}
                     onClick={() => handleExportRows(table.getRowModel().rows)}
