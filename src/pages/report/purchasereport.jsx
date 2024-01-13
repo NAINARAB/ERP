@@ -6,7 +6,6 @@ import { pageRights } from "../../components/rightsCheck";
 import { NavigateNext, FilterAlt } from '@mui/icons-material';
 import { CurrentCompany } from "../../components/context/contextData";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material";
-import { Search } from '@mui/icons-material';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 
 
@@ -20,10 +19,11 @@ const today = formatDate(new Date());
 
 const PurchaseReport = () => {
     const { compData } = useContext(CurrentCompany)
-    const [purchaseOrderData, setPurchaseOrderData] = useState([]);
+    const [purchaseOrderData20, setPurchaseOrderData20] = useState([]);
+    const [purchaseOrderData3, setPurchaseOrderData3] = useState([]);
     const allOption = { value: 0, label: 'ALL' };
     const [selectedValue, setSelectedValue] = useState({
-        Report_Type: allOption.value,
+        Report_Type: 2,
         Fromdate: today,
         Todate: today,
         Customer_Id: allOption.value,
@@ -31,7 +31,6 @@ const PurchaseReport = () => {
         BillNo: '',
         CustomerGet: allOption.label,
         ItemGet: allOption.label,
-        ReportGet: 'ITEM BASED'
     });
     const [dialog, setDialog] = useState(false)
     const [refresh, setRefresh] = useState(false);
@@ -47,8 +46,8 @@ const PurchaseReport = () => {
 
     useEffect(() => {
         if (pageAccess?.permissions?.Read_Rights === 1) {
-            if (parseInt(selectedValue.Report_Type) !== 0) {
-                fetch(`${apihost}/api/PurchaseOrderReport?Report_Type=${selectedValue.Report_Type}&Fromdate=${selectedValue.Fromdate}&Todate=${selectedValue.Todate}&Customer_Id=${selectedValue.Customer_Id}&Item_Id=${selectedValue.Item_Id}&BillNo=${selectedValue.BillNo}`, {
+            if (view === 'Table') {
+                fetch(`${apihost}/api/PurchaseOrderReportTable?Report_Type=${selectedValue.Report_Type}&Fromdate=${selectedValue.Fromdate}&Todate=${selectedValue.Todate}&Customer_Id=${selectedValue.Customer_Id}&Item_Id=${selectedValue.Item_Id}&BillNo=${selectedValue.BillNo}`, {
                     headers: {
                         "Content-type": "application/json; charset=UTF-8",
                         'Authorization': pageAccess.token,
@@ -61,15 +60,19 @@ const PurchaseReport = () => {
                             const parsed = obj?.product_details ? JSON.parse(obj.product_details) : []
                             obj.po_date = obj?.po_date.split('T')[0].split('-').reverse().join('-');
                             obj.product_details = parsed
-                            // obj.invoice_value_after_tax = obj?.invoice_value_after_tax.toLocaleString('en-IN')
                         })
-                        setPurchaseOrderData(data.data)
+                        if(selectedValue.Report_Type === 2 || selectedValue.Report_Type === 0) {
+                            setPurchaseOrderData20(data.data)
+                        } else {
+                            setPurchaseOrderData3(data.data)
+                        }
                     } else {
-                        setPurchaseOrderData([])
+                        setPurchaseOrderData20([]);
+                        setPurchaseOrderData3([]);
                     }
                 })
             } else {
-                fetch(`${apihost}/api/PurchaseOrderItemBased?Report_Type=${selectedValue.Report_Type}&Fromdate=${selectedValue.Fromdate}&Todate=${selectedValue.Todate}&Customer_Id=${selectedValue.Customer_Id}&Item_Id=${selectedValue.Item_Id}&BillNo=${selectedValue.BillNo}`, {
+                fetch(`${apihost}/api/PurchaseOrderReportCard?Report_Type=${selectedValue.Report_Type}&Fromdate=${selectedValue.Fromdate}&Todate=${selectedValue.Todate}&Customer_Id=${selectedValue.Customer_Id}&Item_Id=${selectedValue.Item_Id}&BillNo=${selectedValue.BillNo}`, {
                     headers: {
                         "Content-type": "application/json; charset=UTF-8",
                         'Authorization': pageAccess.token,
@@ -80,60 +83,131 @@ const PurchaseReport = () => {
                         data.data.sort((a, b) => a.po_no - b.po_no);
                         data.data.map(obj => {
                             obj.po_date = obj.po_date.split('T')[0].split('-').reverse().join('-');
-                            obj.amount = obj.amount.toLocaleString('en-IN')
+                            obj.amount = obj?.amount ? obj?.amount.toLocaleString('en-IN') : 0;
+                            obj.product_details = obj?.product_details ? JSON.parse(obj.product_details) : []
                         })
-                        setPurchaseOrderData(data.data)
+                        if(selectedValue.Report_Type === 2 || selectedValue.Report_Type === 0) {
+                            setPurchaseOrderData20(data.data)
+                        } else {
+                            setPurchaseOrderData3(data.data)
+                        }
                     } else {
-                        setPurchaseOrderData([])
+                        setPurchaseOrderData20([]);
+                        setPurchaseOrderData3([]);
                     }
                 })
             }
         }
     }, [pageAccess, compData, selectedValue.Report_Type, selectedValue.Fromdate, selectedValue.Todate])
 
-    const itemBasedColumn = useMemo(() => [
+
+
+    const pendingAndItemBased = [
         {
             header: 'Order No',
             accessorKey: 'po_no',
-            size: 130
+            size: 130,
+            enableSorting: false
+        },
+        {
+            header: 'Stock Group',
+            accessorKey: 'stock_group_name',
+            filterVariant: 'multi-select',
+            size: 230,
+            enableSorting: false
+        },
+        {
+            header: 'Item Name',
+            accessorKey: 'Item_Name_Modified',
+            filterVariant: 'multi-select',
+            size: 230,
+            enableSorting: false
         },
         {
             header: 'Date',
             accessorKey: 'po_date',
-            size: 130
+            size: 130,
+            enableSorting: false
         },
         {
             header: 'Ledger Name',
             accessorKey: 'ledger_name',
-            size: 350
+            enableSorting: false
         },
         {
-            header: 'Items Ordered',
+            header: '(Q)',
+            accessorKey: 'bill_qty',
+            size: 130,
+            enableSorting: false,
             Cell: (({ row }) => {
-                if (row.original?.product_details) {
-                    return row.original?.product_details.length
-                } else {
-                    return 0
+                let value = 0;
+                if (row.original.bill_qty) {
+                    value = (row.original.bill_qty / 100).toLocaleString('en-IN')
                 }
-            })
+                return (
+                    <div className="w-100 text-end">
+                        {value}
+                    </div>
+                )
+            }),
+            AggregatedCell: ({ cell }) => (
+                <div className="text-primary fw-bold text-end w-100">
+                    {(parseFloat(cell.getValue() / 100).toLocaleString('en-IN'))}
+                </div>
+            ),
         },
         {
-            header: 'Worth ( ₹ )',
+            header: '(R)',
+            accessorKey: 'item_rate',
+            size: 130,
+            enableSorting: false,
             Cell: (({ row }) => {
-                let temp = 0;
-                if (row.original.product_details) {
-                    row.original.product_details.map(obj => {
-                        temp += parseInt(obj.amount);
-                    })
+                let value = 0;
+                if (row.original.item_rate) {
+                    value = (row.original.item_rate / 100).toLocaleString('en-IN')
                 }
-                return temp.toLocaleString('en-IN')
-            })
-        }
-    ], [selectedValue.Report_Type])
+                return (
+                    <div className="w-100 text-end">
+                        {value}
+                    </div>
+                )
+            }),
 
-    const ItemBasedTable = useMaterialReactTable({
-        columns: itemBasedColumn,
-        data: purchaseOrderData,
+            aggregationFn: 'mean',
+            AggregatedCell: ({ cell }) => (
+                <div className="text-primary fw-bold text-end w-100">
+                    {(parseFloat(cell.getValue() / 100).toLocaleString('en-IN'))}
+                </div>
+            ),
+        },
+        {
+            header: '₹ Total',
+            accessorKey: 'amount',
+            size: 130,
+            enableSorting: false,
+            Cell: (({ row }) => {
+                let value = 0;
+                if (row.original.amount) {
+                    value = (row.original.amount / 100).toLocaleString('en-IN')
+                }
+                return (
+                    <div className="w-100 text-end">
+                        {value}
+                    </div>
+                )
+            }),
+            AggregatedCell: ({ cell }) => (
+                <div className="text-primary fw-bold text-end w-100">
+                    {(parseFloat(cell.getValue() / 100).toLocaleString('en-IN'))}
+                </div>
+            ),
+        },
+    ]
+
+    const pendingAndItemBasedTable = useMaterialReactTable({
+        columns: pendingAndItemBased,
+        data: purchaseOrderData20,
+        enableFacetedValues: true,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
@@ -144,56 +218,32 @@ const PurchaseReport = () => {
             density: 'compact',
             expanded: false,
             pagination: { pageIndex: 0, pageSize: 100 },
+            grouping: ['stock_group_name', 'Item_Name_Modified'],
+            columnVisibility: { po_no: false, po_date: false }
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
-        renderDetailPanel: ({ row }) => (
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                }}
-            >
-                <table className="w-100 bg-light rounded overflow-x-scroll">
-                    <thead className="text-center border-bottom">
-                        <tr>
-                            <td className="text-start p-2">Name</td>
-                            <td className="p-2">Rate</td>
-                            <td className="p-2">Quantity</td>
-                            <td className="p-2">Unit</td>
-                            <td className="p-2">Amount</td>
-                        </tr>
-                    </thead>
-                    <tbody className="text-center">
-                        {row.original?.product_details?.map((ob, ind) => (
-                            <tr key={ind}>
-                                <td className="text-start p-2">{ob?.stock_item_name}</td>
-                                <td className="p-2">{ob?.rate}</td>
-                                <td className="p-2">{ob?.bill_qty}</td>
-                                <td className="p-2">{ob?.bill_unit}</td>
-                                <td className="p-2">{ob?.amount.toLocaleString('en-IN')}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </Box>
-        ),
+        muiTableBodyCellProps: { sx: { fontSize: '13px', textAlign: 'center' } }
     })
 
-    const productBasedColumn = useMemo(() => [
+    const OrderBased = [
         {
-            header: 'Order No',
+            header: 'No',
             accessorKey: 'po_no',
+            size: 90,
+            enableSorting: false
         },
         {
             header: 'Date',
             accessorKey: 'po_date',
+            enableSorting: false,
+            size: 100
         },
         {
             header: 'Ledger Name',
             accessorKey: 'ledger_name',
-            size: 400
+            size: 400,
+            enableSorting: false
         },
         {
             header: 'Amount',
@@ -204,7 +254,8 @@ const PurchaseReport = () => {
                     Amount = row.original?.invoice_value_after_tax.toLocaleString('en-IN')
                 }
                 return Amount
-            })
+            }),
+            enableSorting: false
         },
         {
             header: 'Canceled?',
@@ -213,13 +264,14 @@ const PurchaseReport = () => {
                 <span className={row.original?.cancel_status === 'Yes' ? "float-end bg-danger text-light px-3 rounded" : "float-end bg-success text-light px-3 rounded"}>
                     {row.original?.cancel_status}
                 </span>
-            ))
+            )),
+            enableSorting: false
         }
-    ], [selectedValue.Report_Type])
+    ]
 
-    const PurchaseOrderTable = useMaterialReactTable({
-        columns: productBasedColumn,
-        data: purchaseOrderData,
+    const PurchaseOrderBasedTable = useMaterialReactTable({
+        columns: OrderBased,
+        data: purchaseOrderData3,
         enableColumnResizing: true,
         enableGrouping: true,
         enableStickyHeader: true,
@@ -235,60 +287,7 @@ const PurchaseReport = () => {
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
     })
 
-    const firstOptionColumn = useMemo(() => [
-        {
-            header: 'Order No',
-            accessorKey: 'po_no',
-            size: 130
-        },
-        {
-            header: 'Date',
-            accessorKey: 'po_date',
-            size: 130
-        },
-        {
-            header: 'Item Name',
-            accessorKey: 'stock_item_name',
-            size: 350
-        },
-        {
-            header: 'Quantity',
-            accessorKey: 'bill_qty',
-            size: 150
-        },
-        {
-            header: 'Amount',
-            accessorKey: 'amount',
-            Cell: (({ row }) => row.original.amount.toLocaleString('en-IN')),
-            size: 150
-        },
-        {
-            header: 'Ledger Name',
-            accessorKey: 'ledger_name',
-            size: 350
-        },
-    ], [selectedValue.Report_Type])
-
-    const firstOptionTable = useMaterialReactTable({
-        columns: firstOptionColumn,
-        data: purchaseOrderData,
-        enableColumnResizing: true,
-        enableGrouping: true,
-        enableStickyHeader: true,
-        enableStickyFooter: true,
-        enableColumnOrdering: true,
-        enableColumnPinning: true,
-        initialState: {
-            density: 'compact',
-            expanded: false,
-            grouping: ['stock_item_name'],
-            pagination: { pageIndex: 0, pageSize: 100 },
-        },
-        muiToolbarAlertBannerChipProps: { color: 'primary' },
-        muiTableContainerProps: { sx: { maxHeight: '60vh' } },
-    })
-
-
+    useEffect(() => console.log(parseInt(selectedValue.Report_Type, typeof selectedValue.Report_Type)), [selectedValue.Report_Type])
 
     return (
         <>
@@ -325,88 +324,95 @@ const PurchaseReport = () => {
                             ?
                             <>
                                 <div className="row" style={{ maxHeight: '69vh', overflowY: 'scroll' }}>
-                                    {parseInt(selectedValue.Report_Type) === 3 && purchaseOrderData.map((obj, index) => (
-                                        <div className="col-12 col-md-6 col-lg-4 col-xxl-3 p-2" key={index}>
-                                            <div className="card">
-                                                <div className="card-header pb-0">
-                                                    <h5 className="h6 fw-bold pb-0">
-                                                        <span className="float-start">No: {obj?.po_no}</span>
-                                                        <span className="float-end">{obj?.po_date}</span>
-                                                    </h5><br />
-                                                </div>
-                                                <div className={obj.cancel_status === 'Yes' ? "card-body bg-light" : 'card-body'}>
-                                                    <p className="mb-2 fw-bold text-primary"
-                                                        style={{ width: '90%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                                        {obj.ledger_name}
-                                                    </p>
-                                                    <p>
-                                                        <span className="float-start">AMOUNT</span>
-                                                        <span className="float-end">{obj.invoice_value_after_tax}</span>
-                                                    </p><br />
-                                                    <p>
-                                                        <span className="float-start">CANCEL STATUS</span>
-                                                        <span className={obj.cancel_status === 'Yes' ? "float-end bg-danger text-light px-3 rounded" : "float-end bg-success text-light px-3 rounded"}>{obj.cancel_status}</span>
-                                                    </p>
+                                    {parseInt(selectedValue.Report_Type) === 3 &&
+                                        purchaseOrderData20.map((obj, index) => (
+                                            <div className="col-12 col-md-6 col-lg-4 col-xxl-3 p-2" key={index}>
+                                                <div className="card">
+                                                    <div className="card-header pb-0">
+                                                        <h5 className="h6 fw-bold pb-0">
+                                                            <span className="float-start">No: {obj?.po_no}</span>
+                                                            <span className="float-end">{obj?.po_date}</span>
+                                                        </h5><br />
+                                                    </div>
+                                                    <div className={obj.cancel_status === 'Yes' ? "card-body bg-light" : 'card-body'}>
+                                                        <p className="mb-2 fw-bold text-primary"
+                                                            style={{ width: '90%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                            {obj.ledger_name}
+                                                        </p>
+                                                        <p>
+                                                            <span className="float-start">AMOUNT</span>
+                                                            <span className="float-end">{obj.invoice_value_after_tax}</span>
+                                                        </p><br />
+                                                        <p>
+                                                            <span className="float-start">CANCEL STATUS</span>
+                                                            <span className={obj.cancel_status === 'Yes' ? "float-end bg-danger text-light px-3 rounded" : "float-end bg-success text-light px-3 rounded"}>{obj.cancel_status}</span>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                    {parseInt(selectedValue.Report_Type) === 2 && purchaseOrderData.map((obj, index) => (
-                                        <div className="col-12 col-lg-6 p-2" key={index}>
-                                            <div className="card overflow-hidden" style={{ boxSizing: 'border-box' }}>
-                                                <div className="card-header pb-0">
-                                                    <h5 className="h6 fw-bold pb-0">
-                                                        <span className={obj?.product_details?.length === 0 ? 'float-start text-danger' : "float-start"}>No: {obj?.po_no}</span>
-                                                        <span className="float-end">{obj?.po_date}</span>
-                                                    </h5><br />
-                                                </div>
-                                                <div className={obj.cancel_status === 'Yes' ? "card-body bg-light overflow-x-scroll" : 'card-body overflow-x-scroll'}>
-                                                    <p className="fw-bold text-primary">
-                                                        <span className="float-start"
-                                                            style={{ width: '65%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{obj?.ledger_name}</span>
-                                                        <span className="float-end text-primary fw-bold h5">
-                                                            {obj.product_details && obj.product_details[0] && obj.product_details[0].invoice_value_after_tax
-                                                                ? obj.product_details[0].invoice_value_after_tax.toLocaleString('en-IN')
-                                                                : null}
-                                                        </span>
+                                        ))
+                                    }
+                                    {parseInt(selectedValue.Report_Type) === 0 || parseInt(selectedValue.Report_Type) === 2 &&
+                                        purchaseOrderData3.map((obj, index) => (
+                                            <div className="col-12 col-lg-6 p-2" key={index}>
+                                                {console.log(obj)}
+                                                <div className="card overflow-hidden" style={{ boxSizing: 'border-box' }}>
+                                                    <div className="card-header pb-0">
+                                                        <h5 className="h6 fw-bold pb-0">
+                                                            <span className={obj?.product_details?.length === 0 ? 'float-start text-danger' : "float-start"}>No: {obj?.po_no}</span>
+                                                            <span className="float-end">{obj?.po_date}</span>
+                                                        </h5><br />
+                                                    </div>
+                                                    <div className={obj.cancel_status === 'Yes' ? "card-body bg-light overflow-x-scroll" : 'card-body overflow-x-scroll'}>
+                                                        <p className="fw-bold text-primary">
+                                                            <span className="float-start"
+                                                                style={{ width: '65%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{obj?.ledger_name}</span>
+                                                            <span className="float-end text-primary fw-bold h5">
+                                                                {obj.product_details && obj.product_details[0] && obj.product_details[0].invoice_value_after_tax
+                                                                    ? obj.product_details[0].invoice_value_after_tax.toLocaleString('en-IN')
+                                                                    : null}
+                                                            </span>
 
 
-                                                    </p><br />
-                                                    <p className="text-primary border-bottom">Products :</p>
-                                                    <table className="w-100 bg-light rounded overflow-x-scroll">
-                                                        <thead className="text-center border-bottom">
-                                                            <tr>
-                                                                <td className="text-start p-2">Name</td>
-                                                                <td className="p-2">Rate</td>
-                                                                <td className="p-2">Quantity</td>
-                                                                <td className="p-2">Unit</td>
-                                                                <td className="p-2">Amount</td>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody className="text-center">
-                                                            {obj?.product_details?.map((ob, ind) => (
-                                                                <tr key={ind}>
-                                                                    <td className="text-start p-2">{ob?.stock_item_name}</td>
-                                                                    <td className="p-2">{ob?.rate}</td>
-                                                                    <td className="p-2">{ob?.bill_qty}</td>
-                                                                    <td className="p-2">{ob?.bill_unit}</td>
-                                                                    <td className="p-2">{ob?.amount.toLocaleString('en-IN')}</td>
+                                                        </p><br />
+                                                        <p className="text-primary border-bottom">Products :</p>
+                                                        <table className="w-100 bg-light rounded overflow-x-scroll">
+                                                            <thead className="text-center border-bottom">
+                                                                <tr>
+                                                                    <td className="text-start p-2">Name</td>
+                                                                    <td className="p-2">Rate</td>
+                                                                    <td className="p-2">Quantity</td>
+                                                                    <td className="p-2">Unit</td>
+                                                                    <td className="p-2">Amount</td>
                                                                 </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                    {obj?.product_details?.length === 0 && <p className="text-danger fw-bold text-end">Order Canceled!</p>}
+                                                            </thead>
+                                                            <tbody className="text-center">
+                                                                {obj?.product_details?.map((ob, ind) => (
+                                                                    <tr key={ind}>
+                                                                        <td className="text-start p-2">{ob?.stock_item_name}</td>
+                                                                        <td className="p-2">{ob?.rate}</td>
+                                                                        <td className="p-2">{ob?.bill_qty}</td>
+                                                                        <td className="p-2">{ob?.bill_unit}</td>
+                                                                        <td className="p-2">{ob?.amount.toLocaleString('en-IN')}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                        {obj?.product_details?.length === 0 && <p className="text-danger fw-bold text-end">Order Canceled!</p>}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))
+                                    }
                                 </div>
                             </>
                             :
                             <>
-                                {(parseInt(selectedValue.Report_Type) === 0) && <MaterialReactTable table={firstOptionTable} />}
-                                {(parseInt(selectedValue.Report_Type) === 2) && <MaterialReactTable table={ItemBasedTable} />}
-                                {(parseInt(selectedValue.Report_Type) === 3) && <MaterialReactTable table={PurchaseOrderTable} />}
+                                {
+                                    ((parseInt(selectedValue.Report_Type) === 0) || (parseInt(selectedValue.Report_Type) === 2)) 
+                                    &&  <MaterialReactTable table={pendingAndItemBasedTable} />
+                                }
+                                {(parseInt(selectedValue.Report_Type) === 3) && <MaterialReactTable table={PurchaseOrderBasedTable} />}
                             </>
                         }
                     </div>
@@ -426,21 +432,9 @@ const PurchaseReport = () => {
                             value={selectedValue.Report_Type}
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }}
                             onChange={(e) => setSelectedValue({ ...selectedValue, Report_Type: e.target.value })}>
-                            <option value={0}>ITEM BASED</option>
                             <option value={2}>PENDING PURCHASE ORDER</option>
+                            <option value={0}>ITEM BASED</option>
                             <option value={3}>PURCHASE ORDER</option>
-                        </select>
-                    </div>
-
-                    <div className="col-md-4 p-2">
-                        <label className="p-2">VIEW</label>
-                        <select
-                            className="form-select"
-                            value={view}
-                            style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }}
-                            onChange={(e) => setView(e.target.value)}>
-                            <option value={'Table'}>Table</option>
-                            <option value={'Card'}>Card</option>
                         </select>
                     </div>
 
@@ -460,6 +454,18 @@ const PurchaseReport = () => {
                             className="form-control text-uppercase"
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue?.Todate}
                             onChange={(e) => setSelectedValue({ ...selectedValue, Todate: e.target.value })} />
+                    </div>
+
+                    <div className="col-md-4 p-2">
+                        <label className="p-2">VIEW</label>
+                        <select
+                            className="form-select"
+                            value={view}
+                            style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }}
+                            onChange={(e) => setView(e.target.value)}>
+                            <option value={'Table'}>Table</option>
+                            <option value={'Card'}>Card</option>
+                        </select>
                     </div>
                 </DialogContent><hr className="m-0" />
                 <DialogActions>

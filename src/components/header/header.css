@@ -1,17 +1,26 @@
-.heddiv{
-    z-index: 100;
-    background-color: rgb(15, 11, 42);
-    color: white;
-}
 *{
     box-sizing: border-box;
 }
+
+.heddiv{
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; */
+    z-index: 100;
+    background-color: rgb(15, 11, 42);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.63em;
+}
+
+.heddiv-start {
+    flex-grow: 1;
+}
+
 .tex{
     margin: 0 1em 0 2em !important;
-    padding: 0.6em !important;
 }
-.logout {
-    position: absolute;
-    top: 16px;
-    right: 23px;
-}
+

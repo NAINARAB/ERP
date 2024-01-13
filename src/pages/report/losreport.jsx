@@ -179,7 +179,7 @@ const LOSReport = () => {
     useEffect(() => {
         if (pageInfo?.permissions?.Read_Rights === 1) {
             setAllReport(null)
-            fetch(`${apihost}/api/stockabstract?Fromdate=${selectedValue.date}&Todate=${selectedValue.todate}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
+            fetch(`${apihost}/api/stockabstract?ReportDate=${selectedValue.date}&Group_ST=${selectedValue.group}&Stock_Group=${selectedValue.stock_group}&Bag=${selectedValue.bag}&Brand=${selectedValue.brand}&Item_Name=${selectedValue.inm}`, {
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
                     'Authorization': pageInfo.token || localStorage.getItem('userToken'),
@@ -236,7 +236,7 @@ const LOSReport = () => {
             expanded: false,
             grouping: ['Stock_Group'],
             pagination: { pageIndex: 0, pageSize: 100 },
-            columnVisibility: { month: false, Item_Name_Modified: false, Trans_Date: false },
+            columnVisibility: { month: false, Trans_Date: false },
         },
         muiToolbarAlertBannerChipProps: { color: 'primary' },
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
@@ -351,10 +351,10 @@ const LOSReport = () => {
                         <h5 className="py-2">
                             REPORT OF
                             <span style={{ color: 'rgb(66, 34, 225)' }}> &nbsp;{compData.Company_Name}</span> &nbsp;
-                            FROM :
+                            DATE :
                             <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue?.date.split('-').reverse().join('-')}</span> &nbsp;
-                            TO :
-                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue?.todate.split('-').reverse().join('-')}</span>
+                            {/* TO :
+                            <span style={{ color: 'rgb(66, 34, 225)' }}> {selectedValue?.todate.split('-').reverse().join('-')}</span> */}
                         </h5>
                         {allReport === null ? <Loader /> : <MaterialReactTable table={table} />}
                     </div>
@@ -438,21 +438,21 @@ const LOSReport = () => {
                     </div>
                     <div className="col-md-12"><br /></div><hr />
                     <div className="col-md-4 p-2">
-                        <label className="p p-2">From DATE</label>
+                        <label className="p p-2">DATE</label>
                         <input
                             type="date"
                             className="form-control"
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue.date}
                             onChange={(e) => setSelectedValue({ ...selectedValue, date: e.target.value })} />
                     </div>
-                    <div className="col-md-4 p-2">
+                    {/* <div className="col-md-4 p-2">
                         <label className="p p-2">To DATE</label>
                         <input
                             type="date"
                             className="form-control"
                             style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue.todate}
                             onChange={(e) => setSelectedValue({ ...selectedValue, todate: e.target.value })} />
-                    </div>
+                    </div> */}
                     <div className="p-5 mb-5"></div>
                 </DialogContent><hr />
                 <DialogActions>

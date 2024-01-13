@@ -135,13 +135,6 @@ const Sidebar = ({ mainMenuId, subMenuId, childMenuId }) => {
     return (
         <>
             <div className='menuhide'>
-                {/* {opncond === false ? <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
-                    onClick={() => { document.getElementById('sid').style.display = 'block'; setopencond(true) }}
-                ><Menu /></IconButton> :
-
-                    <IconButton size='small' sx={{ color: 'white', fontWeight: 'bold' }}
-                        onClick={() => { document.getElementById('sid').style.display = 'none'; setopencond(false) }}
-                    ><Close /></IconButton>} */}
                 <IconButton data-bs-toggle="offcanvas" data-bs-target="#sidenav" size='small' sx={{ color: 'white', fontWeight: 'bold' }}>
                     {opncond ? <Close /> : <Menu />}
                 </IconButton>
