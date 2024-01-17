@@ -45,6 +45,8 @@ const PurchaseReport = () => {
     }, [])
 
     useEffect(() => {
+        setPurchaseOrderData20([]);
+        setPurchaseOrderData3([]);
         if (pageAccess?.permissions?.Read_Rights === 1) {
             if (view === 'Table') {
                 fetch(`${apihost}/api/PurchaseOrderReportTable?Report_Type=${selectedValue.Report_Type}&Fromdate=${selectedValue.Fromdate}&Todate=${selectedValue.Todate}&Customer_Id=${selectedValue.Customer_Id}&Item_Id=${selectedValue.Item_Id}&BillNo=${selectedValue.BillNo}`, {
@@ -61,10 +63,13 @@ const PurchaseReport = () => {
                             obj.po_date = obj?.po_date.split('T')[0].split('-').reverse().join('-');
                             obj.product_details = parsed
                         })
-                        if(selectedValue.Report_Type === 2 || selectedValue.Report_Type === 0) {
+                        console.log(data.data)
+                        if (parseInt(selectedValue.Report_Type) === 2 || parseInt(selectedValue.Report_Type) === 0) {
                             setPurchaseOrderData20(data.data)
+                            setPurchaseOrderData3([])
                         } else {
                             setPurchaseOrderData3(data.data)
+                            setPurchaseOrderData20([])
                         }
                     } else {
                         setPurchaseOrderData20([]);
@@ -86,10 +91,13 @@ const PurchaseReport = () => {
                             obj.amount = obj?.amount ? obj?.amount.toLocaleString('en-IN') : 0;
                             obj.product_details = obj?.product_details ? JSON.parse(obj.product_details) : []
                         })
-                        if(selectedValue.Report_Type === 2 || selectedValue.Report_Type === 0) {
+                        console.log(data.data);
+                        if (parseInt(selectedValue.Report_Type) === 2 || parseInt(selectedValue.Report_Type) === 0) {
                             setPurchaseOrderData20(data.data)
+                            setPurchaseOrderData3([])
                         } else {
                             setPurchaseOrderData3(data.data)
+                            setPurchaseOrderData20([])
                         }
                     } else {
                         setPurchaseOrderData20([]);
@@ -98,11 +106,11 @@ const PurchaseReport = () => {
                 })
             }
         }
-    }, [pageAccess, compData, selectedValue.Report_Type, selectedValue.Fromdate, selectedValue.Todate])
+    }, [pageAccess, compData, selectedValue.Report_Type, selectedValue.Fromdate, selectedValue.Todate, view])
 
 
 
-    const pendingAndItemBased = [
+    const pendingAndItemBased = useMemo(() => [
         {
             header: 'Order No',
             accessorKey: 'po_no',
@@ -202,7 +210,7 @@ const PurchaseReport = () => {
                 </div>
             ),
         },
-    ]
+    ], [selectedValue.Report_Type, view])
 
     const pendingAndItemBasedTable = useMaterialReactTable({
         columns: pendingAndItemBased,
@@ -226,7 +234,7 @@ const PurchaseReport = () => {
         muiTableBodyCellProps: { sx: { fontSize: '13px', textAlign: 'center' } }
     })
 
-    const OrderBased = [
+    const OrderBased = useMemo(() => [
         {
             header: 'No',
             accessorKey: 'po_no',
@@ -267,7 +275,7 @@ const PurchaseReport = () => {
             )),
             enableSorting: false
         }
-    ]
+    ], [selectedValue.Report_Type, view])
 
     const PurchaseOrderBasedTable = useMaterialReactTable({
         columns: OrderBased,
@@ -287,7 +295,7 @@ const PurchaseReport = () => {
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
     })
 
-    useEffect(() => console.log(parseInt(selectedValue.Report_Type, typeof selectedValue.Report_Type)), [selectedValue.Report_Type])
+    useEffect(() => console.log(parseInt(selectedValue.Report_Type), typeof selectedValue.Report_Type), [selectedValue.Report_Type])
 
     return (
         <>
@@ -324,8 +332,8 @@ const PurchaseReport = () => {
                             ?
                             <>
                                 <div className="row" style={{ maxHeight: '69vh', overflowY: 'scroll' }}>
-                                    {parseInt(selectedValue.Report_Type) === 3 &&
-                                        purchaseOrderData20.map((obj, index) => (
+                                    {(parseInt(selectedValue.Report_Type) === 3) &&
+                                        purchaseOrderData3.map((obj, index) => (
                                             <div className="col-12 col-md-6 col-lg-4 col-xxl-3 p-2" key={index}>
                                                 <div className="card">
                                                     <div className="card-header pb-0">
@@ -352,10 +360,9 @@ const PurchaseReport = () => {
                                             </div>
                                         ))
                                     }
-                                    {parseInt(selectedValue.Report_Type) === 0 || parseInt(selectedValue.Report_Type) === 2 &&
-                                        purchaseOrderData3.map((obj, index) => (
+                                    {(parseInt(selectedValue.Report_Type) === 2 || parseInt(selectedValue.Report_Type) === 0) &&
+                                        purchaseOrderData20.map((obj, index) => (
                                             <div className="col-12 col-lg-6 p-2" key={index}>
-                                                {console.log(obj)}
                                                 <div className="card overflow-hidden" style={{ boxSizing: 'border-box' }}>
                                                     <div className="card-header pb-0">
                                                         <h5 className="h6 fw-bold pb-0">
@@ -365,15 +372,16 @@ const PurchaseReport = () => {
                                                     </div>
                                                     <div className={obj.cancel_status === 'Yes' ? "card-body bg-light overflow-x-scroll" : 'card-body overflow-x-scroll'}>
                                                         <p className="fw-bold text-primary">
-                                                            <span className="float-start"
-                                                                style={{ width: '65%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{obj?.ledger_name}</span>
+                                                            <span
+                                                                className="float-start"
+                                                                style={{ width: '65%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                                {obj?.ledger_name}
+                                                            </span>
                                                             <span className="float-end text-primary fw-bold h5">
                                                                 {obj.product_details && obj.product_details[0] && obj.product_details[0].invoice_value_after_tax
                                                                     ? obj.product_details[0].invoice_value_after_tax.toLocaleString('en-IN')
                                                                     : null}
                                                             </span>
-
-
                                                         </p><br />
                                                         <p className="text-primary border-bottom">Products :</p>
                                                         <table className="w-100 bg-light rounded overflow-x-scroll">
@@ -389,9 +397,9 @@ const PurchaseReport = () => {
                                                             <tbody className="text-center">
                                                                 {obj?.product_details?.map((ob, ind) => (
                                                                     <tr key={ind}>
-                                                                        <td className="text-start p-2">{ob?.stock_item_name}</td>
-                                                                        <td className="p-2">{ob?.rate}</td>
-                                                                        <td className="p-2">{ob?.bill_qty}</td>
+                                                                        <td className="text-start p-2">{ob?.Item_Name_Modified}</td>
+                                                                        <td className="p-2">{ob?.rate.toLocaleString('en-IN')}</td>
+                                                                        <td className="p-2">{ob?.bill_qty.toLocaleString('en-IN')}</td>
                                                                         <td className="p-2">{ob?.bill_unit}</td>
                                                                         <td className="p-2">{ob?.amount.toLocaleString('en-IN')}</td>
                                                                     </tr>
@@ -409,8 +417,8 @@ const PurchaseReport = () => {
                             :
                             <>
                                 {
-                                    ((parseInt(selectedValue.Report_Type) === 0) || (parseInt(selectedValue.Report_Type) === 2)) 
-                                    &&  <MaterialReactTable table={pendingAndItemBasedTable} />
+                                    ((parseInt(selectedValue.Report_Type) === 0) || (parseInt(selectedValue.Report_Type) === 2))
+                                    && <MaterialReactTable table={pendingAndItemBasedTable} />
                                 }
                                 {(parseInt(selectedValue.Report_Type) === 3) && <MaterialReactTable table={PurchaseOrderBasedTable} />}
                             </>
