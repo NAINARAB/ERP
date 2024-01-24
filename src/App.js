@@ -21,6 +21,9 @@ import AttendanceManagement from './pages/masters/attendencemanagement';
 import PurchaseReport from './pages/report/purchasereport';
 import CustomerCategories from './pages/masters/customers/customerCategories';
 import ChangePassword from './pages/dashboard/changePassword';
+import PendingInvoice from './pages/payments/pendingInvoice';
+import PaymentSuccess from './pages/payments/paymentSuccess';
+import PaymentFailure from './pages/payments/paymentFailure';
 
 
 function App() {
@@ -49,6 +52,9 @@ function App() {
             <Route path='/purchasereport' element={<PurchaseReport />} />
             <Route path='/masters/customers' element={<CustomerCategories />} />
             <Route path='/changepassword' element={<ChangePassword />} />
+            <Route path='/payments/pendingInvoice' element={<PendingInvoice />} />
+            <Route path='/Payment_Success' element={<PaymentSuccess />} />
+            <Route path='/Payment_Failure' element={<PaymentFailure />} />
           </Routes>
         </BrowserRouter>
       </CompanyProvider>

@@ -6,7 +6,6 @@ import { FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, But
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../backendAPI";
-import { pageRights } from "../../components/rightsCheck";
 
 const ChangePassword = () => {
     const [enteredData, setEnteredData] = useState({ currentPassword: '', password: '', confirmPassword: '' });
@@ -27,6 +26,7 @@ const ChangePassword = () => {
             body: JSON.stringify({ oldPassword: enteredData.currentPassword, newPassword: enteredData.password, userId: locStore?.UserId })
         }).then(res => res.json()).then(resdata => {
             setIsLoading(false);
+            clear();
             if (resdata.status === 'Success') {
                 toast.success(resdata.message);
             } else {

@@ -33,7 +33,6 @@ const PurchaseReport = () => {
         ItemGet: allOption.label,
     });
     const [dialog, setDialog] = useState(false)
-    const [refresh, setRefresh] = useState(false);
     const [pageAccess, setPageAccess] = useState({});
     const [view, setView] = useState('Table')
 
@@ -477,7 +476,7 @@ const PurchaseReport = () => {
                     </div>
                 </DialogContent><hr className="m-0" />
                 <DialogActions>
-                    <Button variant="contained" onClick={() => { setDialog(!dialog); setRefresh(!refresh) }}>Apply</Button>
+                    <Button variant="contained" onClick={() => setDialog(!dialog)}>Apply</Button>
                 </DialogActions>
             </Dialog>
         </>

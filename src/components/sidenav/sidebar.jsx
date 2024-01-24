@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Menu, Close } from '@mui/icons-material';
 import { apihost } from '../../backendAPI';
 import { Collapse } from '@mui/material';
-import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, Tune, ShoppingCart, Toll, Grading, SwitchAccount, Circle, AddTask } from '@mui/icons-material';
+import { KeyboardArrowRight, KeyboardArrowDown, AccountCircle, ArrowRight, ArrowDropDown, GridView, CurrencyRupee, ShoppingCart, Toll, Grading, SwitchAccount, Circle, AddTask } from '@mui/icons-material';
 
 const MainMenu = (props) => {
     const [open, setOpen] = useState(props.mainMenuId === props.MainMenuData.MenuName ? true : false);
@@ -28,6 +28,7 @@ const MainMenu = (props) => {
                     {props.MainMenuData.MenuName === "SALES" && <Toll sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
                     {props.MainMenuData.MenuName === "REPORTS" && <Grading sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
                     {props.MainMenuData.MenuName === "ACCOUNTING" && <SwitchAccount sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
+                    {props.MainMenuData.MenuName === "PAYMENTS" && <CurrencyRupee sx={{ fontSize: '1.5em', color: 'rgb(66, 34, 225)', }} />}
                     &nbsp;&nbsp;{' ' + props.MainMenuData.MenuName}
                 </span>
                 <div style={{ textAlign: 'right' }}>
