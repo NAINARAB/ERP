@@ -5,8 +5,11 @@ import { apihost } from '../../backendAPI';
 import { pageRights } from '../../components/rightsCheck';
 import { NavigateNext, Logout } from '@mui/icons-material';
 import DataTable from "react-data-table-component";
-import { customStyles, customSelectStyles } from '../../components/tablecolumn';
-import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { customStyles, customSelectStyles, attendanceHistoryColumn } from '../../components/tablecolumn';
+import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button, Tab, Box } from '@mui/material';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
@@ -39,7 +42,13 @@ const AttendanceManagement = () => {
     const token = localStorage.getItem('userToken')
     const [activeEmp, setActiveEmp] = useState([])
     const [filteredData, setFilteredData] = useState([]);
-    const [search, setSearch] = useState('')
+    const currentDate = new Date();
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 2);
+    const [search, setSearch] = useState({
+        from: new Date().toISOString().split('T')[0],
+        to: new Date().toISOString().split('T')[0],
+        useDate: false
+    });
     const [modify, setModify] = useState({
         add: false,
         edit: false,
@@ -54,8 +63,14 @@ const AttendanceManagement = () => {
         Emp_Id: '',
         Emp_Name: '',
         Start_Date: '',
-        InTime: ''
+        InTime: '',
     })
+    const [attendanceHistory, setAttendanceHistory] = useState([])
+    const [tabValue, setTabValue] = useState('1')
+    const [selectEmpHis, setSelEmpHis] = useState({
+        User_Mgt_Id: 0,
+        Emp_Name: 'ALL EMPLOYEE',
+    });
 
     useEffect(() => {
         pageRights(2, 1016).then(per => {
@@ -84,17 +99,28 @@ const AttendanceManagement = () => {
         })
     }, [refresh])
 
-    function handleSearchChange(event) {
-        const term = event.target.value;
-        setSearch(term);
-        const filteredResults = activeEmp.filter(item => {
-            return Object.values(item).some(value =>
-                String(value).toLowerCase().includes(term.toLowerCase())
-            );
+    useEffect(() => {
+        const Mode = Number(selectEmpHis.User_Mgt_Id) === 0 ? 2 : 1
+        fetch(`${apihost}/api/UserAttendanceHistory?UserId=${selectEmpHis.User_Mgt_Id}&Mode=${Mode}`, {
+            headers: { 'Authorization': localStorage.getItem('userToken') }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "Success") {
+                    setAttendanceHistory(data.data)
+                }
+            })
+    }, [selectEmpHis.User_Mgt_Id])
+
+    useEffect(() => {
+        const filteredResults = attendanceHistory.filter(item => {
+            const itemDate = new Date(item.Start_Date).toISOString().split('T')[0];
+            console.log(itemDate);
+            return itemDate >= search.from && itemDate <= search.to;
         });
 
         setFilteredData(filteredResults);
-    }
+    }, [search.from, search.to])
 
     const closeAttendence = () => {
         if (rowDetails?.Id && rowDetails?.OutDate && rowDetails?.OutTime) {
@@ -118,11 +144,11 @@ const AttendanceManagement = () => {
     }
 
     const TblColumn = [
-        {
-            name: 'Employee Code',
-            selector: (row) => row.Emp_Code,
-            sortable: true,
-        },
+        // {
+        //     name: 'Employee Code',
+        //     selector: (row) => row.Emp_Code,
+        //     sortable: true,
+        // },
         {
             name: 'Employee Name',
             selector: (row) => row.Emp_Name,
@@ -151,7 +177,6 @@ const AttendanceManagement = () => {
         },
     ]
 
-
     const PostWithoutLocation = () => {
         if ((selectedEmp.Emp_Name && selectedEmp.Emp_Name !== '')
             && (selectedEmp.Start_Date && selectedEmp.Start_Date !== '')
@@ -172,7 +197,7 @@ const AttendanceManagement = () => {
                 .then(data => {
                     setRefresh(!refresh)
                     setAddDialog(false)
-                    setSelectedEmp({Emp_Id: '', Emp_Name: '', Start_Date: '', InTime: '' })
+                    setSelectedEmp({ Emp_Id: '', Emp_Name: '', Start_Date: '', InTime: '' })
                     if (data.status === 'Success') {
                         toast.success(data.message)
                     } else {
@@ -193,6 +218,23 @@ const AttendanceManagement = () => {
         }
     }
 
+    const handleFromDateChange = (newFromDate) => {
+        if (new Date(newFromDate) <= new Date(search.to)) {
+            setSearch({ ...search, from: newFromDate });
+        } else {
+            toast.warn("Invalid date range");
+        }
+    };
+
+    const handleToDateChange = (newToDate) => {
+        if (new Date(newToDate) >= new Date(search.from)) {
+            setSearch({ ...search, to: newToDate });
+        } else {
+            toast.warn("Invalid date range");
+        }
+    };
+
+
 
     return (
         <>
@@ -211,24 +253,84 @@ const AttendanceManagement = () => {
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; ATTENDANCE MANAGEMENT</h6>
                     </div>
                     <div className="p-3 mt-1">
-                        <h2 className='h3 mb-5'>
-                            <span className="float-start p-2">
-                                Active Employees {'( ' + activeEmp.length + ' )'}
-                            </span>
-                            <span className='float-end col-lg-4'>
-                                <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} />
-                            </span>
-                        </h2><br />
-                        <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box mt-5' : 'mt-5'}>
-                            <DataTable
-                                columns={TblColumn}
-                                data={filteredData && filteredData.length ? filteredData : search === '' ? activeEmp : []}
-                                pagination
-                                highlightOnHover={true}
-                                fixedHeader={true}
-                                fixedHeaderScrollHeight={'70vh'}
-                                customStyles={customStyles}
-                            />
+                        <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box' : ''}>
+                            <TabContext value={tabValue}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="lab API tabs example">
+                                        <Tab sx={tabValue === '1' ? {backgroundColor: '#c6d7eb'} : {}} label={'Active Employees ( ' + activeEmp.length + ' )'} value="1" />
+                                        <Tab sx={tabValue === '2' ? {backgroundColor: '#c6d7eb'} : {}} label="Attendance History" value="2" />
+                                    </TabList>
+                                </Box>
+                                <TabPanel value="1" sx={{ p: 0 }}>
+                                    <DataTable
+                                        columns={TblColumn}
+                                        data={activeEmp}
+                                        pagination
+                                        highlightOnHover={true}
+                                        fixedHeader={true}
+                                        fixedHeaderScrollHeight={'70vh'}
+                                        customStyles={customStyles}
+                                    />
+                                </TabPanel>
+                                <TabPanel value="2" sx={{ p: 0 }}>
+                                    <div style={{ minHeight: '68vh' }}>
+                                        <div className="row">
+                                            <div className='col-lg-3 col-md-6 p-2' >
+                                                <label>Name</label>
+                                                <Select
+                                                    options={[{ value: 0, label: 'ALL EMPLOYEE' }, ...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
+                                                    isSearchable={true}
+                                                    placeholder={'Select Employee'}
+                                                    styles={customSelectStyles}
+                                                    value={{ value: selectEmpHis.User_Mgt_Id, label: selectEmpHis.Emp_Name }}
+                                                    onChange={(e) => { setSelEmpHis({ ...selectEmpHis, User_Mgt_Id: e.value, Emp_Name: e.label }) }}
+                                                />
+                                            </div>
+                                            <div className='col-lg-3 col-md-6 p-2'>
+                                                <label>From</label>
+                                                <input
+                                                    className='cus-inpt'
+                                                    type='date'
+                                                    placeholder="Search..."
+                                                    value={search.from}
+                                                    onInput={(e) => handleFromDateChange(e.target.value)} />
+                                            </div>
+                                            <div className='col-lg-3 col-md-6 p-2'>
+                                                <label>To</label>
+                                                <div className='d-flex justify-content-between align-items-center'>
+                                                    <input
+                                                        className='cus-inpt'
+                                                        type='date'
+                                                        placeholder="Search..."
+                                                        value={search.to}
+                                                        onInput={(e) => handleToDateChange(e.target.value)} />
+                                                </div>
+                                            </div>
+                                            <div className="col-lg-3 col-md-6 p-2 d-flex align-items-center">
+                                                <input
+                                                    style={{ padding: '0.7em' }} id="muser"
+                                                    className='cus-check'
+                                                    type='checkbox'
+                                                    checked={search.useDate}
+                                                    onChange={(e) => {
+                                                        setSearch({ ...search, useDate: e.target.checked })
+                                                    }}
+                                                    title="Use Date Filter" />
+                                                <label className="form-check-label p-1 pe-2" htmlFor="muser">Use Date Filter</label>
+                                            </div>
+                                        </div>
+                                        <DataTable
+                                            columns={attendanceHistoryColumn}
+                                            data={search.useDate ? filteredData : attendanceHistory}
+                                            pagination
+                                            highlightOnHover={true}
+                                            fixedHeader={true}
+                                            fixedHeaderScrollHeight={'58vh'}
+                                            customStyles={customStyles}
+                                        />
+                                    </div>
+                                </TabPanel>
+                            </TabContext>
                         </div>
                     </div>
                 </div>

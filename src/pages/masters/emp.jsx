@@ -588,7 +588,7 @@ const Employees = () => {
                                     ))}
                                     {!pk
                                         && <div className='col-lg-4 col-md-6 d-flex align-items-center'>
-                                            <div className="card-body">
+                                            <div>
                                                 <label className="form-check-label p-1 pe-2" htmlFor="muser">Create as a User</label>
                                                 <input className="form-check-input shadow-none" style={{ padding: '0.7em' }} type="checkbox" id="muser" checked={userCreate} onChange={() => setUserCreate(!userCreate)} />
                                             </div>

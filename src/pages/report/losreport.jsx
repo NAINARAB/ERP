@@ -338,7 +338,7 @@ const LOSReport = () => {
                     <Header setting={true} />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'LOS REPORT'} />
+                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'STOCK REPORT'} />
                 </div>
                 <div className="col-md-10">
                     <div className="comhed">

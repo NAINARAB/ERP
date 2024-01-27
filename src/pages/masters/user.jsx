@@ -252,7 +252,7 @@ const User = () => {
                                     pagination
                                     highlightOnHover={true}
                                     fixedHeader={true}
-                                    fixedHeaderScrollHeight={'70vh'}
+                                    fixedHeaderScrollHeight={'100vh'}
                                     customStyles={customStyles}
                                 />
                             </div>

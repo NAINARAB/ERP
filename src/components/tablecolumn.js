@@ -7,14 +7,11 @@ const customStyles = {
     },
     rows: {
         style: {
-            minHeight: '4.6em',
             backgroundColor: 'transparent',
         },
     },
     headCells: {
         style: {
-            paddingLeft: '8px',
-            paddingRight: '8px',
             backgroundColor: 'rgb(15, 11, 42)',
             color: 'white',
             fontSize: '14px',
@@ -619,9 +616,9 @@ const TaskDone = [
 const CustomerBalance = [
     {
         header: 'Action',
-        Cell: (({row}) => (
+        Cell: (({ row }) => (
             <>
-            
+
             </>
         ))
     },
@@ -637,7 +634,7 @@ const CustomerBalance = [
     {
         header: 'Balance',
         Cell: (({ row }) =>
-            <span className={`${row?.original?.Bal_Amount < 0 ? 'text-danger': 'text-success'} fw-bold w-100 text-end`} >
+            <span className={`${row?.original?.Bal_Amount < 0 ? 'text-danger' : 'text-success'} fw-bold w-100 text-end`} >
                 {row?.original?.Bal_Amount.toLocaleString('en-IN')}
             </span>
         )
@@ -648,9 +645,78 @@ const CustomerBalance = [
     }
 ]
 
-const StatementOfAccount = [
-    
+const attendanceHistoryColumn = [
+    {
+        name: 'Name',
+        selector: (row) => row.Emp_Name,
+        sortable: true,
+    },
+    {
+        name: 'Date',
+        selector: (row) => {
+            return new Date(row.Start_Date).toLocaleDateString('en-IN')
+        },
+        sortable: true
+    },
+    {
+        name: 'IN Time',
+        selector: (row) => getFormattedTime(row.InTime),
+        sortable: true,
+    },
+    {
+        name: 'OUT Time',
+        selector: (row) => getFormattedTime(row.OutTime),
+        sortable: true,
+    },
+    {
+        name: 'Total Hours',
+        selector: (row) => {
+            const startTime = new Date(`2022-01-01T${row.InTime}`); 
+            const endTime = new Date(`2022-01-01T${row.OutTime}`);
+            const Duration = (endTime - startTime) / 1000;
+            return formatDuration(Duration)
+        },
+        sortable: false
+    },
+    {
+        name: 'Summary',
+        selector: (row) => row.Work_Summary,
+        sortable: false
+    }
 ]
+
+
+const getFormattedTime = (inputTimeString) => {
+    if (!/^\d{2}:\d{2}:\d{2}.\d+$/.test(inputTimeString)) {
+        return ' - ';
+    }
+
+    const inputTime = new Date(`2000-01-01T${inputTimeString}Z`);
+    const timeZone = 'UTC';
+
+    const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone,
+    };
+
+    return inputTime.toLocaleTimeString([], options);
+};
+
+function formatDuration(durationInSeconds) {
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+    const seconds = Math.floor(durationInSeconds % 60);
+
+    const formattedDuration = `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    return !durationInSeconds ? "-" : formattedDuration;
+}
+
+function padZero(number) {
+    return number < 10 ? `0${number}` : `${number}`;
+}
+
 
 export {
     users,
@@ -669,5 +735,6 @@ export {
     subtable2,
     empMyAttendance,
     TaskDone,
-    CustomerBalance
+    CustomerBalance,
+    attendanceHistoryColumn
 };
