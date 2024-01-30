@@ -12,6 +12,7 @@ let Loader = () => {
                     <i></i>
                     <i></i>
                     <i></i>
+                    <i></i>
                 </div>
             </section>
         </>

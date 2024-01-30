@@ -24,6 +24,7 @@ import ChangePassword from './pages/dashboard/changePassword';
 import PendingInvoice from './pages/payments/pendingInvoice';
 import PaymentSuccess from './pages/payments/paymentSuccess';
 import PaymentFailure from './pages/payments/paymentFailure';
+import PaymentReport from './pages/payments/paymentsReport';
 
 
 function App() {
@@ -55,7 +56,8 @@ function App() {
             <Route path='/payments/pendingInvoice' element={<PendingInvoice />} />
             <Route path='/Payment_Success' element={<PaymentSuccess />} />
             <Route path='/Payment_Failure' element={<PaymentFailure />} />
-          </Routes>
+            <Route path='/payments/PaymentHistory' element={<PaymentReport />} />
+          </Routes> 
         </BrowserRouter>
       </CompanyProvider>
     </div>

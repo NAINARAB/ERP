@@ -12,7 +12,7 @@ import QRCode from 'qrcode';
 import ShankarTraderQRC from './staticqrc.jpg';
 
 
-const BillComponent = ({ props, bankDetails }) => {
+const BillComponent = ({ props, bankDetails, reloadfun }) => {
     const [open, setOpen] = useState(false);
     const [selectedBill, setSelectedBill] = useState([]);
     const [refresh, setRefresh] = useState(false);
@@ -87,6 +87,7 @@ const BillComponent = ({ props, bankDetails }) => {
     const PayCheck = () => {
         let totalBillChecked = 0;
         let orderWiseChecked = true;
+        let paidBillChecked = false;
 
         for (let i = 0; i < selectedBill.length; i++) {
             const obj = selectedBill[i];
@@ -96,24 +97,38 @@ const BillComponent = ({ props, bankDetails }) => {
         }
 
         if (totalBillChecked === 0) {
-            return toast.error('Select a bill for payment');
+            return toast.warn('Select a bill for payment');
         }
 
-        for (let i = 1; i < selectedBill.length; i++) {
-            const currentObj = selectedBill[i];
-            const prevObj = selectedBill[i - 1];
-            if (currentObj.check === true && !prevObj.check) {
-                orderWiseChecked = false;
-                break;
-            }
+        props.CompanyBalanceInfo.forEach(obj => {
+            selectedBill.forEach(obj1 => {
+                if (obj.invoice_no === obj1.invoiceNO && obj1.check && obj.Pay_Status === 1) {
+                    paidBillChecked = true;
+                }
+            });
+        });
+
+        if (paidBillChecked) {
+            toast.warn('You have already paid some selected bills');
+            return;
         }
 
-        if (orderWiseChecked === false) {
-            return toast.error('You can only Pay Bills Order Wisely');
-        }
+        // for (let i = 1; i < selectedBill.length; i++) {
+        //     const currentObj = selectedBill[i];
+        //     const prevObj = selectedBill[i - 1];
+        //     if (currentObj.check === true && !prevObj.check) {
+        //         orderWiseChecked = false;
+        //         break;
+        //     }
+        // }
+
+        // if (orderWiseChecked === false) {
+        //     return toast.warn('You can only Pay Bills Order Wisely');
+        // }
 
         setDetailsDialog(true);
     };
+
 
     function loadScript(src) {
         return new Promise((resolve) => {
@@ -186,6 +201,7 @@ const BillComponent = ({ props, bankDetails }) => {
     }
 
     function postPaymentVerify(orderInfo) {
+        console.log(orderInfo, 'called')
         fetch(`${apihost}/api/paymentVerify`, {
             method: 'POST',
             headers: {
@@ -198,6 +214,7 @@ const BillComponent = ({ props, bankDetails }) => {
             })
         }).then(res => res.json()).then(data => {
             console.log(data)
+            setDetailsDialog(false); setRefresh(!refresh)
         })
     }
 
@@ -223,7 +240,8 @@ const BillComponent = ({ props, bankDetails }) => {
             })
         }).then(res => res.json()).then(data => {
             if (data.status === 'Success') {
-                toast.success(data.message)
+                toast.success(data.message);
+                setDetailsDialog(false); setRefresh(!refresh); reloadfun(); setTransactioId('')
             } else {
                 toast.error(data.message)
             }
@@ -472,6 +490,7 @@ const PendingInvoice = () => {
     const [pageInfo, setPageInfo] = useState({});
     const [isCustomer, setIsCustomer] = useState(false)
     const [bankDetails, setBankDetails] = useState([]);
+    const [reload, setReload] = useState(false)
 
     useEffect(() => {
         pageRights(2, 2017).then(rights => {
@@ -520,7 +539,11 @@ const PendingInvoice = () => {
                     setBankDetails(data.data)
                 })
         }
-    }, [pageInfo])
+    }, [pageInfo, reload])
+
+    const reloadData = () => {
+        setReload(!reload)
+    }
 
 
 
@@ -558,7 +581,7 @@ const PendingInvoice = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {balance.map((obj, index) => <BillComponent props={obj} key={index} bankDetails={bankDetails} />)}
+                                        {balance.map((obj, index) => <BillComponent props={obj} key={index} bankDetails={bankDetails} reloadfun={reloadData} />)}
                                     </tbody>
                                 </table>
                             </div>

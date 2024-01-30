@@ -45,7 +45,7 @@ const AttendanceManagement = () => {
     const currentDate = new Date();
     const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 2);
     const [search, setSearch] = useState({
-        from: new Date().toISOString().split('T')[0],
+        from: firstDayOfMonth.toISOString().split('T')[0],
         to: new Date().toISOString().split('T')[0],
         useDate: false
     });
@@ -83,7 +83,7 @@ const AttendanceManagement = () => {
                     })
                     setActiveEmp(data.data)
                 } else { setActiveEmp([]) }
-            })
+            }).catch(e => console.log(e))
             setModify({
                 add: per.permissions.Add_Rights === 1,
                 edit: per.permissions.Edit_Rights === 1,
@@ -95,7 +95,7 @@ const AttendanceManagement = () => {
                     if (data.status === "Success") {
                         setEmpData(data.data)
                     }
-                })
+                }).catch(e => console.log(e))
         })
     }, [refresh])
 
@@ -108,19 +108,20 @@ const AttendanceManagement = () => {
             .then(data => {
                 if (data.status === "Success") {
                     setAttendanceHistory(data.data)
+                } else {
+                    setAttendanceHistory([])
                 }
-            })
-    }, [selectEmpHis.User_Mgt_Id])
+            }).catch(e => console.log(e))
+    }, [selectEmpHis, search])
 
     useEffect(() => {
         const filteredResults = attendanceHistory.filter(item => {
             const itemDate = new Date(item.Start_Date).toISOString().split('T')[0];
-            console.log(itemDate);
             return itemDate >= search.from && itemDate <= search.to;
         });
 
         setFilteredData(filteredResults);
-    }, [search.from, search.to])
+    }, [search, selectEmpHis])
 
     const closeAttendence = () => {
         if (rowDetails?.Id && rowDetails?.OutDate && rowDetails?.OutTime) {
@@ -137,18 +138,13 @@ const AttendanceManagement = () => {
                 } else {
                     toast.error(data.message)
                 }
-            })
+            }).catch(e => console.log(e))
         } else {
             toast.error('Enter Required Details')
         }
     }
 
     const TblColumn = [
-        // {
-        //     name: 'Employee Code',
-        //     selector: (row) => row.Emp_Code,
-        //     sortable: true,
-        // },
         {
             name: 'Employee Name',
             selector: (row) => row.Emp_Name,
@@ -203,7 +199,7 @@ const AttendanceManagement = () => {
                     } else {
                         toast.error(data.message)
                     }
-                })
+                }).catch(e => console.log(e))
         } else {
             toast.error(
                 (!selectedEmp.Emp_Name || selectedEmp.Emp_Name === '')
@@ -306,17 +302,17 @@ const AttendanceManagement = () => {
                                                         onInput={(e) => handleToDateChange(e.target.value)} />
                                                 </div>
                                             </div>
-                                            <div className="col-lg-3 col-md-6 p-2 d-flex align-items-center">
+                                            <div className="col-lg-3 col-md-6 p-2 d-flex align-items-end">
                                                 <input
                                                     style={{ padding: '0.7em' }} id="muser"
-                                                    className='cus-check'
+                                                    className='cus-check m-1'
                                                     type='checkbox'
                                                     checked={search.useDate}
                                                     onChange={(e) => {
                                                         setSearch({ ...search, useDate: e.target.checked })
                                                     }}
                                                     title="Use Date Filter" />
-                                                <label className="form-check-label p-1 pe-2" htmlFor="muser">Use Date Filter</label>
+                                                <label className="form-check-label ps-2 p-0" htmlFor="muser">Use Date Filter</label>
                                             </div>
                                         </div>
                                         <DataTable

@@ -683,7 +683,81 @@ const attendanceHistoryColumn = [
         selector: (row) => row.Work_Summary,
         sortable: false
     }
+];
+
+const paymentReport = [
+    {
+        name: 'Action',  
+    },
+    {
+        name: 'Date',
+        selector: (row) => {
+            return new Date(row.Created_At).toLocaleDateString('en-IN')
+        },
+        maxWidth: '60px',
+        sortable: true,
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.Customer_name,
+        sortable: true,
+    },
+    {
+        name: 'Bills',
+        selector: (row) => row.Bill_Count,
+        maxWidth: '60px',
+        sortable: true,
+    },
+    {
+        name: 'OrderId',
+        selector: (row) => row.Order_Id,
+    },
+    {
+        name: 'Status',
+        selector: (row) => row.Payment_Status,
+        sortable: true,
+    },
+    {
+        name: 'Amount',
+        selector: (row) => row.Total_Amount,
+        sortable: true,
+    }
 ]
+
+const Bootcolumns = [
+    // {
+    //     text: 'Action',
+    //     dataField: 'Created_At',
+    // },
+    {
+        text: 'Date',
+        dataField: 'Created_At',
+    },
+    {
+        text: 'Customer Name',
+        dataField: 'Customer_name',
+    },
+    {
+        text: 'Paid Bills',
+        dataField: 'Bill_Count',
+    },
+    {
+        text: 'Mobile',
+        dataField: 'Mobile_no',
+    },
+    {
+        text: 'OrderId',
+        dataField: 'Order_Id',
+    },
+    {
+        text: 'Status',
+        dataField: 'Payment_Status',
+    },
+    {
+        text: 'Amount',
+        dataField: 'Total_Amount',
+    }
+];
 
 
 const getFormattedTime = (inputTimeString) => {
@@ -736,5 +810,7 @@ export {
     empMyAttendance,
     TaskDone,
     CustomerBalance,
-    attendanceHistoryColumn
+    attendanceHistoryColumn,
+    paymentReport,
+    Bootcolumns
 };

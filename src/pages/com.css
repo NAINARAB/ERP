@@ -28,6 +28,16 @@
   /* box-shadow: 2px 4px 6px rgb(145, 145, 145); */
 }
 
+.comhed h5{
+  font-size: 18px !important;
+  font-weight: 400 !important;
+}
+
+.comhed h6{
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
 .comadbtn {
   float: right;
   border: none;
@@ -81,10 +91,6 @@
   margin-right: 0.5em;
   margin-bottom: unset !important;
   border-radius: 30px !important;
-}
-
-.comhed h6 {
-  font-weight: 400;
 }
 
 .cell-content {
