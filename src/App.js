@@ -25,6 +25,7 @@ import PendingInvoice from './pages/payments/pendingInvoice';
 import PaymentSuccess from './pages/payments/paymentSuccess';
 import PaymentFailure from './pages/payments/paymentFailure';
 import PaymentReport from './pages/payments/paymentsReport';
+import TableueComp from './pages/tablu/reporting';
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
             <Route path='/Payment_Success' element={<PaymentSuccess />} />
             <Route path='/Payment_Failure' element={<PaymentFailure />} />
             <Route path='/payments/PaymentHistory' element={<PaymentReport />} />
+            <Route path='/tableaureports' element={<TableueComp />} />
           </Routes> 
         </BrowserRouter>
       </CompanyProvider>
