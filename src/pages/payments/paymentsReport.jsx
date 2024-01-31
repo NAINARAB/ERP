@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/header/header";
 import Sidebar from "../../components/sidenav/sidebar"
-import { NavigateNext, UnfoldMoreOutlined } from '@mui/icons-material';
+import { NavigateNext, UnfoldMoreOutlined, Search } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { customStyles } from '../../components/tablecolumn';
@@ -9,45 +9,21 @@ import { Tab, Box, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
 import { TabPanel, TabList, TabContext } from '@mui/lab';
 import { apihost } from "../../backendAPI";
 import { pageRights } from "../../components/rightsCheck";
-// import PaginateComp from "../../components/Pagination/paginate";
 import DataTable from "react-data-table-component";
 
-const TabBodyRow = ({ propData }) => {
-    const [open, setOpen] = useState(false);
-    return (
-        <>
-            <tr>
-                <td className="border"><button onClick={() => setOpen(!open)}>click</button></td>
-                <td className="border">{propData.Created_At}</td>
-                <td className="border">{propData.Customer_name}</td>
-                <td className="border">{propData.Bill_Count}</td>
-                <td className="border">{propData.Order_Id}</td>
-                <td className="border">{propData.Payment_Status}</td>
-                <td className="border">{propData.Total_Amount}</td>
-            </tr>
-            {open && (
-                <tr>
-                    <td colSpan={propData.length}>
-                        <div className="bg-dark">
-
-                        </div>
-                    </td>
-                </tr>
-            )}
-        </>
-    )
-}
 
 
 const PaymentReport = () => {
     const [PHData, setPHData] = useState([])
     const [pagePermissions, setPagePermissions] = useState([]);
     const [tabValue, setTabValue] = useState('1');
-    const [search, setSearch] = useState('');
-    const [actionRow, setActionRow] = useState({});
+    const [search, setSearch] = useState({ searchData: '', payStatus: '0' });
     const [open, setOpen] = useState(false);
     const [verifyDetails, setVerifyDetails] = useState({ date: new Date().toISOString().split('T')[0], discribtion: '', verifyStatus: 0, Order_Id: '' });
     const [reload, setReload] = useState(false);
+    const [isCustomer, setIsCustomer] = useState(false);
+    const [filteredData, setFilteredData] = useState([]);
+    const [showData, setShowData] = useState([])
 
     useEffect(() => {
         pageRights(2, 2018).then(per => {
@@ -58,19 +34,48 @@ const PaymentReport = () => {
     useEffect(() => {
         setPHData([]);
         if (pagePermissions?.permissions?.Read_Rights === 1) {
-            fetch(`${apihost}/api/PaymentHistory?paymentType=${tabValue}`, { headers: { 'Authorization': pagePermissions.token } })
+            fetch(`${apihost}/api/isCustomer?UserId=${pagePermissions.UserId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.status === "Success") {
-                        data.data.map(o => {
-                            o.Created_At = new Date(o.Created_At)
-                            o.Total_Amount = Number(o.Total_Amount)
-                        })
-                        setPHData(data.data)
+                    let api = '';
+                    if (data.isCustomer) {
+                        setIsCustomer(data.isCustomer);
+                        console.log(data)
+                        api = `${apihost}/api/PaymentHistory?paymentType=${tabValue}&customerId=${data.data[0].Cust_Id}&payStatus=${search.payStatus}`;
+                    } else {
+                        setIsCustomer(false);
+                        api = `${apihost}/api/PaymentHistory?paymentType=${tabValue}&payStatus=${search.payStatus}`;
                     }
+                    fetch(api, { headers: { 'Authorization': pagePermissions.token } })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.status === "Success") {
+                                data.data.map(o => {
+                                    o.Created_At = new Date(o.Created_At)
+                                    o.Total_Amount = Number(o.Total_Amount)
+                                })
+                                setPHData(data.data)
+                            }
+                        })
                 })
+
         }
-    }, [pagePermissions, tabValue, reload])
+    }, [pagePermissions, tabValue, reload, search.payStatus])
+
+    useEffect(() => {
+        const filteredResults = PHData.filter(item => {
+            return Object.values(item).some(value =>
+                String(value).toLowerCase().includes(search.searchData.toLowerCase())
+            );
+        });
+
+        setFilteredData(filteredResults);
+    }, [search.searchData, PHData]);
+
+    useEffect(() => {
+        setShowData(filteredData && filteredData.length > 0 ? filteredData : search.searchData === '' ? PHData : [])
+    }, [filteredData])
+
 
     const clearVerifyDetails = () => {
         setVerifyDetails({ date: new Date().toISOString().split('T')[0], discribtion: '', verifyStatus: 0, Order_Id: '' })
@@ -81,7 +86,7 @@ const PaymentReport = () => {
             name: 'Date',
             selector: (row) => row.Created_At,
             cell: (row) => row.Created_At.toLocaleDateString('en-IN'),
-            maxWidth: '60px',
+            // maxWidth: '60px',
             sortable: true,
         },
         {
@@ -92,13 +97,14 @@ const PaymentReport = () => {
         {
             name: 'Bills',
             selector: (row) => row.Bill_Count,
-            maxWidth: '60px',
+            // maxWidth: '60px',
             sortable: true,
         },
         {
             name: 'Amount',
             selector: (row) => row.Total_Amount,
             cell: (row) => row.Total_Amount.toLocaleString('en-IN'),
+            // maxWidth: '60px',
             sortable: true,
         },
         {
@@ -117,19 +123,67 @@ const PaymentReport = () => {
         },
         {
             name: 'Action',
-            cell: (row) => (
-                <>
-                    <IconButton onClick={() => { setActionRow(row); setOpen(true); setVerifyDetails({ ...verifyDetails, Order_Id: row.Order_Id }) }}><UnfoldMoreOutlined /></IconButton>
-                </>
-            ),
+            cell: (row) => {
+                return pagePermissions?.permissions?.Edit_Rights === 1 && Number(search.payStatus) === 0 ? (
+                    <IconButton
+                        onClick={() => {
+                            setOpen(true);
+                            setVerifyDetails({ ...verifyDetails, Order_Id: row.Order_Id });
+                        }}>
+                        <UnfoldMoreOutlined />
+                    </IconButton>
+                ) : <></>
+            },
             sortable: true,
         },
     ]
 
+    const cusPaymentReportColumn = [
+        {
+            name: 'Date',
+            selector: (row) => row.Created_At,
+            cell: (row) => row.Created_At.toLocaleDateString('en-IN'),
+            // maxWidth: '60px',
+            sortable: true,
+        },
+        {
+            name: 'Name',
+            selector: (row) => row.Customer_name,
+            sortable: true,
+        },
+        {
+            name: 'Bills',
+            selector: (row) => row.Bill_Count,
+            // maxWidth: '40px',
+            sortable: true,
+        },
+        {
+            name: 'Amount',
+            selector: (row) => row.Total_Amount,
+            cell: (row) => row.Total_Amount.toLocaleString('en-IN'),
+            // maxWidth: '60px',
+            sortable: true,
+        },
+        {
+            name: 'Company',
+            selector: (row) => row.Company_Name,
+            sortable: true,
+        },
+        {
+            name: 'OrderId',
+            selector: (row) => row.Order_Id,
+        },
+        {
+            name: 'Status',
+            selector: (row) => row.Payment_Status,
+            sortable: true,
+        }
+    ]
+
     const DispDataTable = () => (
         <DataTable
-            data={PHData}
-            columns={paymentReportColumn}
+            data={showData}
+            columns={isCustomer ? cusPaymentReportColumn : paymentReportColumn}
             expandableRows
             pagination
             highlightOnHover={true}
@@ -165,29 +219,31 @@ const PaymentReport = () => {
     )
 
     const postVefification = () => {
-        fetch(`${apihost}/api/manualPaymentVerification`, {
-            method: 'POST',
-            headers: {
-                'Authorization': pagePermissions.token,
-                "Content-type": "application/json; charset=UTF-8",
-            },
-            body: JSON.stringify({
-                orderId: verifyDetails.Order_Id,
-                description: verifyDetails.discribtion,
-                verifiedDate: verifyDetails.date,
-                verifyStatus: verifyDetails.verifyStatus
-            })
-        }).then(res => res.json())
-            .then(data => {
-                if (data.status === 'Success') {
-                    toast.success(data.message);
-                    clearVerifyDetails();
-                    setOpen(false);
-                    setReload(!reload)
-                } else {
-                    toast.error(data.message)
-                }
-            })
+        if (!isCustomer) {
+            fetch(`${apihost}/api/manualPaymentVerification`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': pagePermissions.token,
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+                body: JSON.stringify({
+                    orderId: verifyDetails.Order_Id,
+                    description: verifyDetails.discribtion,
+                    verifiedDate: verifyDetails.date,
+                    verifyStatus: verifyDetails.verifyStatus
+                })
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.status === 'Success') {
+                        toast.success(data.message);
+                        clearVerifyDetails();
+                        setOpen(false);
+                        setReload(!reload)
+                    } else {
+                        toast.error(data.message)
+                    }
+                })
+        }
     }
 
 
@@ -209,10 +265,32 @@ const PaymentReport = () => {
                     </div>
 
                     <div className="p-2">
-                        <div>
-
+                        <div className="row justify-content-end">
+                            <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                                <label>Payment Status</label>
+                                <select
+                                    style={{ padding: 10 }}
+                                    className="cus-inpt" value={search.payStatus}
+                                    onChange={(e) => setSearch({ ...search, payStatus: e.target.value })} >
+                                    <option value='0'>Verification Pending List</option>
+                                    <option value="1">Verified</option>
+                                    <option value="2">Rejected</option>
+                                </select>
+                            </div>
+                            <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                                <label>Search</label>
+                                <input type={'search'} className='micardinpt'
+                                    value={search.searchData}
+                                    onChange={(e) => {
+                                        setSearch({ ...search, searchData: e.target.value });
+                                    }} style={{ paddingLeft: '3em' }} />
+                                <div className="sIcon">
+                                    <Search sx={{ fontSize: '1.6em' }} />
+                                </div>
+                            </div>
                         </div>
                         <div className={'box mt-2'}>
+
                             <TabContext value={tabValue}>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                     <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="">
@@ -235,7 +313,7 @@ const PaymentReport = () => {
 
             <Dialog
                 open={open}
-                onClose={() => { setOpen(false); setActionRow({}) }}
+                onClose={() => { setOpen(false); clearVerifyDetails(); }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 maxWidth="md" fullWidth>
@@ -264,15 +342,15 @@ const PaymentReport = () => {
                                 className="cus-inpt"
                                 onChange={(e) => setVerifyDetails({ ...verifyDetails, verifyStatus: e.target.value })}
                                 value={verifyDetails.verifyStatus}>
-                                <option value='0'>Not Verified</option>
-                                <option value="1">Verified</option>
-                                <option value="2">Not Cleared</option>
+                                <option value='0'>Verification Pending</option>
+                                <option value="1">Verify</option>
+                                <option value="2">Reject</option>
                             </select>
                         </div>
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => { setOpen(false); setActionRow({}); clearVerifyDetails(); }}>Close</Button>
+                    <Button onClick={() => { setOpen(false); clearVerifyDetails(); }}>Close</Button>
                     <Button onClick={postVefification} autoFocus >
                         Submit
                     </Button>

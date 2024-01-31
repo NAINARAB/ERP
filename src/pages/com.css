@@ -72,15 +72,13 @@
   outline: none;
 }
 
-.search{
-  /* float: right; */
-  /* margin-bottom: 2em; */
+.search{  
   width: 100%;
   max-width: 450px;
 }
 .sIcon{
   position: relative;
-  top: -37px;
+  top: -33px;
   left: 10px;
   padding: 0px;
   display: inline;

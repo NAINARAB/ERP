@@ -87,12 +87,12 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
     const PayCheck = () => {
         let totalBillChecked = 0;
         let orderWiseChecked = true;
-        let paidBillChecked = false;
 
         for (let i = 0; i < selectedBill.length; i++) {
             const obj = selectedBill[i];
             if (obj.check === true) {
                 totalBillChecked += 1;
+                break;
             }
         }
 
@@ -100,31 +100,26 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
             return toast.warn('Select a bill for payment');
         }
 
-        props.CompanyBalanceInfo.forEach(obj => {
-            selectedBill.forEach(obj1 => {
-                if (obj.invoice_no === obj1.invoiceNO && obj1.check && obj.Pay_Status === 1) {
-                    paidBillChecked = true;
-                }
-            });
-        });
+        for (let i = 1; i < selectedBill.length; i++) {
+            const currentObj = selectedBill[i];
+            const prevObj = selectedBill[i - 1];
 
-        if (paidBillChecked) {
-            toast.warn('You have already paid some selected bills');
-            return;
+            if (currentObj.check === true && prevObj.check === false) {
+                for (let j = 0; j < props.CompanyBalanceInfo.length; j++) {
+                    if (props.CompanyBalanceInfo[j].invoice_no === currentObj.invoiceNO) {
+                        if (Number(props.CompanyBalanceInfo[j - 1].Pay_Status) !== 1) {
+                            orderWiseChecked = false;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+            }
         }
 
-        // for (let i = 1; i < selectedBill.length; i++) {
-        //     const currentObj = selectedBill[i];
-        //     const prevObj = selectedBill[i - 1];
-        //     if (currentObj.check === true && !prevObj.check) {
-        //         orderWiseChecked = false;
-        //         break;
-        //     }
-        // }
-
-        // if (orderWiseChecked === false) {
-        //     return toast.warn('You can only Pay Bills Order Wisely');
-        // }
+        if (orderWiseChecked === false) {
+            return toast.warn('You can only Pay Bills Order Wisely');
+        }
 
         setDetailsDialog(true);
     };
@@ -345,11 +340,13 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
                                 return (
                                     <tr key={index}>
                                         <td style={{ fontSize: '17px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : 'bg-light'}>
-                                            <input
-                                                type="checkbox"
-                                                className="form-check-input shadow-none"
-                                                checked={selectedBill[index]?.check}
-                                                onChange={(e) => handleCheckboxChange(e, index)} />
+                                            {Number(obj?.Pay_Status) !== 1 &&
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-check-input shadow-none"
+                                                    checked={selectedBill[index]?.check}
+                                                    disabled={Number(obj?.Pay_Status) === 1}
+                                                    onChange={(e) => handleCheckboxChange(e, index)} />}
                                         </td>
                                         <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : ''}>{formattedDate}</td>
                                         <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : 'bg-light'}>{obj.ledger_name}</td>
