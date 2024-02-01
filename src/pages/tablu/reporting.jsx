@@ -1,41 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "../../components/header/header";
 import Sidebar from "../../components/sidenav/sidebar"
 import { NavigateNext } from '@mui/icons-material';
-// import tableauContent from './table.html';
 
 
 const TableueComp = () => {
 
-    // const [source, setSource] = useState()
-
-    // function loadScript(src) {
-    //     return new Promise((resolve) => {
-    //         const script = document.createElement('script')
-    //         script.src = src
-    //         script.onload = () => {
-    //             resolve(true)
-    //         }
-    //         script.onerror = () => {
-    //             resolve(false)
-    //         }
-    //         document.body.appendChild(script)
-    //     })
-    // }
-
-    // const loadTableau = async () => {
-    //     const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
-
-    //     if (!res) {
-    //         alert('Razropay failed to load!!')
-    //         return
-    //     }
-    // }
-
-    // useEffect(() => {
-
-    // }, [])
-
+    const tableau = `
+    <!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <title></title>
+        </head>
+        <body>
+            <script 
+                type='module' 
+                src='https://prod-apnortheast-a.online.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js'>
+            </script>
+            <tableau-viz 
+                id='tableau-viz' 
+                src='https://prod-apnortheast-a.online.tableau.com/t/kapilansmt/views/SM-ITEMVIZDAYVIZ/Sheet8' 
+                width='100%' 
+                height='740' 
+                hide-tabs 
+                toolbar='bottom'>
+            </tableau-viz>
+        </body>
+    </html>`
     return (
         <>
             <div className="row">
@@ -51,10 +42,7 @@ const TableueComp = () => {
                         <h6>DASHBOARD &nbsp;<NavigateNext fontSize="small" />&nbsp; TABLEAU REPORTS</h6>
                     </div>
                     <div className="p-2">
-                        <iframe src='http://smttableau.sudeekha.in/' style={{height: 550, width: '100%'}}>
-
-                        </iframe>
-                        {/* <div dangerouslySetInnerHTML={{ __html: tableauContent }} /> */}
+                        <iframe title="HTML Viewer" srcDoc={tableau} style={{height: 750, width: '100%'}} />
                     </div>
                 </div>
             </div>
