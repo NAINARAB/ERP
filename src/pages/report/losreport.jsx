@@ -343,8 +343,8 @@ const LOSReport = () => {
                 <div className="col-md-10">
                     <div className="comhed">
                         <button className="comadbtn filticon" onClick={() => setOpen(!open)}><FilterAlt sx={{ color: 'white' }} /></button>
-                        <h5>LOS Report</h5>
-                        <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; LOS REPORT</h6>
+                        <h5>STOCK Report</h5>
+                        <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; STOCK REPORT</h6>
                     </div>
 
                     <div className="row p-3">
@@ -441,8 +441,8 @@ const LOSReport = () => {
                         <label className="p p-2">DATE</label>
                         <input
                             type="date"
-                            className="form-control"
-                            style={{ padding: '0.64em', borderColor: 'lightgray', borderRadius: '4px' }} value={selectedValue.date}
+                            className="cus-inpt"
+                            value={selectedValue.date}
                             onChange={(e) => setSelectedValue({ ...selectedValue, date: e.target.value })} />
                     </div>
                     {/* <div className="col-md-4 p-2">

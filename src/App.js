@@ -1,31 +1,8 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, H } from "react-router-dom";
-import Product from './pages/sales/sfsaleorder';
-import User from './pages/masters/user'
-import SaleOrderList from './pages/sales/saleorderlist';
-import Login from './components/login/login';
-import UserAuthorization from './pages/masters/userauth';
-import TypeAuthorization from './pages/masters/typeauth';
-import LOSReport from './pages/report/losreport';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CompanyProvider } from './components/context/contextData';
-import SFProducts from './pages/masters/sf/sfproducts';
-import SFRetailers from './pages/masters/sf/sfretailers';
-import SFDetails from './pages/masters/sf/sfdetails';
-import SFRoutes from './pages/masters/sf/routes';
-import SFDistributors from './pages/masters/sf/distributors';
-import HomeComp from './pages/dashboard/home';
-import TaskLogout from './components/tasklogout';
-import Employees from './pages/masters/emp';
-import EmpMyAttendance from './pages/dashboard/empattendance';
-import AttendanceManagement from './pages/masters/attendencemanagement';
-import PurchaseReport from './pages/report/purchasereport';
-import CustomerCategories from './pages/masters/customers/customerCategories';
-import ChangePassword from './pages/dashboard/changePassword';
-import PendingInvoice from './pages/payments/pendingInvoice';
-import PaymentSuccess from './pages/payments/paymentSuccess';
-import PaymentFailure from './pages/payments/paymentFailure';
-import PaymentReport from './pages/payments/paymentsReport';
-import TableueComp from './pages/tablu/reporting';
+import Login from './components/login/login';
+import navRoutes from './roots';
 
 
 function App() {
@@ -35,31 +12,10 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route exact path='/' element={<Login />} />
-            <Route path='/home' element={<HomeComp />} />
-            <Route path='/tasklogout' element={<TaskLogout />} />
-            <Route path='/saleorder' element={<Product />} />
-            <Route path='/users' element={<User />} />
-            <Route path='/sales' element={<SaleOrderList />} />
-            <Route path='/userauthorization' element={<UserAuthorization />} />
-            <Route path='/usertypeauthorization' element={<TypeAuthorization />} />
-            <Route path='/losreport' element={<LOSReport />} />
-            <Route path='/salesforce/products' element={<SFProducts />} />
-            <Route path='/salesforce/retailers' element={<SFRetailers />} />
-            <Route path='/salesforce/sfdetails' element={<SFDetails />} />
-            <Route path='/salesforce/routes' element={<SFRoutes />} />
-            <Route path='/salesforce/distributor' element={<SFDistributors />} />
-            <Route path='/empmaster' element={<Employees />} />
-            <Route path='/empattendance' element={<EmpMyAttendance />} />
-            <Route path='/attendencemanagement' element={<AttendanceManagement />} />
-            <Route path='/purchasereport' element={<PurchaseReport />} />
-            <Route path='/masters/customers' element={<CustomerCategories />} />
-            <Route path='/changepassword' element={<ChangePassword />} />
-            <Route path='/payments/pendingInvoice' element={<PendingInvoice />} />
-            <Route path='/Payment_Success' element={<PaymentSuccess />} />
-            <Route path='/Payment_Failure' element={<PaymentFailure />} />
-            <Route path='/payments/PaymentHistory' element={<PaymentReport />} />
-            <Route path='/tableaureports' element={<TableueComp />} />
-          </Routes> 
+            {navRoutes.map((route, i) => (
+              <Route key={i} path={route.path} element={route.comp} />
+            ))}
+          </Routes>
         </BrowserRouter>
       </CompanyProvider>
     </div>

@@ -1,7 +1,7 @@
 import './header.css';
-import { Logout, Settings, AccountCircle } from '@mui/icons-material';
+import { Logout, Settings, AccountCircle, Replay } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
-import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem } from '@mui/material';
+import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
 import { apihost } from "../../backendAPI";
 import { CurrentCompany } from '../context/contextData';
@@ -61,17 +61,23 @@ const Header = ({ setting }) => {
           <h4 className='mb-0 ms-5'>ERP</h4>
         </div>
         <div>
+          <Tooltip title="Refresh">
+            <IconButton sx={{ color: 'white' }} onClick={() => { window.location.reload() }}><Replay /></IconButton>
+          </Tooltip>
           {setting === true
             && (
-              <IconButton sx={{ color: 'white' }} onClick={() => setOpen(!open)}>
-                <Settings />
-              </IconButton>
-              )
+              <Tooltip title="Settings">
+                <IconButton sx={{ color: 'white' }} onClick={() => setOpen(!open)}>
+                  <Settings />
+                </IconButton>
+              </Tooltip>
+            )
           }
-          <IconButton sx={{ color: 'white' }} onClick={logout}><Logout /></IconButton>
+          <Tooltip title='Logout'>
+            <IconButton sx={{ color: 'white' }} onClick={logout}><Logout /></IconButton>
+          </Tooltip>
         </div>
       </div>
-      {/* <div style={{padding: '30px'}}></div> */}
       <Dialog
         open={open}
         onClose={() => { setOpen(false) }}
@@ -99,16 +105,6 @@ const Header = ({ setting }) => {
                 ))}
               </TextField>
             </div>
-            {/* <div className="col-md-4 p-2">
-              <Select
-                options={comp.map(obj => ({value: obj.Id,label: obj.Company_Name}))}
-                isSearchable={true} 
-                placeholder="Company"
-                styles={customSelectStyles}
-                onChange={(e) => updateState(e.value)}
-                value={myState}
-              />
-            </div> */}
           </div>
         </DialogContent>
         <DialogActions>

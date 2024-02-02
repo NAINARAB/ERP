@@ -7,7 +7,7 @@
     top: 0;
     left: 0;
     right: 0; */
-    z-index: 100;
+    z-index: 1000;
     background-color: rgb(15, 11, 42);
     color: white;
     display: flex;
@@ -24,3 +24,17 @@
     margin: 0 1em 0 2em !important;
 }
 
+.reload-btn {
+    outline: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    border-radius: 4px;
+    color: white;
+    background: linear-gradient(to bottom, #c2ecca, #42be1a)
+}
+
+.reload-btn:active {
+    background: linear-gradient(to bottom, #c2ecca, #9dc590);
+}

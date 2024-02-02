@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import './sty.css';
 import { apihost } from '../../backendAPI';
+import navRoutes from '../../roots'; 
 
 
 function Login() {
@@ -17,48 +18,63 @@ function Login() {
     const clearQueryParameters = () => {
         const newUrl = window.location.pathname;
         window.history.pushState({}, document.title, newUrl);
-      };
-    
-      useEffect(() => {
+    };
+
+    useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const inTime = queryParams.get('InTime');
         const userId = queryParams.get('UserId');
         const username = queryParams.get('username');
         const branch = queryParams.get('branch')
-        
+
         const uTypeId = queryParams.get('uTypeId')
         const uTypeGet = queryParams.get('uTypeGet')
         const userToken = queryParams.get('userToken')
-        const SessionId = queryParams.get('SessionId')
-    
+        const SessionId = queryParams.get('SessionId');
+        const page = queryParams.get('page');
+
         if (inTime && userId && username && branch && uTypeId && uTypeGet && userToken && SessionId) {
-          const loginResponse = {
-            data: {
-              InTime: inTime,
-              branchid: branch,
-              message: 'Login Successfully',
-              userId: userId,
-              username: username,
-              SessionId: SessionId
-            },
-          };
-          // for ERP
-          localStorage.setItem('UserType', uTypeGet); // 2
-          localStorage.setItem('Name', username); // 3
-          localStorage.setItem('userToken', userToken); // 4
-          localStorage.setItem('branchId', branch); // 5
-          localStorage.setItem('uType', uTypeId) // 6
-          localStorage.setItem('UserId', userId); // 7
-          // for Task management
-          localStorage.setItem('loginResponse', JSON.stringify(loginResponse)); // 1
-          clearQueryParameters();
-          navigate('home')
-        } 
-        if(localStorage.getItem('userToken')){
+            const loginResponse = {
+                data: {
+                    InTime: inTime,
+                    branchid: branch,
+                    message: 'Login Successfully',
+                    userId: userId,
+                    username: username,
+                    SessionId: SessionId
+                },
+            };
+            // for ERP
+            localStorage.setItem('UserType', uTypeGet); // 2
+            localStorage.setItem('Name', username); // 3
+            localStorage.setItem('userToken', userToken); // 4
+            localStorage.setItem('branchId', branch); // 5
+            localStorage.setItem('uType', uTypeId) // 6
+            localStorage.setItem('UserId', userId); // 7
+            // for Task management
+            localStorage.setItem('loginResponse', JSON.stringify(loginResponse)); // 1
+
+            if (page) {
+                const pageFound = navRoutes.some(obj => obj.path === page);
+              
+                if (pageFound) {
+                  navigate(page);
+                } else {
+                  navigate('home');
+                }
+              
+                clearQueryParameters();
+              } else {
+                navigate('home');
+                clearQueryParameters();
+              }              
+        }
+        if (localStorage.getItem('userToken')) {
             navigate('home')
         }
-      }, []);
+    }, []);
 
+    // let logapi = 'https://erpsmt.in/?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${uName}&branch=${branch}&uTypeId=${uType}&uTypeGet=${uRole}&userToken=${token}&SessionId=${SessionId}'
 
     const getLogin = async () => {
         fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
@@ -66,7 +82,7 @@ function Login() {
             .then((data) => {
                 setIsLoading(false);
                 if (data.status === "Success") {
-                    localStorage.setItem('userToken',data.user.Autheticate_Id)
+                    localStorage.setItem('userToken', data.user.Autheticate_Id)
                     localStorage.setItem('Name', data.user.Name)
                     localStorage.setItem('UserType', data.user.UserType)
                     localStorage.setItem('UserId', data.user.UserId)
@@ -113,7 +129,6 @@ function Login() {
                                     )}
                                     Sign In
                                 </button>
-                                {/* <button onClick={() => console.log(data)} className='logsbmt' type='button'>disp</button> */}
                             </form><br />
                             <p className='para'>By Signing in you agree to the Terms of Service and Privacy Policy</p>
                         </div>

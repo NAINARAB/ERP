@@ -393,12 +393,14 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
                         </thead>
                         <tbody>
                             {selectedBill.map((item, index) => {
-                                const dateObject = new Date(props.CompanyBalanceInfo[index].invoice_date);
-                                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                                const formattedDate = dateObject.toLocaleDateString('en-IN', options);
+                                // const dateObject = new Date(props.CompanyBalanceInfo[index].invoice_date);
+                                // const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+                                // const formattedDate = dateObject.toLocaleDateString('en-IN', options);
                                 return item.check === true && (
                                     <tr key={index}>
-                                        <td style={{ fontSize: '13px' }} className=" bg-light">{formattedDate}</td>
+                                        <td style={{ fontSize: '13px' }} className=" bg-light">
+                                            {/* {formattedDate} */}
+                                        </td>
                                         <td style={{ fontSize: '12px' }}>{props.CompanyBalanceInfo[index].ledger_name}</td>
                                         <td style={{ fontSize: '13px' }} className=" bg-light">{props.CompanyBalanceInfo[index].invoice_no}</td>
                                         <td style={{ fontSize: '13px' }} className="text-primary fw-bold">{props.CompanyBalanceInfo[index].Bal_Amount.toLocaleString('en-IN')}</td>
