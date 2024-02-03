@@ -3,10 +3,9 @@ import { apihost } from "../../backendAPI";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
-import { NavigateNext, Add, Remove, Search, FilterAlt } from '@mui/icons-material';
+import { NavigateNext, Add, Remove, Search, FilterAlt, MoreVert } from '@mui/icons-material';
 import { CurrentCompany } from "../../components/context/contextData";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
-import Loader from '../../components/loader/loader';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, Menu, MenuItem } from "@mui/material";
 
 
 
@@ -18,9 +17,14 @@ const StockReport2 = () => {
     const [search, setSearch] = useState({
         zero: false,
         inm: '',
-        date: '2024-01-01',
-        dialogOpen: false
+        date: new Date().toISOString().split('T')[0],
+        dialogOpen: false,
     })
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const ITEM_HEIGHT = 48;
 
     useEffect(() => {
         pageRights(2, 10).then(rights => {
@@ -75,9 +79,11 @@ const StockReport2 = () => {
         }
 
         function calculateMean() {
-            let total = 0.0;
+            let total = 0;
             rows?.product_details?.map(ob => {
-                total += Number(ob.CL_Rate)
+                if (!isNaN(ob.CL_Rate)) {
+                    total += Number(ob.CL_Rate)
+                }
             })
             let mean = total / rows?.product_details.length
             return mean
@@ -92,7 +98,7 @@ const StockReport2 = () => {
                         </button>
                     </td>
                     <td style={{ fontSize: '13px' }}>
-                        {rows.Stock_Group} 
+                        {rows.Stock_Group}
                         <span className="text-danger"> ({rows.product_details.length})</span>
                     </td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Bal_Qty')}</td>
@@ -135,6 +141,8 @@ const StockReport2 = () => {
         });
     }, [filteredStockData, search.zero]);
 
+    
+
 
     return (
         <>
@@ -168,7 +176,7 @@ const StockReport2 = () => {
                                 <option value={false}>No</option>
                             </select>
                         </div> */}
-                            <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                            {/* <div className="col-md-6 col-lg-4 col-xl-3 p-2">
                                 <label>Date</label>
                                 <input type={'date'} className='cus-inpt'
                                     value={search.date}
@@ -178,48 +186,96 @@ const StockReport2 = () => {
                             </div>
                             <div className="col-md-6 col-lg-4 col-xl-3 p-2">
                                 <label>Search</label>
-                                <input type={'search'} className='micardinpt' 
+                                <input type={'search'} className='micardinpt'
                                     value={search.inm}
                                     onChange={(e) => {
                                         setSearch({ ...search, inm: e.target.value });
-                                    }} style={{ padding: '10px 10px 10px 3em'   }} />
+                                    }} style={{ padding: '10px 10px 10px 3em' }} />
                                 <div className="sIcon">
                                     <Search sx={{ fontSize: '1.6em' }} />
                                 </div>
+                            </div> */}
+                        </div>
+
+                        <div className="card">
+                            <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
+                                <div className="col-10 d-flex align-items-center">
+                                    {compData.Company_Name + " (" + search.date + ") "}
+                                </div>
+                                <div className="col-2 d-flex justify-content-end">
+                                    <IconButton
+                                        aria-label="more"
+                                        id="long-button"
+                                        aria-controls={open ? 'long-menu' : undefined}
+                                        aria-expanded={open ? 'true' : undefined}
+                                        aria-haspopup="true"
+                                        onClick={(e) => setAnchorEl(e.currentTarget)}
+                                    >
+                                        <FilterAlt />
+                                    </IconButton>
+                                </div>
+                            </div>
+
+                            <div className="card-body p-0 overflow-scroll" style={{ maxHeight: '75vh' }}>
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ fontSize: '14px' }}>-</th>
+                                            <th style={{ fontSize: '14px' }}>Group Name</th>
+                                            <th style={{ fontSize: '14px' }}>Quantity</th>
+                                            <th style={{ fontSize: '14px' }}>Rate</th>
+                                            <th style={{ fontSize: '14px' }}>Worth(₹)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {memoComp}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        {StockData !== null
-                            ? (
-                                <div className="card">
-                                    <div className="card-header fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
-                                        <span className="float-start">{compData.Company_Name} REPORTS</span>
-                                        <span className="float-end"> DATE : 01/01/2024</span> &nbsp;
-                                    </div>
-                                    <div className="card-body p-0 overflow-scroll" style={{ maxHeight: '65vh' }}>
-                                        <table className="table">
-                                            <thead>
-                                                <tr>
-                                                    <th style={{ fontSize: '14px' }}>-</th>
-                                                    <th style={{ fontSize: '14px' }}>Group Name</th>
-                                                    <th style={{ fontSize: '14px' }}>Quantity</th>
-                                                    <th style={{ fontSize: '14px' }}>Rate</th>
-                                                    <th style={{ fontSize: '14px' }}>Worth(₹)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {memoComp}
-                                            </tbody>
-                                        </table>
-                                        {StockData.length === 0 && <h6 className="text-center">No Records Available</h6>}
-                                    </div>
-                                </div>
-                            )
-                            : <Loader />
-                        }
+
                     </div>
                 </div>
             </div>
-            
+
+            <Menu
+                id="long-menu"
+                MenuListProps={{
+                    'aria-labelledby': 'long-button',
+                }}
+                anchorEl={anchorEl}
+                open={open}
+                onClose={() => setAnchorEl(null)}
+                PaperProps={{
+                    style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: '30ch',
+                    },
+                }}
+            >
+                {/* <div className="p-2" style={{outline: 'none',}}> */}
+                <MenuItem sx={{flexDirection:'column', alignItems: 'start'}}>
+                    <label>Date</label>
+                    <input type={'date'} className='cus-inpt mb-2'
+                        value={search.date}
+                        onChange={(e) => {
+                            setSearch({ ...search, date: e.target.value });
+                        }} />
+                </MenuItem>
+                <MenuItem sx={{flexDirection:'column', alignItems: 'start'}}>
+                    <label>Search</label>
+                    <input type={'search'} className='micardinpt'
+                        value={search.inm}
+                        onChange={(e) => {
+                            setSearch({ ...search, inm: e.target.value });
+                        }} style={{ padding: '10px 10px 10px 3em' }} />
+                    <div className="sIcon">
+                        <Search sx={{ fontSize: '1.6em' }} />
+                    </div>
+                </MenuItem>
+                {/* </div> */}
+            </Menu>
+
             <Dialog
                 open={search.dialogOpen}
                 onClose={() => setSearch({ ...search, dialogOpen: false })}
