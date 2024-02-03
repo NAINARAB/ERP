@@ -58,7 +58,7 @@ const PurchaseReport = () => {
                     if (data.status === 'Success') {
                         data.data.sort((a, b) => a.po_no - b.po_no);
                         data.data.map(obj => {
-                            const parsed = obj?.product_details ? JSON.parse(obj.product_details) : []
+                            // const parsed = obj?.product_details ? JSON.parse(obj.product_details) : []
                             obj.po_date = obj?.po_date.split('T')[0].split('-').reverse().join('-');
                             obj.product_details = parsed
                         })
@@ -88,7 +88,7 @@ const PurchaseReport = () => {
                         data.data.map(obj => {
                             obj.po_date = obj.po_date.split('T')[0].split('-').reverse().join('-');
                             obj.amount = obj?.amount ? obj?.amount.toLocaleString('en-IN') : 0;
-                            obj.product_details = obj?.product_details ? JSON.parse(obj.product_details) : []
+                            // obj.product_details = obj?.product_details ? JSON.parse(obj.product_details) : []
                         })
                         console.log(data.data);
                         if (parseInt(selectedValue.Report_Type) === 2 || parseInt(selectedValue.Report_Type) === 0) {
@@ -294,7 +294,7 @@ const PurchaseReport = () => {
         muiTableContainerProps: { sx: { maxHeight: '60vh' } },
     })
 
-    useEffect(() => console.log(parseInt(selectedValue.Report_Type), typeof selectedValue.Report_Type), [selectedValue.Report_Type])
+    // useEffect(() => console.log(parseInt(selectedValue.Report_Type), typeof selectedValue.Report_Type), [selectedValue.Report_Type])
 
     return (
         <>

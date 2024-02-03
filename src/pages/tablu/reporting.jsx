@@ -19,11 +19,11 @@ const TableueComp = () => {
             </script>
             <tableau-viz 
                 id='tableau-viz' 
-                src='https://prod-apnortheast-a.online.tableau.com/t/kapilansmt/views/SM-ITEMVIZDAYVIZ/Sheet8' 
-                width='100%' 
-                height='740' 
+                src='https://prod-apnortheast-a.online.tableau.com/t/kapilansmt/views/SM-ITEMVIZDAYVIZ/Sheet1' 
+                width='1920' 
+                height='915' 
                 hide-tabs 
-                toolbar='bottom'>
+                toolbar='bottom' >
             </tableau-viz>
         </body>
     </html>`
@@ -42,7 +42,7 @@ const TableueComp = () => {
                         <h6>DASHBOARD &nbsp;<NavigateNext fontSize="small" />&nbsp; TABLEAU REPORTS</h6>
                     </div>
                     <div className="p-2">
-                        <iframe title="HTML Viewer" srcDoc={tableau} style={{height: 750, width: '100%'}} />
+                        <iframe title="HTML Viewer" srcDoc={tableau} style={{ height: 750, width: '100%' }} />
                     </div>
                 </div>
             </div>

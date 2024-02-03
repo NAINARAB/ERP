@@ -3,9 +3,9 @@ import { apihost } from "../../backendAPI";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
-import { NavigateNext, Add, Remove, Search, FilterAlt, MoreVert } from '@mui/icons-material';
+import { NavigateNext, Add, Remove, Search, FilterAlt } from '@mui/icons-material';
 import { CurrentCompany } from "../../components/context/contextData";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, Menu } from "@mui/material";
 
 
 
@@ -79,7 +79,7 @@ const StockReport2 = () => {
         }
 
         function calculateMean() {
-            let total = 0;
+            let total = 0, prolength = rows?.product_details.length;
             rows?.product_details?.map(ob => {
                 if (!isNaN(ob.CL_Rate)) {
                     total += Number(ob.CL_Rate)
@@ -141,7 +141,17 @@ const StockReport2 = () => {
         });
     }, [filteredStockData, search.zero]);
 
-    
+
+    const overAllTotal = () => {
+        let total = 0;
+        filteredStockData.map(o => {
+            o.product_details.map(ob => {
+                total += Number(ob.Stock_Value)
+            })
+        })
+        return total.toLocaleString('en-IN');
+    }
+
 
 
     return (
@@ -160,9 +170,10 @@ const StockReport2 = () => {
                             onClick={() => setSearch({ ...search, dialogOpen: true })}>
                             <FilterAlt sx={{ color: 'white' }} />
                         </button> */}
-                        <h5>STOCK Report</h5>
+                        {/* <h5>STOCK Report</h5> */}
                         <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; STOCK REPORT</h6>
                     </div>
+                    {/* <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; STOCK REPORT</h6> */}
 
                     <div className="p-2">
                         <div className="row justify-content-end">
@@ -200,7 +211,7 @@ const StockReport2 = () => {
                         <div className="card">
                             <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
                                 <div className="col-10 d-flex align-items-center">
-                                    {compData.Company_Name + " (" + search.date + ") "}
+                                    {compData.Company_Name}
                                 </div>
                                 <div className="col-2 d-flex justify-content-end">
                                     <IconButton
@@ -217,6 +228,18 @@ const StockReport2 = () => {
                             </div>
 
                             <div className="card-body p-0 overflow-scroll" style={{ maxHeight: '75vh' }}>
+                                <div className="card mb-2" style={{boxShadow: 'none'}}>
+                                    <div className="card-header" style={{boxShadow: 'none'}}>
+                                        <h6 className="p-2 m-0 float-start">
+                                            Date:
+                                            <span className="text-primary fw-bold"> {new Date(search.date).toLocaleDateString('en-IN')}</span> 
+                                        </h6>
+                                        <h6 className="p-2 m-0 float-end">
+                                            Total Value :
+                                            <span className="text-primary fw-bold"> {overAllTotal()}</span> 
+                                        </h6>
+                                    </div>
+                                </div>
                                 <table className="table">
                                     <thead>
                                         <tr>
@@ -253,16 +276,13 @@ const StockReport2 = () => {
                     },
                 }}
             >
-                {/* <div className="p-2" style={{outline: 'none',}}> */}
-                <MenuItem sx={{flexDirection:'column', alignItems: 'start'}}>
+                <div className="p-2" style={{ outline: 'none', }}>
                     <label>Date</label>
                     <input type={'date'} className='cus-inpt mb-2'
                         value={search.date}
                         onChange={(e) => {
                             setSearch({ ...search, date: e.target.value });
                         }} />
-                </MenuItem>
-                <MenuItem sx={{flexDirection:'column', alignItems: 'start'}}>
                     <label>Search</label>
                     <input type={'search'} className='micardinpt'
                         value={search.inm}
@@ -272,8 +292,7 @@ const StockReport2 = () => {
                     <div className="sIcon">
                         <Search sx={{ fontSize: '1.6em' }} />
                     </div>
-                </MenuItem>
-                {/* </div> */}
+                </div>
             </Menu>
 
             <Dialog

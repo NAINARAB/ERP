@@ -4,7 +4,7 @@ import User from './pages/masters/user'
 import SaleOrderList from './pages/sales/saleorderlist';
 import UserAuthorization from './pages/masters/userauth';
 import TypeAuthorization from './pages/masters/typeauth';
-import LOSReport from './pages/report/losreport';
+// import LOSReport from './pages/report/losreport';
 import SFProducts from './pages/masters/sf/sfproducts';
 import SFRetailers from './pages/masters/sf/sfretailers';
 import SFDetails from './pages/masters/sf/sfdetails';
@@ -14,7 +14,7 @@ import HomeComp from './pages/dashboard/home';
 import Employees from './pages/masters/emp';
 import EmpMyAttendance from './pages/dashboard/empattendance';
 import AttendanceManagement from './pages/masters/attendencemanagement';
-import PurchaseReport from './pages/report/purchasereport';
+// import PurchaseReport from './pages/report/purchasereport';
 import CustomerCategories from './pages/masters/customers/customerCategories';
 import ChangePassword from './pages/dashboard/changePassword';
 import PendingInvoice from './pages/payments/pendingInvoice';
@@ -23,6 +23,7 @@ import PaymentFailure from './pages/payments/paymentFailure';
 import PaymentReport from './pages/payments/paymentsReport';
 import TableueComp from './pages/tablu/reporting';
 import StockReport2 from './pages/report/newStockReport';
+import PurchaseReport2 from './pages/report/newPurchaseReport';
 
 
 const navRoutes = [
@@ -90,10 +91,10 @@ const navRoutes = [
       comp: <AttendanceManagement />,
       path: '/attendencemanagement',
     },
-    {
-      comp: <PurchaseReport />,
-      path: '/purchasereport',
-    },
+    // {
+    //   comp: <PurchaseReport />,
+    //   path: '/purchasereport',
+    // },
     {
       comp: <CustomerCategories />,
       path: '/masters/customers',
@@ -122,6 +123,10 @@ const navRoutes = [
       comp: <TableueComp />,
       path: '/tableaureports',
     },
+    {
+      comp: <PurchaseReport2 />,
+      path: '/purchasereport'
+    }
   ];
 
   export default navRoutes;
