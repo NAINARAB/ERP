@@ -60,7 +60,7 @@ const PurchaseReport = () => {
                         data.data.map(obj => {
                             // const parsed = obj?.product_details ? JSON.parse(obj.product_details) : []
                             obj.po_date = obj?.po_date.split('T')[0].split('-').reverse().join('-');
-                            obj.product_details = parsed
+                            // obj.product_details = parsed
                         })
                         console.log(data.data)
                         if (parseInt(selectedValue.Report_Type) === 2 || parseInt(selectedValue.Report_Type) === 0) {
