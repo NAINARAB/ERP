@@ -24,10 +24,12 @@ const PurchaseReport2 = () => {
     const [PurchaseData, setPurchaseData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pageAccess, setPageAccess] = useState({});
-    const { compData } = useContext(CurrentCompany)
+    const { compData } = useContext(CurrentCompany);
+    const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 2);
+
     const [selectedValue, setSelectedValue] = useState({
         Report_Type: 2,
-        Fromdate: '2023-10-01',
+        Fromdate: firstDayOfMonth.toISOString().split('T')[0],
         Todate: new Date().toISOString().split('T')[0],
         Report: 'PENDING PURCHASE ORDER'
     });
