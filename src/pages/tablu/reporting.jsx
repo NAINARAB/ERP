@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../components/header/header";
 import Sidebar from "../../components/sidenav/sidebar"
-import { NavigateNext } from '@mui/icons-material';
+import CurrentPage from '../../components/currentPage'
 
 
 const TableueComp = () => {
@@ -36,14 +36,12 @@ const TableueComp = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'REPORTS'} subMenuId={'TABLEAU REPORTS'} childMenuId={'REPORT 1'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        <h5>TABLEAU REPORTS</h5>
-                        <h6>DASHBOARD &nbsp;<NavigateNext fontSize="small" />&nbsp; TABLEAU REPORTS</h6>
-                    </div>
-                    <div className="p-2">
-                        <iframe title="HTML Viewer" srcDoc={tableau} style={{ height: 750, width: '100%' }} />
-                    </div>
+                <div className="col-md-10 p-3">
+                    
+                    <CurrentPage MainMenu={'REPORTS'} SubMenu={'TABLEAU REPORTS'} />
+
+                    <iframe title="HTML Viewer" srcDoc={tableau} style={{ height: 750, width: '100%' }} />
+
                 </div>
             </div>
         </>

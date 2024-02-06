@@ -6,12 +6,13 @@ import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
 import { Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Button, TextField, MenuItem, IconButton } from "@mui/material";
 import { useFormik } from 'formik';
-import { AccountCircle, LockOutlined, LocationOn, ManageAccounts, NavigateNext, RecentActors, Edit, Delete } from '@mui/icons-material';
+import { AccountCircle, LockOutlined, LocationOn, ManageAccounts, RecentActors, Edit, Delete } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../com.css';
 import { pageRights } from "../../components/rightsCheck";
-import Loader from '../../components/loader/loader'
+import Loader from '../../components/loader/loader';
+import CurrentPage from "../../components/currentPage";
 
 const initialValues = {
     userid: 0,
@@ -235,29 +236,27 @@ const User = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'USER MASTER'} />
                 </div>
-                
-                <div className="col-md-10">
-                    <div className="comhed">
-                        {modify.add === true && <button className="comadbtn" onClick={() => setOpen(true)}>Add User</button>}
-                        <h5>Users</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER MASTERS</h6>
-                    </div>
-                    <div className="px-4">
-                        <br />
-                        {data && data.length
-                            ? <div className="box">
-                                <DataTable
-                                    columns={users}
-                                    data={data}
-                                    pagination
-                                    highlightOnHover={true}
-                                    fixedHeader={true}
-                                    fixedHeaderScrollHeight={'100vh'}
-                                    customStyles={customStyles}
-                                />
-                            </div>
-                            : <Loader />}
-                    </div>
+
+                <div className="col-md-10 p-3">
+
+                    <CurrentPage
+                        MainMenu={'MASTERS'}
+                        SubMenu={'USERS'}
+                        Button={modify.add === true && <button className="comadbtn mb-0" onClick={() => setOpen(true)}>Add User</button>} />
+
+                    {data && data.length
+                        ? <div className="box">
+                            <DataTable
+                                columns={users}
+                                data={data}
+                                pagination
+                                highlightOnHover={true}
+                                fixedHeader={true}
+                                fixedHeaderScrollHeight={'100vh'}
+                                customStyles={customStyles}
+                            />
+                        </div>
+                        : <Loader />}
                 </div>
             </div>
 

@@ -12,9 +12,11 @@ import Loader from '../../components/loader/loader'
 
 const calcTotal = (arr, column) => {
     let total = 0;
-    arr.map(ob => {
-        total += Number(ob[column])
-    })
+    if (Array.isArray(arr)) {
+        arr.map(ob => {
+            total += Number(ob[column])
+        })
+    }
     return total.toLocaleString('en-IN')
 }
 
@@ -24,9 +26,10 @@ const PurchaseReport2 = () => {
     const [pageAccess, setPageAccess] = useState({});
     const { compData } = useContext(CurrentCompany)
     const [selectedValue, setSelectedValue] = useState({
-        Report_Type: 3,
+        Report_Type: 2,
         Fromdate: '2023-10-01',
         Todate: new Date().toISOString().split('T')[0],
+        Report: 'PENDING PURCHASE ORDER'
     });
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -141,7 +144,7 @@ const PurchaseReport2 = () => {
                         </button>
                     </td>
                     <td style={{ fontSize: '12px' }}>{row?.ledger_name}</td>
-                    <td style={{ fontSize: '12px' }}>{row?.Order_details.length}</td>
+                    <td style={{ fontSize: '12px' }}>{row?.Order_details?.length}</td>
                     <td style={{ fontSize: '12px' }} className="text-primary fw-bold">{calcTotal(row?.Order_details, 'total_invoice_value')}</td>
                 </tr>
                 {open &&
@@ -209,8 +212,9 @@ const PurchaseReport2 = () => {
 
                     <div className="card">
                         <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
-                            <div className="col-10 d-flex align-items-center">
+                            <div className="col-10 d-flex flex-column justify-content-center">
                                 {compData.Company_Name}
+                                <span style={{fontSize: '11px'}}>( {selectedValue.Report} )</span>
                             </div>
                             <div className="col-2 d-flex justify-content-end">
                                 <IconButton
@@ -238,7 +242,7 @@ const PurchaseReport2 = () => {
                                             </h6>
                                             <h6 className="p-2 m-0 float-end">
                                                 Total :
-                                                <span className="text-primary fw-bold">
+                                                <span className="text-primary fw-bold" style={{fontSize: '14px'}}>
                                                     {Number(selectedValue.Report_Type) !== 3
                                                         ? " " + overAllTotal()
                                                         : " " + OrderValueTotal()}
@@ -303,11 +307,19 @@ const PurchaseReport2 = () => {
                     <label>Report Type</label>
                     <select
                         className="cus-inpt mb-2"
-                        onChange={(e) => setSelectedValue({ ...selectedValue, Report_Type: Number(e.target.value) })}
+                        onChange={(e) => {
+                            const selectedIndex = e.target.selectedIndex;
+                            const selectedText = e.target.options[selectedIndex].text;
+                            setSelectedValue({
+                                ...selectedValue,
+                                Report_Type: Number(e.target.value),
+                                Report: selectedText
+                            });
+                        }}
                         value={selectedValue.Report_Type}>
+                        <option value={2}>PENDING PURCHASE ORDER</option>
                         <option value={0}>PURCHASE ORDER</option>
                         <option value={1}>PURCHASE</option>
-                        <option value={2}>PENDING PURCHASE ORDER</option>
                         <option value={3}>ORDER VALUE</option>
                     </select>
                     <label>From Date</label>

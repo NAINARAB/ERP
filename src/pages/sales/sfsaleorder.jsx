@@ -11,6 +11,7 @@ import axios from 'axios';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import ProductBased from "./sfproductsaleorder";
 import { Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, BarChart } from 'recharts';
+import CurrentPage from '../../components/currentPage'
 
 const Product = () => {
     const today = new Date();
@@ -204,69 +205,67 @@ const Product = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={"SALES"} subMenuId={'SALES ORDER SYNC'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        <h5>SYNC SALE ORDER</h5>
-                        <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SYNC SALE ORDER</h6>
-                    </div>
-                    <div className="p-4">
-                        <div className="row">
-                            <div className="col-sm-3 p-2">
-                                <label>From Date</label><br />
-                                <input
-                                    className="form-control py-2"
-                                    type='date'
-                                    value={from}
-                                    onChange={(e) => {
-                                        setFrom((e.target.value));
-                                    }} />
-                            </div>
-                            <div className="col-sm-3 p-2">
-                                <label>To Date</label><br />
-                                <input
-                                    className="form-control py-2"
-                                    type='date'
-                                    value={date}
-                                    onChange={(e) => {
-                                        setDate((e.target.value));
-                                    }} />
-                            </div>
-                            <div className="col-sm-3 p-2">
-                                <label></label><br />
-                                <button
-                                    className={'btn btn-success'}
-                                    onClick={syncData} disabled={isSync}>
-                                    <Sync /> &nbsp; {isSync ? "Syncing Data" : "Sync Data"}
-                                </button>
-                                <IconButton onClick={() => setOpen(true)}><BC /></IconButton>
-                            </div>
+                <div className="col-md-10 p-3">
+
+                    <CurrentPage MainMenu={'SALES'} SubMenu={'SYNC SALE ORDER'} />
+
+                    <div className="row">
+                        <div className="col-sm-3 p-2">
+                            <label>From Date</label><br />
+                            <input
+                                className="form-control py-2"
+                                type='date'
+                                value={from}
+                                onChange={(e) => {
+                                    setFrom((e.target.value));
+                                }} />
                         </div>
-                        <br />
-
-                        <Box sx={{ boxShadow: '0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1)', backgroundColor: 'white', }}>
-                            <h5 className="p-4">Order Based
-                                <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, order: !dispBy.order })}>
-                                    {dispBy.order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                                </IconButton>
-                            </h5>
-                            <Collapse in={dispBy.order} timeout="auto" unmountOnExit >
-                                <MaterialReactTable table={table} />
-                            </Collapse>
-                        </Box>
-                        <Box sx={{ boxShadow: '0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1);', backgroundColor: 'white', marginTop: '15px' }} >
-                            <h5 className="p-4">Product Based
-                                <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, product: !dispBy.product })}>
-                                    {dispBy.product ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                                </IconButton></h5>
-                            <Collapse in={dispBy.product} timeout="auto" unmountOnExit>
-                                <ProductBased from={from} to={date} />
-                            </Collapse>
-                        </Box>
-
+                        <div className="col-sm-3 p-2">
+                            <label>To Date</label><br />
+                            <input
+                                className="form-control py-2"
+                                type='date'
+                                value={date}
+                                onChange={(e) => {
+                                    setDate((e.target.value));
+                                }} />
+                        </div>
+                        <div className="col-sm-3 p-2">
+                            <label></label><br />
+                            <button
+                                className={'btn btn-success'}
+                                onClick={syncData} disabled={isSync}>
+                                <Sync /> &nbsp; {isSync ? "Syncing Data" : "Sync Data"}
+                            </button>
+                            <IconButton onClick={() => setOpen(true)}><BC /></IconButton>
+                        </div>
                     </div>
+
+                    <br />
+
+                    <Box sx={{ boxShadow: '0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1)', backgroundColor: 'white', }}>
+                        <h5 className="p-4">Order Based
+                            <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, order: !dispBy.order })}>
+                                {dispBy.order ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                            </IconButton>
+                        </h5>
+                        <Collapse in={dispBy.order} timeout="auto" unmountOnExit >
+                            <MaterialReactTable table={table} />
+                        </Collapse>
+                    </Box>
+                    <Box sx={{ boxShadow: '0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1);', backgroundColor: 'white', marginTop: '15px' }} >
+                        <h5 className="p-4">Product Based
+                            <IconButton sx={{ float: 'right' }} onClick={() => setDispBy({ ...dispBy, product: !dispBy.product })}>
+                                {dispBy.product ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                            </IconButton></h5>
+                        <Collapse in={dispBy.product} timeout="auto" unmountOnExit>
+                            <ProductBased from={from} to={date} />
+                        </Collapse>
+                    </Box>
 
                 </div>
             </div>
+            
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}

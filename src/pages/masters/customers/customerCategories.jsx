@@ -44,7 +44,7 @@ const CustomerCategories = () => {
 
     useEffect(() => {
         if (screen === true) {
-            setRowValue({})
+            setRowValue({});
         }
     }, [screen])
 

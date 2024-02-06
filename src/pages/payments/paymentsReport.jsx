@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/header/header";
 import Sidebar from "../../components/sidenav/sidebar"
-import { NavigateNext, UnfoldMoreOutlined, Search } from '@mui/icons-material';
+import { UnfoldMoreOutlined, Search } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { customStyles } from '../../components/tablecolumn';
@@ -10,6 +10,7 @@ import { TabPanel, TabList, TabContext } from '@mui/lab';
 import { apihost } from "../../backendAPI";
 import { pageRights } from "../../components/rightsCheck";
 import DataTable from "react-data-table-component";
+import CurrentPage from '../../components/currentPage'
 
 
 
@@ -257,55 +258,50 @@ const PaymentReport = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'PAYMENTS'} subMenuId={'PAYMENT REPORTS'} />
                 </div>
-                <div className="col-md-10">
+                <div className="col-md-10 p-3">
 
-                    <div className="comhed">
-                        <h5>PAYMENT REPORTS</h5>
-                        <h6>PAYMENTS &nbsp;<NavigateNext fontSize="small" />&nbsp; PAYMENT REPORTS</h6>
+                    <CurrentPage MainMenu={'PAYMENTS'} SubMenu={'PAYMENT REPORTS'} />
+
+                    <div className="row justify-content-end">
+                        <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                            <label>Payment Status</label>
+                            <select
+                                style={{ padding: 10 }}
+                                className="cus-inpt" value={search.payStatus}
+                                onChange={(e) => setSearch({ ...search, payStatus: e.target.value })} >
+                                <option value='0'>Verification Pending List</option>
+                                <option value="1">Verified</option>
+                                <option value="2">Rejected</option>
+                            </select>
+                        </div>
+                        <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                            <label>Search</label>
+                            <input type={'search'} className='micardinpt'
+                                value={search.searchData}
+                                onChange={(e) => {
+                                    setSearch({ ...search, searchData: e.target.value });
+                                }} style={{ paddingLeft: '3em' }} />
+                            <div className="sIcon">
+                                <Search sx={{ fontSize: '1.6em' }} />
+                            </div>
+                        </div>
                     </div>
+                    <div className={'box mt-2'}>
 
-                    <div className="p-2">
-                        <div className="row justify-content-end">
-                            <div className="col-md-6 col-lg-4 col-xl-3 p-2">
-                                <label>Payment Status</label>
-                                <select
-                                    style={{ padding: 10 }}
-                                    className="cus-inpt" value={search.payStatus}
-                                    onChange={(e) => setSearch({ ...search, payStatus: e.target.value })} >
-                                    <option value='0'>Verification Pending List</option>
-                                    <option value="1">Verified</option>
-                                    <option value="2">Rejected</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6 col-lg-4 col-xl-3 p-2">
-                                <label>Search</label>
-                                <input type={'search'} className='micardinpt'
-                                    value={search.searchData}
-                                    onChange={(e) => {
-                                        setSearch({ ...search, searchData: e.target.value });
-                                    }} style={{ paddingLeft: '3em' }} />
-                                <div className="sIcon">
-                                    <Search sx={{ fontSize: '1.6em' }} />
-                                </div>
-                            </div>
-                        </div>
-                        <div className={'box mt-2'}>
-
-                            <TabContext value={tabValue}>
-                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                    <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="">
-                                        <Tab sx={tabValue === '1' ? { backgroundColor: '#c6d7eb' } : {}} label={'MANUAL PAYMENT '} value='1' />
-                                        <Tab sx={tabValue === '2' ? { backgroundColor: '#c6d7eb' } : {}} label="PAYMENT GATEWAY" value='2' />
-                                    </TabList>
-                                </Box>
-                                <TabPanel value={'1'} sx={{ p: 0, }}>
-                                    <DispDataTable />
-                                </TabPanel>
-                                <TabPanel value={'2'} sx={{ p: 0, }}>
-                                    <DispDataTable />
-                                </TabPanel>
-                            </TabContext>
-                        </div>
+                        <TabContext value={tabValue}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="">
+                                    <Tab sx={tabValue === '1' ? { backgroundColor: '#c6d7eb' } : {}} label={'MANUAL PAYMENT '} value='1' />
+                                    <Tab sx={tabValue === '2' ? { backgroundColor: '#c6d7eb' } : {}} label="PAYMENT GATEWAY" value='2' />
+                                </TabList>
+                            </Box>
+                            <TabPanel value={'1'} sx={{ p: 0, }}>
+                                <DispDataTable />
+                            </TabPanel>
+                            <TabPanel value={'2'} sx={{ p: 0, }}>
+                                <DispDataTable />
+                            </TabPanel>
+                        </TabContext>
                     </div>
 
                 </div>

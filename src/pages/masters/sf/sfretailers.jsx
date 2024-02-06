@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../../components/loader/loader';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../com.css';
+import CurrentPage from "../../../components/currentPage";
 
 const SFRetailers = () => {
     const [retailerData, setRetailerData] = useState([]);
@@ -58,36 +59,34 @@ const SFRetailers = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'SALES FORCE'} childMenuId={'RETAILERS'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        {pageInfo.permissions.Add_Rights === 1
+                <div className="col-md-10 p-3">
+
+                    <CurrentPage
+                        MainMenu={'MASTERS'}
+                        SubMenu={'SALES FORCE'}
+                        ChildMenu={'RETAILERS'}
+                        Button={pageInfo.permissions.Add_Rights === 1
                             && <button
                                 className={`comadbtn filticon ${isSync ? 'rotate' : ''}`}
                                 onClick={syncSFRetailers}
                                 disabled={isSync}
                             >
                                 <Sync sx={{ color: 'white' }} />
-                            </button>}
-                        <h5>RETAILERS</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp;
-                            SALES FORCE &nbsp;<NavigateNext fontSize="small" />&nbsp; RETAILERS</h6>
-                    </div>
-                    <div className="px-4">
-                        <br />
-                        {retailerData && retailerData.length
-                            ? <div className="box">
-                                <DataTable
-                                    columns={SF_Retailers}
-                                    data={retailerData}
-                                    pagination
-                                    highlightOnHover={true}
-                                    fixedHeader={true}
-                                    fixedHeaderScrollHeight={"68vh"}
-                                    customStyles={customStyles}
-                                />
-                            </div>
-                            : <Loader />}
-                    </div>
+                            </button>} />
+
+                    {retailerData && retailerData.length
+                        ? <div className="box">
+                            <DataTable
+                                columns={SF_Retailers}
+                                data={retailerData}
+                                pagination
+                                highlightOnHover={true}
+                                fixedHeader={true}
+                                fixedHeaderScrollHeight={"68vh"}
+                                customStyles={customStyles}
+                            />
+                        </div>
+                        : <Loader />}
                 </div>
             </div>
         </>

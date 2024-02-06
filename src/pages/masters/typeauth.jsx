@@ -5,11 +5,10 @@ import Sidebar from "../../components/sidenav/sidebar";
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, IconButton, Checkbox, TextField, MenuItem } from "@mui/material";
 import { MainMenu } from "../../components/tablecolumn";
 import { UnfoldMore, NavigateNext } from '@mui/icons-material';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material/';
-import { useFormik } from 'formik';
+import { Dialog, DialogContent, DialogActions, Button } from '@mui/material/';
 import { ToastContainer, toast } from 'react-toastify';
 import { pageRights } from "../../components/rightsCheck";
-
+import CurrentPage from "../../components/currentPage";
 
 const token = localStorage.getItem('userToken');
 const localuserType = localStorage.getItem('UserType')
@@ -349,69 +348,70 @@ const TypeAuthorization = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'USER TYPE AUTHORIZATION'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        <h5>USER TYPE AUTHORIZATION</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; USER TYPE AUTHORIZATION</h6>
-                    </div>
-                    <div className="m-3">
-                        <div className="row">
-                            <div className="col-sm-4 px-2">
-                                <TextField
-                                    fullWidth
-                                    select
-                                    label="Select User Type"
-                                    variant="outlined"
-                                    onChange={(e) => setCurrentUserType(e.target.value)}
-                                    InputProps={{ inputProps: { style: { padding: '26px', width: '50%' } } }}
-                                    value={currentUserType ? currentUserType : localuserType}
-                                >
-                                    {usertype.map((user) => (
-                                        <MenuItem key={user.Id} value={user.Id}>
-                                            {user.UserType}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
+                <div className="col-md-10 p-3">
 
-                            </div>
+                    <CurrentPage
+                        MainMenu={'MASTERS'}
+                        SubMenu={'USER TYPE AUTHORIZATION'} />
+
+                    <br />
+
+
+                    <div className="row">
+                        <div className="col-sm-4 px-2">
+                            <TextField
+                                fullWidth
+                                select
+                                label="Select User Type"
+                                variant="outlined"
+                                onChange={(e) => setCurrentUserType(e.target.value)}
+                                InputProps={{ inputProps: { style: { padding: '26px', width: '50%' } } }}
+                                value={currentUserType ? currentUserType : localuserType}
+                            >
+                                {usertype.map((user) => (
+                                    <MenuItem key={user.Id} value={user.Id}>
+                                        {user.UserType}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
                         </div>
-
-                        <br />
-                        {mainMenu.length !== 0
-                            &&
-                            <>
-                                <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
-                                <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
-                                    <Table stickyHeader aria-label="simple table">
-                                        <TableHead>
-                                            <TableRow>
-                                                {MainMenu.map(obj => (
-                                                    <TableCell
-                                                        key={obj.id}
-                                                        variant={obj.variant}
-                                                        align={obj.align}
-                                                        width={obj.width}
-                                                        sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
-                                                        {obj.headname}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {mainMenu.map(obj => (
-                                                <TRow
-                                                    key={obj.Main_Menu_Id}
-                                                    data={obj}
-                                                    UserId={currentUserType}
-                                                    subMenu={subMenu}
-                                                    childMenu={childMenu} />
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </>}
-
                     </div>
+
+                    <br />
+                    {mainMenu.length !== 0
+                        &&
+                        <>
+                            <h3 style={{ paddingBottom: '0.5em' }}>Main Menu</h3>
+                            <TableContainer component={Paper} sx={{ maxHeight: 650 }}>
+                                <Table stickyHeader aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            {MainMenu.map(obj => (
+                                                <TableCell
+                                                    key={obj.id}
+                                                    variant={obj.variant}
+                                                    align={obj.align}
+                                                    width={obj.width}
+                                                    sx={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
+                                                    {obj.headname}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {mainMenu.map(obj => (
+                                            <TRow
+                                                key={obj.Main_Menu_Id}
+                                                data={obj}
+                                                UserId={currentUserType}
+                                                subMenu={subMenu}
+                                                childMenu={childMenu} />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>}
                 </div>
             </div>
         </>

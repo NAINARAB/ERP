@@ -7,10 +7,11 @@ import Sidebar from "../../components/sidenav/sidebar";
 import moment from 'moment';
 import '../com.css';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton } from "@mui/material";
-import { Info, NavigateNext } from '@mui/icons-material';
+import { Info } from '@mui/icons-material';
 import { prodetails } from "../../components/tablecolumn";
 import DataTable from "react-data-table-component";
 import Loader from "../../components/loader/loader";
+import CurrentPage from '../../components/currentPage'
 
 const SaleOrderList = () => {
   const [data, setData] = useState([]);
@@ -50,7 +51,7 @@ const SaleOrderList = () => {
       fetch(`${apihost}/api/listsalesorder?start=${start}&end=${end}`, { headers: { 'Authorization': token } })
         .then((res) => { return res.json() })
         .then((data) => {
-          if(data.status === "Success"){
+          if (data.status === "Success") {
             setData(data.data)
             data.data.map(obj => {
               obj.docDate = moment(obj.docDate).format("DD-MM-YYYY")
@@ -83,53 +84,51 @@ const SaleOrderList = () => {
         <div className="col-md-2">
           <Sidebar mainMenuId={"SALES"} subMenuId={'SALES ORDER LIST'} />
         </div>
-        <div className="col-md-10">
-          <div className="comhed">
-            <h5>SALES LIST</h5>
-            <h6>SALES &nbsp;<NavigateNext fontSize="small" />&nbsp; SALES LIST</h6>
-          </div>
-          <div className="m-3">
-            <div className="row">
-              <div className="col-md-3 px-2">
-                <p className="mb-0 p-2">Form</p>
-                <input type="date" className="form-control p-2" value={start} onChange={(e) => { setStart(e.target.value) }} />
-              </div>
-              <div className="col-md-3 px-2">
-                <p className="mb-0 p-2">To</p>
-                <input type="date" className="form-control p-2" value={end} onChange={(e) => setEnd(e.target.value)} />
-              </div>
-              <div className="col-md-3 px-2">
-                <p className="mb-0 p-2">Search Data</p>
-                <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control p-2" />
-              </div>
-              {/* <div className="col-md-3 px-2">
-                <p style={{ opacity: '0' }}>j</p>
-                <button className="btn btn-success" onClick={fetchrange}>Search</button>
-              </div> */}
-            </div><br />
-            <div className="row" style={{ maxHeight: '68vh', overflowY: 'scroll', backgroundColor: 'transparent' }}>
-              {(filteredData && filteredData.length ? filteredData : searchTerm === '' ? data : []).map(obj => (
-                <div className="col-lg-4 col-sm-6" key={obj.orderNo}>
-                  <div className="card p-3 m-3">
-                    <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><Info sx={{ color: 'blue' }} /></IconButton></div>
-                    <h4>
-                      <span style={{ float: 'left' }}>Customer</span>
-                      <span style={{ float: 'right', width: '70%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>{obj.customerName}</span>
-                    </h4>
-                    <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
-                    <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
-                    <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{obj.docDate}</span></p>
-                    <p>
-                      <span style={{ float: 'left' }}>Address</span>
-                      <span style={{ float: 'right', width: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>
-                        {obj.shippingAddress}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              ))}
+        <div className="col-md-10 p-3">
+
+          <CurrentPage MainMenu={'SALES'} SubMenu={'SALES LIST'} />
+
+          <div className="row">
+            <div className="col-md-3 px-2">
+              <p className="mb-0 p-2">Form</p>
+              <input type="date" className="form-control p-2" value={start} onChange={(e) => { setStart(e.target.value) }} />
             </div>
+            <div className="col-md-3 px-2">
+              <p className="mb-0 p-2">To</p>
+              <input type="date" className="form-control p-2" value={end} onChange={(e) => setEnd(e.target.value)} />
+            </div>
+            <div className="col-md-3 px-2">
+              <p className="mb-0 p-2">Search Data</p>
+              <input type="text" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} className="form-control p-2" />
+            </div>
+
+          </div><br />
+
+          <div className="row" style={{ maxHeight: '68vh', overflowY: 'scroll', backgroundColor: 'transparent' }}>
+
+            {(filteredData && filteredData.length ? filteredData : searchTerm === '' ? data : []).map(obj => (
+              <div className="col-lg-4 col-sm-6" key={obj.orderNo}>
+                <div className="card p-3 m-3">
+                  <div className="text-end"><IconButton onClick={() => { fetchorderinfo(obj.orderNo, obj) }} ><Info sx={{ color: 'blue' }} /></IconButton></div>
+                  <h4>
+                    <span style={{ float: 'left' }}>Customer</span>
+                    <span style={{ float: 'right', width: '70%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>{obj.customerName}</span>
+                  </h4>
+                  <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
+                  <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
+                  <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{obj.docDate}</span></p>
+                  <p>
+                    <span style={{ float: 'left' }}>Address</span>
+                    <span style={{ float: 'right', width: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>
+                      {obj.shippingAddress}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))}
+
           </div>
+
         </div>
       </div>
 

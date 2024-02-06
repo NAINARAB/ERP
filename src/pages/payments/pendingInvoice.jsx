@@ -10,6 +10,7 @@ import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, 
 import AppLogo from './ic_launcher.png';
 import QRCode from 'qrcode';
 import ShankarTraderQRC from './staticqrc.jpg';
+import CurrentPage from '../../components/currentPage'
 
 
 const BillComponent = ({ props, bankDetails, reloadfun }) => {
@@ -556,36 +557,32 @@ const PendingInvoice = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'PAYMENTS'} subMenuId={'PENDING INVOICE LIST'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        <h5>PENDING INVOICE LIST</h5>
-                        <h6>PAYMENTS &nbsp;<NavigateNext fontSize="small" />&nbsp; PENDING INVOICE LIST</h6>
-                    </div>
+                <div className="col-md-10 p-3">
 
-                    <div className="p-2">
-                        <div className="card" style={{ maxHeight: '80vh' }}>
+                    <CurrentPage MainMenu={'PAYMENTS'} SubMenu={'PENDING INVOICE LIST'} />
 
-                            <div className="card-header fw-bold bg-white">
-                                Pending Amount
-                            </div>
+                    <div className="card" style={{ maxHeight: '80vh' }}>
 
-                            <div className="card-body p-0">
-                                <table className="table border mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Action</th>
-                                            <th>Company</th>
-                                            <th>Bills</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {balance.map((obj, index) => <BillComponent props={obj} key={index} bankDetails={bankDetails} reloadfun={reloadData} />)}
-                                    </tbody>
-                                </table>
-                            </div>
-
+                        <div className="card-header fw-bold bg-white">
+                            Pending Amount
                         </div>
+
+                        <div className="card-body p-0">
+                            <table className="table border mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Company</th>
+                                        <th>Bills</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {balance.map((obj, index) => <BillComponent props={obj} key={index} bankDetails={bankDetails} reloadfun={reloadData} />)}
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             </div>

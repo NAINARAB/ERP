@@ -4,13 +4,13 @@ import { apihost } from "../../../backendAPI";
 import { SF_Product, customStyles } from "../../../components/tablecolumn";
 import Header from '../../../components/header/header'
 import Sidebar from "../../../components/sidenav/sidebar"
-import { NavigateNext } from '@mui/icons-material';
 import { pageRights } from '../../../components/rightsCheck'
 import { Sync } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../../components/loader/loader';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../com.css';
+import CurrentPage from "../../../components/currentPage";
 
 const SFProducts = () => {
     const [productData, setProductData] = useState([]);
@@ -61,36 +61,35 @@ const SFProducts = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'SALES FORCE'} childMenuId={'PRODUCTS'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        {pageInfo.permissions.Add_Rights === 1
+                <div className="col-md-10 p-3">
+
+                    <CurrentPage
+                        MainMenu={'MASTERS'}
+                        SubMenu={'SALES FORCE'}
+                        ChildMenu={'PRODUCTS'}
+                        Button={pageInfo.permissions.Add_Rights === 1
                             && <button
                                 className={`comadbtn filticon ${isSync ? 'rotate' : ''}`}
                                 onClick={syncSFProduct}
                                 disabled={isSync}
                             >
                                 <Sync sx={{ color: 'white' }} />
-                            </button>}
-                        <h5>PRODUCTS</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp;
-                            SALES FORCE &nbsp;<NavigateNext fontSize="small" />&nbsp; PRODUCTS</h6>
-                    </div>
-                    <div className="m-4">
-                        {productData && productData.length
-                            ? <div className="box">
-                                <DataTable
-                                    columns={SF_Product}
-                                    data={productData}
-                                    pagination
-                                    highlightOnHover={true}
-                                    fixedHeader={true}
-                                    fixedHeaderScrollHeight={"68vh"}
-                                    customStyles={customStyles}
-                                    sort={{ field: 'orderDate', order: 'asc' }}
-                                />
-                            </div>
-                            : <Loader />}
-                    </div>
+                            </button>} />
+
+                    {productData && productData.length
+                        ? <div className="box">
+                            <DataTable
+                                columns={SF_Product}
+                                data={productData}
+                                pagination
+                                highlightOnHover={true}
+                                fixedHeader={true}
+                                fixedHeaderScrollHeight={"68vh"}
+                                customStyles={customStyles}
+                                sort={{ field: 'orderDate', order: 'asc' }}
+                            />
+                        </div>
+                        : <Loader />}
                 </div>
             </div>
         </>
