@@ -223,3 +223,8 @@
 .custom-checkbox input:checked + span:after {
   display: block;
 }
+
+.tble-hed-stick {
+  position:sticky;
+  top: 0 ;
+}

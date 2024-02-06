@@ -5,7 +5,7 @@ import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
 import { NavigateNext, FilterAlt } from '@mui/icons-material';
 import { CurrentCompany } from "../../components/context/contextData";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Box } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 
 
@@ -106,8 +106,6 @@ const PurchaseReport = () => {
             }
         }
     }, [pageAccess, compData, selectedValue.Report_Type, selectedValue.Fromdate, selectedValue.Todate, view])
-
-
 
     const pendingAndItemBased = useMemo(() => [
         {
@@ -425,6 +423,8 @@ const PurchaseReport = () => {
                     </div>
                 </div>
             </div>
+
+
             <Dialog open={dialog} onClose={() => { setDialog(false) }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"

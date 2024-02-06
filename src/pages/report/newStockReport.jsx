@@ -3,17 +3,16 @@ import { apihost } from "../../backendAPI";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
 import { pageRights } from "../../components/rightsCheck";
-import { NavigateNext, Add, Remove, Search, FilterAlt } from '@mui/icons-material';
+import { NavigateNext, KeyboardArrowDown, KeyboardArrowUp, Search, FilterAlt } from '@mui/icons-material';
 import { CurrentCompany } from "../../components/context/contextData";
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, IconButton, Menu } from "@mui/material";
-
-
+import CurrentPage from "../../components/currentPage";
 
 
 const StockReport2 = () => {
     const { compData } = useContext(CurrentCompany)
     const [pageInfo, setPageInfo] = useState({});
-    const [StockData, setStockData] = useState(null)
+    const [StockData, setStockData] = useState([])
     const [search, setSearch] = useState({
         zero: false,
         inm: '',
@@ -79,7 +78,7 @@ const StockReport2 = () => {
         }
 
         function calculateMean() {
-            let total = 0, prolength = rows?.product_details.length;
+            let total = 0;
             rows?.product_details?.map(ob => {
                 if (!isNaN(ob.CL_Rate)) {
                     total += Number(ob.CL_Rate)
@@ -94,7 +93,7 @@ const StockReport2 = () => {
                 <tr>
                     <td style={{ fontSize: '13px' }}>
                         <button onClick={() => setOpen(!open)} className="icon-btn">
-                            {!open ? <Add sx={{ fontSize: 'inherit' }} /> : <Remove sx={{ fontSize: 'inherit' }} />}
+                            {open ? <KeyboardArrowUp sx={{ fontSize: 'inherit' }} /> : <KeyboardArrowDown sx={{ fontSize: 'inherit' }} />}
                         </button>
                     </td>
                     <td style={{ fontSize: '13px' }}>
@@ -163,21 +162,12 @@ const StockReport2 = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'REPORTS'} subMenuId={'STOCK REPORT'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        {/* <button
-                            className="comadbtn filticon"
-                            onClick={() => setSearch({ ...search, dialogOpen: true })}>
-                            <FilterAlt sx={{ color: 'white' }} />
-                        </button> */}
-                        {/* <h5>STOCK Report</h5> */}
-                        <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; STOCK REPORT</h6>
-                    </div>
-                    {/* <h6>REPORTS &nbsp;<NavigateNext fontSize="small" />&nbsp; STOCK REPORT</h6> */}
+                <div className="col-md-10 p-3">
 
-                    <div className="p-2">
-                        <div className="row justify-content-end">
-                            {/* <div className="col-md-6 col-lg-4 p-2">
+                    <CurrentPage MainMenu={'REPORTS'} SubMenu={'STOCK REPORT'} />
+
+                    <div className="row justify-content-end">
+                        {/* <div className="col-md-6 col-lg-4 p-2">
                             <label>Include Zeros</label>
                             <select
                                 style={{ padding: 10 }}
@@ -187,7 +177,7 @@ const StockReport2 = () => {
                                 <option value={false}>No</option>
                             </select>
                         </div> */}
-                            {/* <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                        {/* <div className="col-md-6 col-lg-4 col-xl-3 p-2">
                                 <label>Date</label>
                                 <input type={'date'} className='cus-inpt'
                                     value={search.date}
@@ -206,57 +196,55 @@ const StockReport2 = () => {
                                     <Search sx={{ fontSize: '1.6em' }} />
                                 </div>
                             </div> */}
-                        </div>
+                    </div>
 
-                        <div className="card">
-                            <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
-                                <div className="col-10 d-flex align-items-center">
-                                    {compData.Company_Name}
-                                </div>
-                                <div className="col-2 d-flex justify-content-end">
-                                    <IconButton
-                                        aria-label="more"
-                                        id="long-button"
-                                        aria-controls={open ? 'long-menu' : undefined}
-                                        aria-expanded={open ? 'true' : undefined}
-                                        aria-haspopup="true"
-                                        onClick={(e) => setAnchorEl(e.currentTarget)}
-                                    >
-                                        <FilterAlt />
-                                    </IconButton>
-                                </div>
+                    <div className="card">
+                        <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>
+                            <div className="col-10 d-flex align-items-center">
+                                {compData.Company_Name}
                             </div>
-
-                            <div className="card-body p-0 overflow-scroll" style={{ maxHeight: '75vh' }}>
-                                <div className="card mb-2" style={{boxShadow: 'none'}}>
-                                    <div className="card-header" style={{boxShadow: 'none'}}>
-                                        <h6 className="p-2 m-0 float-start">
-                                            Date:
-                                            <span className="text-primary fw-bold"> {new Date(search.date).toLocaleDateString('en-IN')}</span> 
-                                        </h6>
-                                        <h6 className="p-2 m-0 float-end">
-                                            Total Value :
-                                            <span className="text-primary fw-bold"> {overAllTotal()}</span> 
-                                        </h6>
-                                    </div>
-                                </div>
-                                <table className="table">
-                                    <thead>
-                                        <tr>
-                                            <th style={{ fontSize: '14px' }}>-</th>
-                                            <th style={{ fontSize: '14px' }}>Group Name</th>
-                                            <th style={{ fontSize: '14px' }}>Quantity</th>
-                                            <th style={{ fontSize: '14px' }}>Rate</th>
-                                            <th style={{ fontSize: '14px' }}>Worth(₹)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {memoComp}
-                                    </tbody>
-                                </table>
+                            <div className="col-2 d-flex justify-content-end">
+                                <IconButton
+                                    aria-label="more"
+                                    id="long-button"
+                                    aria-controls={open ? 'long-menu' : undefined}
+                                    aria-expanded={open ? 'true' : undefined}
+                                    aria-haspopup="true"
+                                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                                >
+                                    <FilterAlt />
+                                </IconButton>
                             </div>
                         </div>
 
+                        <div className="card-body p-0 overflow-scroll" style={{ maxHeight: '75vh' }}>
+                            <div className="card mb-2" style={{ boxShadow: 'none' }}>
+                                <div className="card-header p-0" style={{ boxShadow: 'none' }}>
+                                    <h6 className="p-2 m-0 float-start">
+                                        Date:
+                                        <span className="text-primary fw-bold"> {new Date(search.date).toLocaleDateString('en-IN')}</span>
+                                    </h6>
+                                    <h6 className="p-2 m-0 float-end">
+                                        Total Value :
+                                        <span className="text-primary fw-bold"> {overAllTotal()}</span>
+                                    </h6>
+                                </div>
+                            </div>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>-</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Group Name</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Quantity</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Rate</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Worth(₹)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {memoComp}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

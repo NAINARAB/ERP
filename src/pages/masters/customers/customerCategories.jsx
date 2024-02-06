@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import CustomerAddScreen from "./newcustomerform";
 import '../../com.css';
+import CurrentPage from "../../../components/currentPage";
 
 
 const CustomerCategories = () => {
@@ -42,7 +43,7 @@ const CustomerCategories = () => {
     }, [refresh])
 
     useEffect(() => {
-        if(screen === true){
+        if (screen === true) {
             setRowValue({})
         }
     }, [screen])
@@ -100,7 +101,7 @@ const CustomerCategories = () => {
                         <IconButton onClick={() => {
                             setRowValue(row.original);
                             setScreen(!screen);
-                            }}>
+                        }}>
                             <Edit />
                         </IconButton>
                     </Tooltip>
@@ -116,7 +117,7 @@ const CustomerCategories = () => {
             header: 'No',
             accessorKey: 'Cust_No',
             size: 110,
-            
+
         },
         {
             header: 'Name',
@@ -189,7 +190,7 @@ const CustomerCategories = () => {
         setRefresh(!refresh)
     }
 
-    useEffect(() => {console.error = function() {}})
+    useEffect(() => { console.error = function () { } })
 
     return (
         <>
@@ -201,63 +202,58 @@ const CustomerCategories = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'CUSTOMER MASTER'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed">
-                        <h5>CUSTOMER CONFIG</h5>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp;
-                            CUSTOMER MASTER &nbsp;<NavigateNext fontSize="small" />&nbsp; CUSTOMER CONFIG</h6>
-                    </div>
-                    <div className="px-4">
-                        <br />
-                        {screen ?
-                            <>
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h5 className="float-start mb-0">User Types</h5>
-                                        <span className="float-end">
-                                            {pageInfo?.permissions?.Add_Rights === 1 &&
-                                                <button className="comadbtn mb-0" onClick={() => setOpen({ ...open, create: true })}>Add</button>
+                <div className="col-md-10 p-3">
+
+                    <CurrentPage MainMenu={'MASTERS'} SubMenu={'CUSTOMER MASTER'} />
+
+                    {screen ?
+                        <>
+                            <div className="card">
+                                <div className="card-header">
+                                    <h5 className="float-start mb-0">User Types</h5>
+                                    <span className="float-end">
+                                        {pageInfo?.permissions?.Add_Rights === 1 &&
+                                            <button className="comadbtn mb-0" onClick={() => setOpen({ ...open, create: true })}>Add</button>
+                                        }
+                                    </span>
+                                </div>
+                                <div className="card-body">
+                                    {CustomerCategories.map(obj =>
+                                        <Chip
+                                            key={obj?.Id} color="primary"
+                                            avatar={<Avatar>{obj.UserType[0].toString().toUpperCase() + obj.UserType[1].toString().toUpperCase()}</Avatar>}
+                                            label={obj?.UserType + ' ( ' + obj.Alias + ' ) '}
+                                            variant='outlined'
+                                            onDelete={
+                                                (obj?.Id > 5 && pageInfo?.permissions?.Delete_Rights === 1)
+                                                    ? () => { setId(obj.Id); setOpen({ ...open, delete: true }) }
+                                                    : undefined
                                             }
-                                        </span>
-                                    </div>
-                                    <div className="card-body">
-                                        {CustomerCategories.map(obj =>
-                                            <Chip
-                                                key={obj?.Id} color="primary"
-                                                avatar={<Avatar>{obj.UserType[0].toString().toUpperCase() + obj.UserType[1].toString().toUpperCase()}</Avatar>}
-                                                label={obj?.UserType + ' ( ' + obj.Alias + ' ) '}
-                                                variant='outlined'
-                                                onDelete={
-                                                    (obj?.Id > 5 && pageInfo?.permissions?.Delete_Rights === 1)
-                                                        ? () => { setId(obj.Id); setOpen({ ...open, delete: true }) }
-                                                        : undefined
-                                                }
-                                                className="m-1" />)}
+                                            className="m-1" />)}
+                                </div>
+                            </div>
+                            <br />
+                            <div className="card">
+                                <div className="card-header">
+                                    <h5 className="float-start mb-0">Customers</h5>
+                                    <span className="float-end">
+                                        {pageInfo?.permissions?.Add_Rights === 1 &&
+                                            <button className="comadbtn mb-0" onClick={() => setScreen(!screen)}>Add</button>
+                                        }
+                                    </span>
+                                </div>
+                                <div className="card-body">
+                                    <div className="box shadow-none bg-light">
+                                        <MaterialReactTable table={table} />
                                     </div>
                                 </div>
-                                <br />
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h5 className="float-start mb-0">Customers</h5>
-                                        <span className="float-end">
-                                            {pageInfo?.permissions?.Add_Rights === 1 &&
-                                                <button className="comadbtn mb-0" onClick={() => setScreen(!screen)}>Add</button>
-                                            }
-                                        </span>
-                                    </div>
-                                    <div className="card-body">
-                                        <div className="box shadow-none bg-light">
-                                            <MaterialReactTable table={table} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </>
-                            : <CustomerAddScreen
-                                screen={screen}
-                                setScreen={setScreen}
-                                underArray={customers} row={rowValue} refresh={doRefresh}/>
-                        }
-                    </div>
+                            </div>
+                        </>
+                        : <CustomerAddScreen
+                            screen={screen}
+                            setScreen={setScreen}
+                            underArray={customers} row={rowValue} refresh={doRefresh} />
+                    }
                 </div>
             </div>
 

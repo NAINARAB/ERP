@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from '../../backendAPI';
 import { pageRights } from '../../components/rightsCheck';
 import { Collapse, IconButton } from '@mui/material';
+import CurrentPage from '../../components/currentPage';
 
 
 function formatDate(inputDate) {
@@ -529,10 +530,13 @@ const Employees = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'EMPLOYEE MASTER'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed shadow-lg">
-                        {rights?.add === true
-                            && <button className="comadbtn" onClick={() => {
+                <div className="col-md-10 p-3">
+                    
+                    <CurrentPage
+                        MainMenu={'MASTERS'}
+                        SubMenu={'EMPLOYEE MASTER'}
+                        Button={rights?.add === true
+                            && <button className="comadbtn mb-0" onClick={() => {
                                 setDispScreen(!dispScreen);
                                 setPK('');
                                 setInitialValue()
@@ -540,87 +544,83 @@ const Employees = () => {
                                 {dispScreen
                                     ? <><ChevronLeft sx={{ fontSize: '1em', padding: '0px', margin: '0px' }} /> Back</>
                                     : <><Add sx={{ fontSize: '1em', padding: '0px', margin: '0px' }} /> Add Employee</>}
-                            </button>
-                        }
-                        <h4 className='h5'>EMPLOYEE MASTER</h4>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; EMPLOYEE MASTER</h6>
-                    </div>
-                    <div className="p-3 pt-4 px-4">
-                        {dispScreen
-                            ?
-                            <div className='card shadow-lg'>
-                                <div className='card-header py-3' style={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
-                                    <h2 className='h5 mb-0'>Create Employee</h2>
-                                </div>
-                                <div className="row card-body">
-                                    {input.map((field, index) => (
-                                        <div key={index} className="col-lg-4 col-md-6 p-2 px-3">
-                                            <label>{field.label}{field.required && <p style={{ color: 'red', display: 'inline', fontWeight: 'bold', fontSize: '1em' }}> *</p>}</label>
-                                            {field.elem === 'input' ? (
-                                                <input
-                                                    type={field.type || 'text'}
-                                                    className={field.class}
-                                                    onChange={field.event}
-                                                    onInput={field.oninput}
-                                                    disabled={field.disabled}
-                                                    value={field.value}
+                            </button>} />
 
-                                                />
-                                            ) : field.elem === 'select' ? (
-                                                <select
-                                                    className={field.class}
-                                                    onChange={field.event}
-                                                    value={field.value}>
-                                                    {field.options.map((option, optionIndex) => (
-                                                        <option key={optionIndex} value={option.value} disabled={option.disabled} defaultValue={option.selected}>
-                                                            {option.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            ) : field.elem === 'textarea' ? (
-                                                <textarea
-                                                    className={field.class}
-                                                    onChange={field.event}
-                                                    rows={4} value={field.value}>
-                                                </textarea>
-                                            ) : null}
-                                        </div>
-                                    ))}
-                                    {!pk
-                                        && <div className='col-lg-4 col-md-6 d-flex align-items-center'>
-                                            <div>
-                                                <label className="form-check-label p-1 pe-2" htmlFor="muser">Create as a User</label>
-                                                <input className="form-check-input shadow-none" style={{ padding: '0.7em' }} type="checkbox" id="muser" checked={userCreate} onChange={() => setUserCreate(!userCreate)} />
-                                            </div>
-                                        </div>}
-                                </div>
-                                <div className='card-footer text-end'>
-                                    <button className='comadbtn' style={{ marginBottom: '0px' }} onClick={pk ? putEmp : postEmp}>Submit</button>
-                                    <button className='cancelbtn' onClick={() => { 
-                                        setDispScreen(!dispScreen); setPK('');
-                                        setInitialValue(); }} >Cancel</button>
-                                </div>
+                    {dispScreen
+                        ?
+                        <div className='card shadow-lg'>
+                            <div className='card-header py-3' style={{ backgroundColor: 'rgb(15, 11, 42)', color: 'white' }}>
+                                <h2 className='h5 mb-0'>Create Employee</h2>
                             </div>
-                            :
-                            <div className='row' >
-                                <h2 className='h3 pb-2'>
-                                    <span className="float-start p-2">
-                                        Employees {'( ' + empData.length + ' )'}
-                                    </span>
-                                    <span className='float-end col-lg-4'>
-                                        <input className='form-control p-3' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} />
-                                    </span>
-                                </h2>
-                                <div style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
-                                    {(filteredData && filteredData.length ? filteredData : search === '' ? empData : []).map(emp => (
-                                        <div key={emp.Emp_Id} className='col-sm-12 card shadow-lg mb-2'>
-                                            <DispEmployee emp={emp} edit={true} del={true} setVal={setVal} />
+                            <div className="row card-body">
+                                {input.map((field, index) => (
+                                    <div key={index} className="col-lg-4 col-md-6 p-2 px-3">
+                                        <label>{field.label}{field.required && <p style={{ color: 'red', display: 'inline', fontWeight: 'bold', fontSize: '1em' }}> *</p>}</label>
+                                        {field.elem === 'input' ? (
+                                            <input
+                                                type={field.type || 'text'}
+                                                className={field.class}
+                                                onChange={field.event}
+                                                onInput={field.oninput}
+                                                disabled={field.disabled}
+                                                value={field.value}
+
+                                            />
+                                        ) : field.elem === 'select' ? (
+                                            <select
+                                                className={field.class}
+                                                onChange={field.event}
+                                                value={field.value}>
+                                                {field.options.map((option, optionIndex) => (
+                                                    <option key={optionIndex} value={option.value} disabled={option.disabled} defaultValue={option.selected}>
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        ) : field.elem === 'textarea' ? (
+                                            <textarea
+                                                className={field.class}
+                                                onChange={field.event}
+                                                rows={4} value={field.value}>
+                                            </textarea>
+                                        ) : null}
+                                    </div>
+                                ))}
+                                {!pk
+                                    && <div className='col-lg-4 col-md-6 d-flex align-items-center'>
+                                        <div>
+                                            <label className="form-check-label p-1 pe-2" htmlFor="muser">Create as a User</label>
+                                            <input className="form-check-input shadow-none" style={{ padding: '0.7em' }} type="checkbox" id="muser" checked={userCreate} onChange={() => setUserCreate(!userCreate)} />
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>}
                             </div>
-                        }
-                    </div>
+                            <div className='card-footer text-end'>
+                                <button className='comadbtn' style={{ marginBottom: '0px' }} onClick={pk ? putEmp : postEmp}>Submit</button>
+                                <button className='cancelbtn' onClick={() => {
+                                    setDispScreen(!dispScreen); setPK('');
+                                    setInitialValue();
+                                }} >Cancel</button>
+                            </div>
+                        </div>
+                        :
+                        <div className='row' >
+                            <h2 className='h6 fw-bold pb-2 text-primary'>
+                                <span className="float-start p-2">
+                                    Employees {'( ' + empData.length + ' )'}
+                                </span>
+                                <span className='float-end col-lg-4'>
+                                    <input className='cus-inpt' type='search' placeholder="Search..." value={search} onChange={handleSearchChange} />
+                                </span>
+                            </h2>
+                            <div style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
+                                {(filteredData && filteredData.length ? filteredData : search === '' ? empData : []).map(emp => (
+                                    <div key={emp.Emp_Id} className='col-sm-12 card shadow-lg mb-2'>
+                                        <DispEmployee emp={emp} edit={true} del={true} setVal={setVal} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </>

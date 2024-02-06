@@ -11,6 +11,7 @@ import Logo from '../../download.png';
 import DataTable from "react-data-table-component";
 import { customStyles, TaskDone } from "../../components/tablecolumn";
 import CustomerScreen from "./customer";
+import CurrentPage from "../../components/currentPage";
 
 function formatDate(inputDate) {
     const date = new Date(inputDate);
@@ -176,11 +177,11 @@ const HomeComp = () => {
                     <Sidebar mainMenuId={'DASHBOARD'} subMenuId={'HOME'} />
                 </div>
                 <div className="col-md-10">
-                    <div className="comhed">
-                        <h4>HOME</h4>
+                    <div className="p-3">
+                        <CurrentPage MainMenu={'Home'} />
                     </div>
 
-                    <div className="row p-3">
+                    <div className="row p-2" style={{marginTop: '-1em'}}>
                         {task &&
                             <div className="col-md-6 p-2">
                                 <div className="card border">

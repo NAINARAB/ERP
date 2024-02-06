@@ -7,6 +7,7 @@ import { NavigateNext } from "@mui/icons-material";
 import { pageRights } from "../../components/rightsCheck";
 import DataTable from "react-data-table-component";
 import { customStyles, empMyAttendance } from "../../components/tablecolumn";
+import CurrentPage from '../../components/currentPage'
 
 
 const formatDate = (inputDate) => {
@@ -75,11 +76,8 @@ const EmpMyAttendance = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={"DASHBOARD"} subMenuId={"MY ATTENDANCE"} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed shadow-lg">
-                        <h4 className="h5">MY ATTENDANCE</h4>
-                        <h6>DASHBOARD &nbsp; <NavigateNext fontSize="small" /> &nbsp; MY ATTENDANCE</h6>
-                    </div>
+                <div className="col-md-10 p-3">
+                    <CurrentPage MainMenu={'DASHBOARD'} SubMenu={'MY ATTENDANCE'} />
                     <div className="p-3" >
                         <h2 className='h3 mb-5'>
                             <span className="float-start p-2">

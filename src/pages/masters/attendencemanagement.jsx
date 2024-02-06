@@ -13,6 +13,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Select from 'react-select';
+import CurrentPage from '../../components/currentPage';
 
 
 const formatDate = (inputDate) => {
@@ -242,92 +243,96 @@ const AttendanceManagement = () => {
                 <div className="col-md-2">
                     <Sidebar mainMenuId={'MASTERS'} subMenuId={'ATTENDANCE MANAGEMENT'} />
                 </div>
-                <div className="col-md-10">
-                    <div className="comhed shadow-lg">
+                <div className="col-md-10 p-3">
+                    {/* <div className="comhed shadow-lg">
                         <button className="comadbtn" onClick={() => setAddDialog(true)}>Add Attendance</button>
                         <h4 className='h5'>ATTENDANCE MANAGEMENT</h4>
                         <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; ATTENDANCE MANAGEMENT</h6>
-                    </div>
-                    <div className="p-3 mt-1">
-                        <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box' : ''}>
-                            <TabContext value={tabValue}>
-                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                    <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="lab API tabs example">
-                                        <Tab sx={tabValue === '1' ? {backgroundColor: '#c6d7eb'} : {}} label={'Active Employees ( ' + activeEmp.length + ' )'} value="1" />
-                                        <Tab sx={tabValue === '2' ? {backgroundColor: '#c6d7eb'} : {}} label="Attendance History" value="2" />
-                                    </TabList>
-                                </Box>
-                                <TabPanel value="1" sx={{ p: 0 }}>
-                                    <DataTable
-                                        columns={TblColumn}
-                                        data={activeEmp}
-                                        pagination
-                                        highlightOnHover={true}
-                                        fixedHeader={true}
-                                        fixedHeaderScrollHeight={'70vh'}
-                                        customStyles={customStyles}
-                                    />
-                                </TabPanel>
-                                <TabPanel value="2" sx={{ p: 0 }}>
-                                    <div style={{ minHeight: '68vh' }}>
-                                        <div className="row">
-                                            <div className='col-lg-3 col-md-6 p-2' >
-                                                <label>Name</label>
-                                                <Select
-                                                    options={[{ value: 0, label: 'ALL EMPLOYEE' }, ...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
-                                                    isSearchable={true}
-                                                    placeholder={'Select Employee'}
-                                                    styles={customSelectStyles}
-                                                    value={{ value: selectEmpHis.User_Mgt_Id, label: selectEmpHis.Emp_Name }}
-                                                    onChange={(e) => { setSelEmpHis({ ...selectEmpHis, User_Mgt_Id: e.value, Emp_Name: e.label }) }}
-                                                />
-                                            </div>
-                                            <div className='col-lg-3 col-md-6 p-2'>
-                                                <label>From</label>
+                    </div> */}
+
+                    <CurrentPage
+                        SubMenu={'ATTENDANCE MANAGEMENT'}
+                        MainMenu={'MASTERS'}
+                        Button={<button className="comadbtn mb-0" onClick={() => setAddDialog(true)}>Add Attendance</button>} />
+
+                    <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box' : ''}>
+                        <TabContext value={tabValue}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="lab API tabs example">
+                                    <Tab sx={tabValue === '1' ? { backgroundColor: '#c6d7eb' } : {}} label={'Active Employees ( ' + activeEmp.length + ' )'} value="1" />
+                                    <Tab sx={tabValue === '2' ? { backgroundColor: '#c6d7eb' } : {}} label="Attendance History" value="2" />
+                                </TabList>
+                            </Box>
+                            <TabPanel value="1" sx={{ p: 0 }}>
+                                <DataTable
+                                    columns={TblColumn}
+                                    data={activeEmp}
+                                    pagination
+                                    highlightOnHover={true}
+                                    fixedHeader={true}
+                                    fixedHeaderScrollHeight={'70vh'}
+                                    customStyles={customStyles}
+                                />
+                            </TabPanel>
+                            <TabPanel value="2" sx={{ p: 0 }}>
+                                <div style={{ minHeight: '68vh' }}>
+                                    <div className="row">
+                                        <div className='col-lg-3 col-md-6 p-2' >
+                                            <label>Name</label>
+                                            <Select
+                                                options={[{ value: 0, label: 'ALL EMPLOYEE' }, ...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
+                                                isSearchable={true}
+                                                placeholder={'Select Employee'}
+                                                styles={customSelectStyles}
+                                                value={{ value: selectEmpHis.User_Mgt_Id, label: selectEmpHis.Emp_Name }}
+                                                onChange={(e) => { setSelEmpHis({ ...selectEmpHis, User_Mgt_Id: e.value, Emp_Name: e.label }) }}
+                                            />
+                                        </div>
+                                        <div className='col-lg-3 col-md-6 p-2'>
+                                            <label>From</label>
+                                            <input
+                                                className='cus-inpt'
+                                                type='date'
+                                                placeholder="Search..."
+                                                value={search.from}
+                                                onInput={(e) => handleFromDateChange(e.target.value)} />
+                                        </div>
+                                        <div className='col-lg-3 col-md-6 p-2'>
+                                            <label>To</label>
+                                            <div className='d-flex justify-content-between align-items-center'>
                                                 <input
                                                     className='cus-inpt'
                                                     type='date'
                                                     placeholder="Search..."
-                                                    value={search.from}
-                                                    onInput={(e) => handleFromDateChange(e.target.value)} />
-                                            </div>
-                                            <div className='col-lg-3 col-md-6 p-2'>
-                                                <label>To</label>
-                                                <div className='d-flex justify-content-between align-items-center'>
-                                                    <input
-                                                        className='cus-inpt'
-                                                        type='date'
-                                                        placeholder="Search..."
-                                                        value={search.to}
-                                                        onInput={(e) => handleToDateChange(e.target.value)} />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-3 col-md-6 p-2 d-flex align-items-end">
-                                                <input
-                                                    style={{ padding: '0.7em' }} id="muser"
-                                                    className='cus-check m-1'
-                                                    type='checkbox'
-                                                    checked={search.useDate}
-                                                    onChange={(e) => {
-                                                        setSearch({ ...search, useDate: e.target.checked })
-                                                    }}
-                                                    title="Use Date Filter" />
-                                                <label className="form-check-label ps-2 p-0" htmlFor="muser">Use Date Filter</label>
+                                                    value={search.to}
+                                                    onInput={(e) => handleToDateChange(e.target.value)} />
                                             </div>
                                         </div>
-                                        <DataTable
-                                            columns={attendanceHistoryColumn}
-                                            data={search.useDate ? filteredData : attendanceHistory}
-                                            pagination
-                                            highlightOnHover={true}
-                                            fixedHeader={true}
-                                            fixedHeaderScrollHeight={'58vh'}
-                                            customStyles={customStyles}
-                                        />
+                                        <div className="col-lg-3 col-md-6 p-2 d-flex align-items-end">
+                                            <input
+                                                style={{ padding: '0.7em' }} id="muser"
+                                                className='cus-check m-1'
+                                                type='checkbox'
+                                                checked={search.useDate}
+                                                onChange={(e) => {
+                                                    setSearch({ ...search, useDate: e.target.checked })
+                                                }}
+                                                title="Use Date Filter" />
+                                            <label className="form-check-label ps-2 p-0" htmlFor="muser">Use Date Filter</label>
+                                        </div>
                                     </div>
-                                </TabPanel>
-                            </TabContext>
-                        </div>
+                                    <DataTable
+                                        columns={attendanceHistoryColumn}
+                                        data={search.useDate ? filteredData : attendanceHistory}
+                                        pagination
+                                        highlightOnHover={true}
+                                        fixedHeader={true}
+                                        fixedHeaderScrollHeight={'58vh'}
+                                        customStyles={customStyles}
+                                    />
+                                </div>
+                            </TabPanel>
+                        </TabContext>
                     </div>
                 </div>
             </div>
