@@ -34,7 +34,7 @@ const EmpMyAttendance = () => {
 
     useEffect(() => {
         pageRights(2, 1015).then((per) => {
-            fetch(`${apihost}/api/UserAttendanceHistory?UserId=${localStorage.getItem("UserId")}`, { headers: { Authorization: per.token } })
+            fetch(`${apihost}/api/attendance/MyAttendance?UserId=${localStorage.getItem("UserId")}`, { headers: { Authorization: per.token } })
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.status === 'Success' && data.data.length > 0) {
@@ -79,7 +79,7 @@ const EmpMyAttendance = () => {
                 <div className="col-md-10 p-3">
                     <CurrentPage MainMenu={'DASHBOARD'} SubMenu={'MY ATTENDANCE'} />
                     <div className="p-3" >
-                        <h2 className='h3 mb-5'>
+                        <h2 className='h5 mb-5'>
                             <span className="float-start p-2">
                                 Attendance {'( ' + attendanceData.length + ' - Days)'}
                             </span>

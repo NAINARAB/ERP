@@ -178,25 +178,30 @@ const PurchaseReport2 = () => {
     }
 
     const overAllTotal = () => {
+        let tonnageTotal = 0;
         let total = 0;
         PurchaseData.map(o => {
             o?.product_details?.map(ob => {
                 ob?.product_details_1.map(obj => {
+                    tonnageTotal += Number(obj.bill_qty)
                     total += Number(obj.amount)
                 })
             })
         })
-        return parseInt(total).toLocaleString('en-IN');
+        return {
+            amount: parseInt(total).toLocaleString('en-IN'),
+            tonage: parseInt(tonnageTotal).toLocaleString('en-IN')
+        };
     }
 
     const OrderValueTotal = () => {
-        let total = 0;
+        let amountTotal = 0;
         PurchaseData.map(o => {
             o?.Order_details?.map(ob => {
-                total += Number(ob?.total_invoice_value)
+                amountTotal += Number(ob?.total_invoice_value)
             })
         })
-        return parseInt(total).toLocaleString('en-IN');
+        return parseInt(amountTotal).toLocaleString('en-IN')
     }
 
     return (
@@ -243,10 +248,10 @@ const PurchaseReport2 = () => {
                                                 <span className="text-primary fw-bold"> {new Date(selectedValue.Todate).toLocaleDateString('en-IN')}</span>
                                             </h6>
                                             <h6 className="p-2 m-0 float-end">
-                                                Total :
+                                                {/* Total : */}
                                                 <span className="text-primary fw-bold" style={{fontSize: '14px'}}>
                                                     {Number(selectedValue.Report_Type) !== 3
-                                                        ? " " + overAllTotal()
+                                                        ? " ( " + overAllTotal().tonage + " ) - ( " + overAllTotal().amount +" )"
                                                         : " " + OrderValueTotal()}
                                                 </span>
                                             </h6>
