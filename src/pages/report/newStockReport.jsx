@@ -166,8 +166,8 @@ const StockReport2 = () => {
 
                     <CurrentPage MainMenu={'REPORTS'} SubMenu={'STOCK REPORT'} />
 
-                    <div className="row justify-content-end">
-                        {/* <div className="col-md-6 col-lg-4 p-2">
+                    {/* <div className="row justify-content-end">
+                        <div className="col-md-6 col-lg-4 p-2">
                             <label>Include Zeros</label>
                             <select
                                 style={{ padding: 10 }}
@@ -176,8 +176,8 @@ const StockReport2 = () => {
                                 <option value={true}>Yes</option>
                                 <option value={false}>No</option>
                             </select>
-                        </div> */}
-                        {/* <div className="col-md-6 col-lg-4 col-xl-3 p-2">
+                        </div> 
+                        <div className="col-md-6 col-lg-4 col-xl-3 p-2">
                                 <label>Date</label>
                                 <input type={'date'} className='cus-inpt'
                                     value={search.date}
@@ -195,8 +195,8 @@ const StockReport2 = () => {
                                 <div className="sIcon">
                                     <Search sx={{ fontSize: '1.6em' }} />
                                 </div>
-                            </div> */}
-                    </div>
+                            </div>
+                    </div> */}
 
                     <div className="card">
                         <div className="card-header row fw-bold text-dark" style={{ backgroundColor: '#eae0cc' }}>

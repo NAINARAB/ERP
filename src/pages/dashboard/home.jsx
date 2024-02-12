@@ -11,6 +11,7 @@ import Logo from '../../download.png';
 import DataTable from "react-data-table-component";
 import { customStyles, TaskDone } from "../../components/tablecolumn";
 import CustomerScreen from "./customer";
+import SOAComp from "./SOA";
 import CurrentPage from "../../components/currentPage";
 
 function formatDate(inputDate) {
@@ -259,7 +260,8 @@ const HomeComp = () => {
                         }
 
                         <div className="col-12 p-2">
-                            <CustomerScreen />
+                            {/* <CustomerScreen /> */}
+                            <SOAComp />
                         </div>
                     </div>
 

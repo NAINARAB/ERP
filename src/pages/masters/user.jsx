@@ -73,6 +73,11 @@ const User = () => {
     })
     const [dopen, setdopen] = useState(false);
     const [delid, setdelid] = useState(null);
+    const [user, setUser] = useState({
+        userId: 0
+    })
+
+    
 
     useEffect(() => {
         pageRights(2, 1014).then(rights => {
