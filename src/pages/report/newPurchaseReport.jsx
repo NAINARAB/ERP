@@ -112,9 +112,13 @@ const PurchaseReport2 = () => {
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-success bg-light">{rowData?.Stock_Group}</td>
                     <td style={{ fontSize: '12px' }} className="text-success">-</td>
-                    <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">{totalTonnage?.toLocaleString('en-IN')}  (Sum)</td>
+                    <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">
+                        {totalTonnage?.toLocaleString('en-IN')}
+                        {/* <span className="text-dark"> (Sum)</span> */}
+                    </td>
                     <td style={{ fontSize: '12px' }} className="text-success fw-bold">
-                        {averageRate.toLocaleString('en-IN', { maximumFractionDigits: 2 })} (Avg)
+                        {averageRate.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        {/* <span className="text-dark"> (Avg)</span> */}
                         {/* {(totalRate / AvgRateCount).toLocaleString('en-IN', { maximumFractionDigits: 2 })} */}
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">
@@ -140,8 +144,14 @@ const PurchaseReport2 = () => {
                         </button>
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-primary">{subRowData?.Item_Name_Modified} (Sum)</td>
-                    <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">{calcTotal(subRowData?.product_details_1, 'bill_qty')} (Sum)</td>
-                    <td style={{ fontSize: '12px' }} className="text-primary fw-bold">{calcAverage(subRowData?.product_details_1, 'item_rate').toFixed(2)} (Avg)</td>
+                    <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">
+                        {calcTotal(subRowData?.product_details_1, 'bill_qty')} 
+                        {/* <span className="text-dark"> (Sum)</span> */}
+                    </td>
+                    <td style={{ fontSize: '12px' }} className="text-primary fw-bold">
+                        {calcAverage(subRowData?.product_details_1, 'item_rate').toFixed(2)} 
+                        {/* <span className="text-dark"> (Avg)</span> */}
+                    </td>
                     <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">{calcTotal(subRowData?.product_details_1, 'amount')}</td>
                 </tr>
                 {open && subRowData?.product_details_1?.map((o, i) => (
