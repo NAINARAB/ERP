@@ -13,21 +13,11 @@ import Loader from '../../components/loader/loader'
 const calcTotal = (arr, column) => {
     let total = 0;
     if (Array.isArray(arr)) {
-        arr.map(ob => {
+        arr.forEach(ob => {
             total += Number(ob[column])
         })
     }
-    return total.toLocaleString('en-IN')
-}
-
-const calcAverage = (arr, column) => {
-    let total = 0;
-    if (Array.isArray(arr) && arr.length > 0) {
-        arr.map(obj => {
-            total += Number(obj[column])
-        })
-    }
-    return total / arr.length
+    return total
 }
 
 const PurchaseReport2 = () => {
@@ -84,13 +74,13 @@ const PurchaseReport2 = () => {
         //     0
         // );
 
-        const allItemRates = rowData?.product_details?.reduce((acc, item) => {
-            return acc.concat(item?.product_details_1?.map(subItem => subItem?.item_rate));
-        }, []);
+        // const allItemRates = rowData?.product_details?.reduce((acc, item) => {
+        //     return acc.concat(item?.product_details_1?.map(subItem => subItem?.item_rate));
+        // }, []);
         
-        const totalRate = allItemRates.reduce((acc, rate) => acc + rate, 0);
+        // const totalRate = allItemRates.reduce((acc, rate) => acc + rate, 0);
         
-        const averageRate = allItemRates.length > 0 ? totalRate / allItemRates.length : 0;
+        // const averageRate = allItemRates.length > 0 ? totalRate / allItemRates.length : 0;
         
         const totalTonnage = rowData?.product_details?.reduce(
             (acc, item) => acc + item?.product_details_1?.reduce((subAcc, subItem) => subAcc + subItem?.bill_qty, 0),
@@ -114,16 +104,12 @@ const PurchaseReport2 = () => {
                     <td style={{ fontSize: '12px' }} className="text-success">-</td>
                     <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">
                         {totalTonnage?.toLocaleString('en-IN')}
-                        {/* <span className="text-dark"> (Sum)</span> */}
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-success fw-bold">
-                        {averageRate.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
-                        {/* <span className="text-dark"> (Avg)</span> */}
-                        {/* {(totalRate / AvgRateCount).toLocaleString('en-IN', { maximumFractionDigits: 2 })} */}
+                        {(totalValue / totalTonnage).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">
-                        {/* {totalValue?.toLocaleString('en-IN')} or */}
-                        {(Number(totalTonnage) * Number(averageRate)).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                        {totalValue?.toLocaleString('en-IN')} 
                     </td>
                 </tr>
                 {open && rowData.product_details.map((o, i) => <SubRows subRowData={o} key={i} />)}
@@ -133,6 +119,8 @@ const PurchaseReport2 = () => {
 
     const SubRows = ({ subRowData }) => {
         const [open, setOpen] = useState(false);
+        const tonnage = calcTotal(subRowData?.product_details_1, 'bill_qty');
+        const amount = calcTotal(subRowData?.product_details_1, 'amount')
 
         return subRowData?.product_details_1?.length > 0 && (
             <>
@@ -145,14 +133,12 @@ const PurchaseReport2 = () => {
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-primary">{subRowData?.Item_Name_Modified} (Sum)</td>
                     <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">
-                        {calcTotal(subRowData?.product_details_1, 'bill_qty')} 
-                        {/* <span className="text-dark"> (Sum)</span> */}
+                        {tonnage.toLocaleString('en-IN', { maximumFractionDigits: 2 })} 
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-primary fw-bold">
-                        {calcAverage(subRowData?.product_details_1, 'item_rate').toFixed(2)} 
-                        {/* <span className="text-dark"> (Avg)</span> */}
+                        {(Number(amount) / Number(tonnage)).toLocaleString('en-IN', { maximumFractionDigits: 2 })} 
                     </td>
-                    <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">{calcTotal(subRowData?.product_details_1, 'amount')}</td>
+                    <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">{amount.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                 </tr>
                 {open && subRowData?.product_details_1?.map((o, i) => (
                     <tr key={i}>
@@ -181,7 +167,7 @@ const PurchaseReport2 = () => {
                     </td>
                     <td style={{ fontSize: '12px' }}>{row?.ledger_name}</td>
                     <td style={{ fontSize: '12px' }}>{row?.Order_details?.length}</td>
-                    <td style={{ fontSize: '12px' }} className="text-primary fw-bold">{calcTotal(row?.Order_details, 'total_invoice_value')}</td>
+                    <td style={{ fontSize: '12px' }} className="text-primary fw-bold">{calcTotal(row?.Order_details, 'total_invoice_value').toLocaleString('en-IN')}</td>
                 </tr>
                 {open &&
                     <tr>
@@ -214,9 +200,9 @@ const PurchaseReport2 = () => {
     const overAllTotal = () => {
         let tonnageTotal = 0;
         let total = 0;
-        PurchaseData.map(o => {
-            o?.product_details?.map(ob => {
-                ob?.product_details_1.map(obj => {
+        PurchaseData.forEach(o => {
+            o?.product_details?.forEach(ob => {
+                ob?.product_details_1.forEach(obj => {
                     tonnageTotal += Number(obj.bill_qty)
                     total += Number(obj.amount)
                 })
@@ -230,8 +216,8 @@ const PurchaseReport2 = () => {
 
     const OrderValueTotal = () => {
         let amountTotal = 0;
-        PurchaseData.map(o => {
-            o?.Order_details?.map(ob => {
+        PurchaseData.forEach(o => {
+            o?.Order_details?.forEach(ob => {
                 amountTotal += Number(ob?.total_invoice_value)
             })
         })
