@@ -74,7 +74,7 @@ const StockReport2 = () => {
             rows?.product_details?.map(obj => {
                 count += Number(obj[colmn]);
             })
-            return count.toLocaleString('en-IN');
+            return Number(count)
         }
 
         function calculateMean() {
@@ -100,9 +100,10 @@ const StockReport2 = () => {
                         {rows.Stock_Group}
                         <span className="text-danger"> ({rows.product_details.length})</span>
                     </td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Bal_Qty')}</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Bal_Qty').toLocaleString('en-IN')}</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{(calcBalQty('Bal_Qty') / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }</td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{calculateMean().toFixed(3).toLocaleString('en-IN')}</td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Stock_Value')}</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Stock_Value').toLocaleString('en-IN')}</td>
                 </tr>
                 {open && (
                     <tr>
@@ -236,6 +237,7 @@ const StockReport2 = () => {
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>-</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Group Name</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Quantity</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Tonnage</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Rate</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Worth(₹)</th>
                                     </tr>
