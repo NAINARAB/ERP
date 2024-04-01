@@ -120,19 +120,21 @@
 }
 
 .icon-slot {
-  width: 130px;
-  height: 75px;
   border-radius: 30px;
   border: 2px dashed #c0bebe;
   cursor:not-allowed;
+  padding: 0px;
+  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
+  height: 80px;
+  width: 80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon {
-  padding: 10px;
-  border-radius: 30px;
-  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1);
-  width: 130px;
-  height: 75px;
+  width: fit-content;
   cursor: pointer;
   transition: 0.3s all;
 }

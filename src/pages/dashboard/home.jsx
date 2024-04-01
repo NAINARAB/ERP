@@ -5,12 +5,11 @@ import '../com.css';
 import { apihost, taskManagementWebAddress } from "../../backendAPI";
 import { pageRights } from "../../components/rightsCheck";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { PlayArrow, Done, CalendarMonthTwoTone, ArrowForwardOutlined, ArrowBackOutlined } from '@mui/icons-material';
+import { PlayArrow, Done, CalendarMonthTwoTone, ArrowForwardOutlined, ArrowBackOutlined, AccessAlarmsOutlined } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify'
-import Logo from '../../download.png';
 import DataTable from "react-data-table-component";
 import { customStyles, TaskDone } from "../../components/tablecolumn";
-import CustomerScreen from "./customer";
+// import CustomerScreen from "./customer";
 import SOAComp from "./SOA";
 import CurrentPage from "../../components/currentPage";
 
@@ -54,6 +53,7 @@ const HomeComp = () => {
     const [workSummary, setWorkSummary] = useState('')
     const [openDialog, setOpenDialog] = useState(false)
     const [taskSummary, setTaskSummary] = useState([]);
+    const UserId = localStorage.getItem('UserId')
 
     useEffect(() => {
         pageRights(2, 13).then(per => {
@@ -76,14 +76,8 @@ const HomeComp = () => {
         })
     }, [refresh])
 
-    const loginResponse = localStorage.getItem('loginResponse')
-    const loginInfo = JSON.parse(loginResponse)
-    const name = localStorage.getItem('Name')
-    const branch = localStorage.getItem('branchId')
-    const uType = localStorage.getItem('uType')
-
     const navtoTask = () => {
-        window.location.href = `${taskManagementWebAddress}?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${name}&branch=${branch}&uType=${uType}`
+        window.location.href = `${taskManagementWebAddress}?Auth=${token}`
     }
 
     const getLocation = async () => {
@@ -121,7 +115,7 @@ const HomeComp = () => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            UserId: loginInfo.UserId,
+                            UserId: UserId,
                             Latitude: location.latitude,
                             Longitude: location.longitude,
                             Creater: 'Employee'
@@ -152,7 +146,7 @@ const HomeComp = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                UserId: loginInfo.UserId,
+                UserId: UserId,
                 Work_Summary: workSummary
             })
         }).then(res => { return res.json() })
@@ -192,16 +186,16 @@ const HomeComp = () => {
                                     <div className="card-body row mb-2">
                                         {task &&
                                             <>
-                                                <div className="icon-slot border-0 m-2 mb-3">
-                                                    <div className="icon" onClick={navtoTask}>
-                                                        <img src={Logo} alt="SMT TASK ICON" />
-                                                    </div>
-                                                    <p className="text-center mt-1">SMT TASK</p>
-                                                </div>
+                                                <span className="icon-slot border-0 m-2 mb-3 flex-column">
+                                                    <span className="icon" onClick={navtoTask}>
+                                                        <AccessAlarmsOutlined sx={{fontSize: '38px', color: 'green'}} />
+                                                    </span>
+                                                    <p className="my-1">TASK APP</p>
+                                                </span>
                                             </>
                                         }
-                                        <div className="icon-slot m-2 mb-3"></div>
-                                        <div className="icon-slot m-2 mb-3"></div>
+                                        <span className="icon-slot m-2 mb-3"></span>
+                                        <span className="icon-slot m-2 mb-3"></span>
                                     </div>
                                 </div>
                             </div>

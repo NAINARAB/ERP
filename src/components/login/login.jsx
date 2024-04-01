@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import './sty.css';
 import { apihost } from '../../backendAPI';
-import navRoutes from '../../roots'; 
+// import navRoutes from '../../roots';
 
 
 function Login() {
@@ -22,59 +22,46 @@ function Login() {
 
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
-        const inTime = queryParams.get('InTime');
-        const userId = queryParams.get('UserId');
-        const username = queryParams.get('username');
-        const branch = queryParams.get('branch')
+        const Auth = queryParams.get('Auth');
 
-        const uTypeId = queryParams.get('uTypeId')
-        const uTypeGet = queryParams.get('uTypeGet')
-        const userToken = queryParams.get('userToken')
-        const SessionId = queryParams.get('SessionId');
-        const page = queryParams.get('page');
+        if (Auth) {
 
-        if (inTime && userId && username && branch && uTypeId && uTypeGet && userToken && SessionId) {
-            const loginResponse = {
-                data: {
-                    InTime: inTime,
-                    branchid: branch,
-                    message: 'Login Successfully',
-                    userId: userId,
-                    username: username,
-                    SessionId: SessionId
-                },
-            };
-            // for ERP
-            localStorage.setItem('UserType', uTypeGet); // 2
-            localStorage.setItem('Name', username); // 3
-            localStorage.setItem('userToken', userToken); // 4
-            localStorage.setItem('branchId', branch); // 5
-            localStorage.setItem('uType', uTypeId) // 6
-            localStorage.setItem('UserId', userId); // 7
-            // for Task management
-            localStorage.setItem('loginResponse', JSON.stringify(loginResponse)); // 1
+            fetch(`${apihost}/api/getUserByAuth?Auth=${Auth}`)
+                .then(res => res.json())
+                .then(data => {
 
-            if (page) {
-                const pageFound = navRoutes.some(obj => obj.path === page);
-              
-                if (pageFound) {
-                  navigate(page);
-                } else {
-                  navigate('home');
-                }
-              
-                clearQueryParameters();
-              } else {
-                navigate('home');
-                clearQueryParameters();
-              }              
+                    if (data.status === 'Success') {
+                        const { Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId, session } = data.data[0];
+                        const user = {
+                            Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId
+                        }
+                        const loginResponse = {
+                            data: {
+                                InTime: session[0].InTime,
+                                userId: UserId,
+                                SessionId: session[0].SessionId
+                            },
+                        };
+
+                        localStorage.setItem('user', JSON.stringify(user));
+                        localStorage.setItem('loginResponse', JSON.stringify(loginResponse))
+                        localStorage.setItem('UserType', UserType); // 2
+                        localStorage.setItem('userToken', Autheticate_Id); // 4
+                        localStorage.setItem('branchId', BranchId); // 5
+                        localStorage.setItem('uType', UserTypeId) // 6
+                        localStorage.setItem('UserId', UserId); // 7
+                        localStorage.setItem('Name', Name); // 3
+                        navigate('home');
+                    }
+
+                }).catch(e => { console.error(e) })
+                .finally(() => clearQueryParameters())
+
         }
         if (localStorage.getItem('userToken')) {
             navigate('home')
         }
     }, []);
-
-    // let logapi = 'https://erpsmt.in/?InTime=${loginInfo.InTime}&UserId=${loginInfo.UserId}&username=${uName}&branch=${branch}&uTypeId=${uType}&uTypeGet=${uRole}&userToken=${token}&SessionId=${SessionId}'
 
     const getLogin = async () => {
         fetch(`${apihost}/api/login?user=${userID}&pass=${password}`)
@@ -87,8 +74,9 @@ function Login() {
                     localStorage.setItem('UserType', data.user.UserType)
                     localStorage.setItem('UserId', data.user.UserId)
                     localStorage.setItem('branchId', data.user.BranchId)
-                    localStorage.setItem('loginResponse', JSON.stringify(data.sessionInfo))
-                    localStorage.setItem('uType', data.user.UserTypeId)
+                    localStorage.setItem('loginResponse', JSON.stringify({data: data.sessionInfo}))
+                    localStorage.setItem('uType', data.user.UserTypeId);
+                    localStorage.setItem('user', JSON.stringify(data.user))
                     navigate('home')
                 } else {
                     toast.error("Login Failed")
@@ -96,7 +84,6 @@ function Login() {
             })
             .catch((e) => { console.log(e) });
     };
-
 
     const dologin = (e) => {
         e.preventDefault();

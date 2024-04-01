@@ -39,7 +39,7 @@ const Header = ({ setting }) => {
 
   const logout = () => {
     const session = JSON.parse(localStorage.getItem('loginResponse'))
-    fetch(`${apihost}/api/logout?userid=${localStorage.getItem('UserId')}&sessionId=${session.SessionId}`,
+    fetch(`${apihost}/api/logout?userid=${localStorage.getItem('UserId')}&sessionId=${session.data.SessionId}`,
       {
         method: 'PUT',
         headers: { 'Authorization': token }
