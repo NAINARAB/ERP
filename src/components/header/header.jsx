@@ -47,9 +47,13 @@ const Header = ({ setting }) => {
       .then((res) => { return res.json() })
       .then(data => {
         if (data.status === 'Success') {
-          localStorage.clear();
-          nav('/');
+          // localStorage.clear();
+          // nav('/');
         }
+      }).catch(e => console.error(e))
+      .finally(() => {
+        localStorage.clear();
+        nav('/');
       })
   }
 
