@@ -15,6 +15,10 @@ const TaskLogout = () => {
                     localStorage.clear();
                     window.location.href = '/';
                 }
+            }).catch(e => console.log(e))
+            .finally(() => {
+                localStorage.clear();
+                window.location.href = '/';
             })
     }, [])
 
