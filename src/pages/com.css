@@ -231,15 +231,7 @@
   top: 0 ;
 }
 
-.fa-12 {
-  font-size: 12px !important;
-}
-
-.fa-13{
-  font-size: 13px !important;
-}
-
-.fa-14{
-  font-size: 14px !important;
+.hideScroll::-webkit-scrollbar {
+  display: none !important;
 }
 

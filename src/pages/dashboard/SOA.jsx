@@ -1,13 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { apihost } from "../../backendAPI";
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { IconButton } from '@mui/material';
 import { LaunchOutlined } from '@mui/icons-material'
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
-
-
-const today = new Date();
-const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 2);
+import { useReactToPrint } from 'react-to-print';
+import { utils as XLSXUtils, writeFile as writeXLSX } from 'xlsx';
 
 
 const SOAComp = () => {
@@ -19,14 +15,17 @@ const SOAComp = () => {
     const [dialog, setDialog] = useState(false)
     const [SOA, setSOA] = useState([])
     const [clickedRow, setClickedRow] = useState({})
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 2);
 
     const [selectedRange, setSelectedRange] = useState({
         from: firstDayOfMonth.toISOString().split('T')[0],
         to: new Date().toISOString().split('T')[0],
     });
 
+    const imageSource = "./ic_launcher.png"
     const [closingBalance, setClosingBalance] = useState({ debit: 0, credit: 0 });
-
+    const printRef = useRef()
 
     useEffect(() => {
         fetch(`${apihost}/api/getBalance?UserId=${UserId}`, {
@@ -48,7 +47,7 @@ const SOAComp = () => {
             } else {
                 setIsCustomer(false)
             }
-        })
+        }).catch(e => console.error(e))
     }, [])
 
     const getInfo = (prop, mode) => {
@@ -84,6 +83,24 @@ const SOAComp = () => {
             from: firstDayOfMonth.toISOString().split('T')[0],
             to: new Date().toISOString().split('T')[0],
         })
+    }
+
+    const handlePrint = useReactToPrint({
+        content: () => printRef.current,
+    });
+
+    const generateExcel = (data) => {
+        const worksheet = XLSXUtils.json_to_sheet(data);
+        const workbook = XLSXUtils.book_new();
+        XLSXUtils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        writeXLSX(workbook, `erpsmt_SOA_${new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })}.xlsx`);
     }
 
     return isCustomer ? (
@@ -128,16 +145,39 @@ const SOAComp = () => {
                     </table>
                 </div>
             </div>
+
             <Dialog
                 open={dialog}
                 onClose={handleClose}
                 fullScreen
                 fullWidth>
-                <DialogTitle className="border-bottom text-primary">Transaction Report of {clickedRow?.Customer_name}</DialogTitle>
-                <DialogContent className="rounded-2 shadow m-4 p-0">
+                <DialogTitle className="border-bottom text-primary d-flex align-items-center fa-18">
+                    <span className="flex-grow-1">Transaction Report of {clickedRow?.Customer_name}</span>
+                    <Button onClick={handlePrint} >PDF</Button>
+                    <Button
+                        onClick={() => {
+                            const transformedData = SOA.map((o, i) => ({
+                                Sno: i + 1,
+                                Date: new Date(o?.Ledger_Date).toLocaleDateString('en-IN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                }),
+                                Purticular: o?.Ledger_Desc,
+                                InvoiceNo: o?.invoice_no,
+                                Debit: Boolean(Number(o.Debit_Amt)) ? o.Debit_Amt.toLocaleString('en-IN') : '',
+                                Credit: Boolean(Number(o.Credit_Amt)) ? o.Credit_Amt.toLocaleString('en-IN') : ''
+                            }));
+                            generateExcel(transformedData);
+                        }}
+                    >
+                        excel
+                    </Button>
+                </DialogTitle>
+                <DialogContent className="rounded-2 shadow m-4 mb-2 p-0" >
                     <div className="row align-content-center">
                         <div className="col-lg-1">
-                            <img src="./ic_launcher.png" alt="smtlogo" className="smtlogo" />
+                            <img src={imageSource} alt="Company Logo" className="smtlogo" />
                         </div>
                         <div className="col-lg-4 p-2 ps-3">
                             <table className="table border-0">
@@ -229,14 +269,15 @@ const SOAComp = () => {
                             </table>
                         </div>
                     </div>
-                    {/* <MaterialReactTable table={Statement} /> */}
-                    <div className="p-2 table-responsive" style={{ maxHeight: '75vh' }}>
+
+                    <div className="p-2 table-responsive">
                         <table className="table">
                             <thead>
                                 <tr>
+                                    <th className="fa-13 tble-hed-stick">-</th>
                                     <th className="fa-13 tble-hed-stick">Date</th>
-                                    <th className="fa-13 tble-hed-stick">Invoice No</th>
                                     <th className="fa-13 tble-hed-stick">Purticular</th>
+                                    <th className="fa-13 tble-hed-stick">Invoice No</th>
                                     <th className="fa-13 tble-hed-stick">Dr</th>
                                     <th className="fa-13 tble-hed-stick">Cr</th>
                                 </tr>
@@ -244,6 +285,7 @@ const SOAComp = () => {
                             <tbody>
                                 {SOA.map((o, i) => (
                                     <tr key={i}>
+                                        <td className="fa-13 bg-light">{i + 1}</td>
                                         <td className="fa-13 bg-light">
                                             {new Date(o?.Ledger_Date).toLocaleDateString('en-IN', {
                                                 day: '2-digit',
@@ -251,8 +293,8 @@ const SOAComp = () => {
                                                 year: 'numeric',
                                             })}
                                         </td>
-                                        <td className="fa-13">{o.invoice_no}</td>
                                         <td className="fa-13 bg-light">{o.Ledger_Desc}</td>
+                                        <td className="fa-13">{o.invoice_no}</td>
                                         <td className="fa-13">{o.Debit_Amt.toLocaleString('en-IN')}</td>
                                         <td className="fa-13 bg-light">{o.Credit_Amt.toLocaleString('en-IN')}</td>
                                     </tr>
@@ -260,11 +302,101 @@ const SOAComp = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* printable div */}
+                    <div className="d-none">
+                        <div className="d-block px-5 py-2" ref={printRef}>
+                            <img src={imageSource} alt="smtlogo" className="smtlogo" />
+                            <table className="table">
+                                <tbody>
+                                    <tr>
+                                        <td className="border-0 fa-14">Company</td>
+                                        <td className="border-0 fa-14 fw-bold">{clickedRow?.Company_Name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">Ledger Name</td>
+                                        <td className="border-0 fa-14 fw-bold">{clickedRow?.ledger_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">Contact Person</td>
+                                        <td className="border-0 fa-14 fw-bold">{SOA[0]?.Contact_Person}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">Mobile</td>
+                                        <td className="border-0 fa-14 fw-bold">{SOA[0]?.Mobile_no}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">From</td>
+                                        <td className="border-0 fa-14 fw-bold">{selectedRange.from}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">To</td>
+                                        <td className="border-0 fa-14 fw-bold">{selectedRange.to}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">Opening Balance</td>
+                                        <td className="border-0 fa-14 fw-bold">
+                                            {
+                                                SOA[0]?.Debit_Amt > 0
+                                                    ? SOA[0]?.Debit_Amt.toLocaleString('en-IN') + ' DR'
+                                                    : SOA[0]?.Credit_Amt.toLocaleString('en-IN') + ' CR'
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="border-0 fa-14">Closing Balance</td>
+                                        <td className="border-0 fa-14 fw-bold">
+                                            {
+                                                (closingBalance?.debit - closingBalance?.credit) < 0
+                                                    ? (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + " CR"
+                                                    : (closingBalance?.debit - closingBalance?.credit).toLocaleString('en-IN') + ' DR'
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div className="p-2 table-responsive">
+                                <table className="table">
+                                    <thead>
+                                        <tr>
+                                            <th className="fa-13 tble-hed-stick">-</th>
+                                            <th className="fa-13 tble-hed-stick">Date</th>
+                                            <th className="fa-13 tble-hed-stick">Purticular</th>
+                                            <th className="fa-13 tble-hed-stick">Invoice No</th>
+                                            <th className="fa-13 tble-hed-stick">Dr</th>
+                                            <th className="fa-13 tble-hed-stick">Cr</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {SOA.map((o, i) => (
+                                            <tr key={i}>
+                                                <td className="fa-13 bg-light">{i + 1}</td>
+                                                <td className="fa-13 bg-light">
+                                                    {new Date(o?.Ledger_Date).toLocaleDateString('en-IN', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                    })}
+                                                </td>
+                                                <td className="fa-13 bg-light">{o.Ledger_Desc}</td>
+                                                <td className="fa-13">{o.invoice_no}</td>
+                                                <td className="fa-13">{Boolean(Number(o.Debit_Amt)) && o.Debit_Amt.toLocaleString('en-IN')}</td>
+                                                <td className="fa-13 bg-light">{Boolean(Number(o.Credit_Amt)) && o.Credit_Amt.toLocaleString('en-IN')}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant='contained' color='error'>Close</Button>
                 </DialogActions>
             </Dialog>
+
+
         </>
     ) : <></>
 }

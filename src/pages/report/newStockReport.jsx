@@ -102,7 +102,7 @@ const StockReport2 = () => {
                         <span className="text-danger"> ({rows.product_details.length})</span>
                     </td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{(calcBalQty('Bal_Qty') / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }</td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{calculateMean().toFixed(3).toLocaleString('en-IN')}</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{calculateMean().toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                     <td style={{ fontSize: '13px' }} className="text-primary" onClick={() => setLaks(!laks)}>
                         {laks 
                             ?   (calcBalQty('Stock_Value') / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' (L)'

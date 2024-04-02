@@ -5,9 +5,8 @@ import { apihost } from "../../backendAPI";
 import { subtable } from "../../components/tablecolumn";
 import Header from '../../components/header/header'
 import Sidebar from "../../components/sidenav/sidebar"
-import { Sync, NavigateNext, KeyboardArrowUp, BarChart as BC, KeyboardArrowDown } from '@mui/icons-material';
+import { Sync, KeyboardArrowUp, BarChart as BC, KeyboardArrowDown } from '@mui/icons-material';
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Paper, Box, IconButton, Collapse, Dialog, DialogContent, DialogActions, Button, DialogTitle } from "@mui/material";
-import axios from 'axios';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 import ProductBased from "./sfproductsaleorder";
 import { Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, BarChart } from 'recharts';
@@ -38,12 +37,13 @@ const Product = () => {
     };
 
     useEffect(() => {
-        axios.get(`${apihost}/api/sf/saleorders?from=${from}&to=${date}`, {
+        fetch(`${apihost}/api/sf/saleorders?from=${from}&to=${date}`, {
             headers: {
                 'Authorization': token,
             }
-        }).then(data => {
-            data.data.data.map(obj => {
+        }).then(res => res.json()).then(data => {
+            console.log(data.data.data)
+            data.data.data.forEach(obj => {
                 obj.transDetails.map(tobj => {
                     tobj.orderNo = obj.orderNo
                 })
@@ -133,8 +133,8 @@ const Product = () => {
             maxWidth: '100px'
         },
         {
-            header: 'Cus-ID',
-            accessorKey: 'customerId',
+            header: 'Cus-Code',
+            accessorKey: 'customerCode',
             size: 150
         },
         {

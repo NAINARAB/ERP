@@ -1,4 +1,4 @@
-.row{
+.row {
   --bs-gutter-x: 0rem !important;
 }
 
@@ -21,19 +21,74 @@
   background-color: #a8bbbf;
 }
 
-.form-control:focus, .hide{
-  box-shadow: 0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1) !important
+.form-control:focus,
+.hide {
+  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1) !important
 }
 
-.form-select, .form-control, .form-check-input, .btn, .card {
-  box-shadow: 0 2px 0 rgba(90,97,105,.11), 0 4px 8px rgba(90,97,105,.12), 0 10px 10px rgba(90,97,105,.06), 0 7px 70px rgba(90,97,105,.1) !important;
+.form-select,
+.form-control,
+.form-check-input,
+.btn,
+.card {
+  box-shadow: 0 2px 0 rgba(90, 97, 105, .11), 0 4px 8px rgba(90, 97, 105, .12), 0 10px 10px rgba(90, 97, 105, .06), 0 7px 70px rgba(90, 97, 105, .1) !important;
 }
 
 .dataTable thead th {
-  background-color: #333; /* Change to your desired color */
-  color: #fff; /* Change to your desired text color */
+  background-color: #333;
+  /* Change to your desired color */
+  color: #fff;
+  /* Change to your desired text color */
 }
 
-.bg{
+.bg {
   background-color: #f5f3f6 !important;
+}
+
+.fa-20 {
+  font-size: 20px !important;
+}
+
+.fa-19 {
+  font-size: 19px !important;
+}
+
+.fa-18 {
+  font-size: 18px !important;
+}
+
+.fa-17 {
+  font-size: 17px !important;
+}
+
+.fa-16 {
+  font-size: 16px !important;
+}
+
+.fa-15 {
+  font-size: 15px !important;
+}
+
+.fa-14 {
+  font-size: 14px !important;
+}
+
+.fa-13 {
+  font-size: 13px !important;
+}
+
+.fa-12 {
+  font-size: 12px !important;
+}
+
+.fa-11 {
+  font-size: 11px !important;
+}
+
+.fa-10 {
+  font-size: 10px !important;
+}
+
+.fa-in {
+  font-size: inherit !important;
 }

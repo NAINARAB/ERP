@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import './sty.css';
 import { apihost } from '../../backendAPI';
-// import navRoutes from '../../roots';
 
 
 function Login() {
@@ -15,52 +14,40 @@ function Login() {
     const [password, setpassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const clearQueryParameters = () => {
-        const newUrl = window.location.pathname;
-        window.history.pushState({}, document.title, newUrl);
-    };
-
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
-        const Auth = queryParams.get('Auth');
+        const Auth = queryParams.get('Auth') || localStorage.getItem('userToken')
 
-        if (Auth) {
-
-            fetch(`${apihost}/api/getUserByAuth?Auth=${Auth}`)
-                .then(res => res.json())
-                .then(data => {
-
-                    if (data.status === 'Success') {
-                        const { Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId, session } = data.data[0];
-                        const user = {
-                            Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId
-                        }
-                        const loginResponse = {
-                            data: {
-                                InTime: session[0].InTime,
-                                userId: UserId,
-                                SessionId: session[0].SessionId
-                            },
-                        };
-
-                        localStorage.setItem('user', JSON.stringify(user));
-                        localStorage.setItem('loginResponse', JSON.stringify(loginResponse))
-                        localStorage.setItem('UserType', UserType); // 2
-                        localStorage.setItem('userToken', Autheticate_Id); // 4
-                        localStorage.setItem('branchId', BranchId); // 5
-                        localStorage.setItem('uType', UserTypeId) // 6
-                        localStorage.setItem('UserId', UserId); // 7
-                        localStorage.setItem('Name', Name); // 3
-                        navigate('home');
+        fetch(`${apihost}/api/getUserByAuth?Auth=${Auth}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'Success') {
+                    const { Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId, session } = data.data[0];
+                    const user = {
+                        Autheticate_Id, BranchId, BranchName, Company_id, Name, UserId, UserName, UserType, UserTypeId
                     }
+                    const loginResponse = {
+                        InTime: session[0].InTime,
+                        userId: UserId,
+                        SessionId: session[0].SessionId
+                    };
 
-                }).catch(e => { console.error(e) })
-                .finally(() => clearQueryParameters())
+                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('loginResponse', JSON.stringify(loginResponse))
+                    localStorage.setItem('UserType', UserType); // 2
+                    localStorage.setItem('userToken', Autheticate_Id); // 4
+                    localStorage.setItem('branchId', BranchId); // 5
+                    localStorage.setItem('uType', UserTypeId) // 6
+                    localStorage.setItem('UserId', UserId); // 7
+                    localStorage.setItem('Name', Name); // 3
+                    navigate('home');
+                }
+            }).catch(e => { console.error(e) })
+            .finally(() => {
+                const newUrl = window.location.pathname;
+                window.history.pushState({}, document.title, newUrl);
+            })
 
-        }
-        if (localStorage.getItem('userToken')) {
-            navigate('home')
-        }
     }, []);
 
     const getLogin = async () => {
@@ -74,7 +61,7 @@ function Login() {
                     localStorage.setItem('UserType', data.user.UserType)
                     localStorage.setItem('UserId', data.user.UserId)
                     localStorage.setItem('branchId', data.user.BranchId)
-                    localStorage.setItem('loginResponse', JSON.stringify({data: data.sessionInfo}))
+                    localStorage.setItem('loginResponse', JSON.stringify(data.sessionInfo))
                     localStorage.setItem('uType', data.user.UserTypeId);
                     localStorage.setItem('user', JSON.stringify(data.user))
                     navigate('home')

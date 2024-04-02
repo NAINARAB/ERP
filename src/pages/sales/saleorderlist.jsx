@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../backendAPI";
 import Header from '../../components/header/header';
 import Sidebar from "../../components/sidenav/sidebar";
-import moment from 'moment';
 import '../com.css';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton } from "@mui/material";
 import { Info } from '@mui/icons-material';
@@ -17,8 +16,8 @@ const SaleOrderList = () => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [orderDetails, setOrderDetails] = useState([]);
-  const initialStartDate = moment().subtract(29, "days").format("YYYY-MM-DD");
-  const initialEndDate = moment().format("YYYY-MM-DD");
+  const initialStartDate = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0];
+  const initialEndDate = new Date().toISOString().split('T')[0];
   const [start, setStart] = useState(initialStartDate);
   const [end, setEnd] = useState(initialEndDate);
   const [popupdetails, setPopupdetails] = useState({});
@@ -53,9 +52,6 @@ const SaleOrderList = () => {
         .then((data) => {
           if (data.status === "Success") {
             setData(data.data)
-            data.data.map(obj => {
-              obj.docDate = moment(obj.docDate).format("DD-MM-YYYY")
-            })
           }
         })
         .catch((e) => { console.log(e) });
@@ -116,7 +112,9 @@ const SaleOrderList = () => {
                   </h4>
                   <p><span style={{ float: 'left' }}>Order No</span>         <span style={{ float: 'right' }}>{obj.orderNo}</span></p>
                   <p><span style={{ float: 'left' }}>Order Value</span>      <span style={{ float: 'right' }}>{obj.orderValue}</span></p>
-                  <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>{obj.docDate}</span></p>
+                  <p><span style={{ float: 'left' }}>Date</span>         <span style={{ float: 'right' }}>
+                    {new Date(obj.docDate).toLocaleDateString('en-IN')}
+                  </span></p>
                   <p>
                     <span style={{ float: 'left' }}>Address</span>
                     <span style={{ float: 'right', width: '50%', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>
@@ -156,7 +154,9 @@ const SaleOrderList = () => {
                     <p style={{ color: 'black' }}>Order No <span className="text-primary" style={{ float: 'right', fontSize: '0.85em' }}>{popupdetails.orderNo}</span></p>
                   </div>
                   <div className="col-md-6 px-4">
-                    <p style={{ color: 'black' }}>Date <span className="text-primary" style={{ float: 'right' }}>{moment(popupdetails.docDate).format("DD-MM-YYYY")}</span></p>
+                    <p style={{ color: 'black' }}>Date <span className="text-primary" style={{ float: 'right' }}>
+                      {new Date(popupdetails.docDate).toLocaleDateString('en-IN')}
+                    </span></p>
                     <p style={{ color: 'black' }}>
                       Address &nbsp;<span className="text-primary" style={{ float: 'right', fontSize: '0.85em', textAlign: 'right' }}>{popupdetails.shippingAddress}</span>
                     </p>
