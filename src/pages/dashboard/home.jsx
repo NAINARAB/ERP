@@ -186,8 +186,8 @@ const HomeComp = () => {
                                     <div className="card-body row mb-2">
                                         {task &&
                                             <>
-                                                <span className="icon-slot border-0 m-2 mb-3 flex-column">
-                                                    <span className="icon" onClick={navtoTask}>
+                                                <span className="icon-slot border-0 m-2 mb-3 flex-column" style={{cursor: 'pointer'}} onClick={navtoTask}>
+                                                    <span className="icon" >
                                                         <AccessAlarmsOutlined sx={{fontSize: '38px', color: 'green'}} />
                                                     </span>
                                                     <p className="my-1">TASK APP</p>

@@ -19,7 +19,7 @@ const StockReport2 = () => {
         date: new Date().toISOString().split('T')[0],
         dialogOpen: false,
     })
-
+    const [laks, setLaks] = useState(true)
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
@@ -68,6 +68,7 @@ const StockReport2 = () => {
 
     const TableRows = ({ rows }) => {
         const [open, setOpen] = useState(false);
+        const [laks, setLaks] = useState(true);
 
         const calcBalQty = (colmn) => {
             let count = 0;
@@ -100,10 +101,15 @@ const StockReport2 = () => {
                         {rows.Stock_Group}
                         <span className="text-danger"> ({rows.product_details.length})</span>
                     </td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Bal_Qty').toLocaleString('en-IN')}</td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{(calcBalQty('Bal_Qty') / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }</td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{calculateMean().toFixed(3).toLocaleString('en-IN')}</td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Stock_Value').toLocaleString('en-IN')}</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary" onClick={() => setLaks(!laks)}>
+                        {laks 
+                            ?   (calcBalQty('Stock_Value') / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' (L)'
+                            :   calcBalQty('Stock_Value').toLocaleString('en-IN', { maximumFractionDigits: 2 })
+                        } 
+                    </td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{calcBalQty('Bal_Qty').toLocaleString('en-IN')}</td>
                 </tr>
                 {open && (
                     <tr>
@@ -149,7 +155,7 @@ const StockReport2 = () => {
                 total += Number(ob.Stock_Value)
             })
         })
-        return total.toLocaleString('en-IN');
+        return total;
     }
 
 
@@ -226,8 +232,13 @@ const StockReport2 = () => {
                                         <span className="text-primary fw-bold"> {new Date(search.date).toLocaleDateString('en-IN')}</span>
                                     </h6>
                                     <h6 className="p-2 m-0 float-end">
-                                        Total Value :
-                                        <span className="text-primary fw-bold"> {overAllTotal()}</span>
+                                        Value :
+                                        <span className="text-primary fw-bold" onClick={() => setLaks(!laks)}> 
+                                            {laks 
+                                                ?   (overAllTotal() / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2}) + '(L)'
+                                                :   overAllTotal().toLocaleString('en-IN', { maximumFractionDigits: 2})
+                                            }
+                                        </span>
                                     </h6>
                                 </div>
                             </div>
@@ -236,10 +247,10 @@ const StockReport2 = () => {
                                     <tr>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>-</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Group Name</th>
-                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Quantity</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Tonnage</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Rate</th>
-                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Worth(₹)</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Value(₹)</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
