@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { apihost } from "../../backendAPI";
-import { LaunchOutlined } from '@mui/icons-material'
+import { LaunchOutlined, PictureAsPdf, SaveAlt } from '@mui/icons-material'
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button } from "@mui/material";
 import { useReactToPrint } from 'react-to-print';
 import { utils as XLSXUtils, writeFile as writeXLSX } from 'xlsx';
@@ -153,8 +153,13 @@ const SOAComp = () => {
                 fullWidth>
                 <DialogTitle className="border-bottom text-primary d-flex align-items-center fa-18">
                     <span className="flex-grow-1">Transaction Report of {clickedRow?.Customer_name}</span>
-                    <Button onClick={handlePrint} >PDF</Button>
                     <Button
+                        className="fw-bold"
+                        onClick={handlePrint} >
+                            PDF
+                    </Button>
+                    <Button
+                        className="ms-1 fw-bold"
                         onClick={() => {
                             const transformedData = SOA.map((o, i) => ({
                                 Sno: i + 1,
@@ -166,7 +171,10 @@ const SOAComp = () => {
                                 Purticular: o?.Ledger_Desc,
                                 InvoiceNo: o?.invoice_no,
                                 Debit: Boolean(Number(o.Debit_Amt)) ? o.Debit_Amt.toLocaleString('en-IN') : '',
-                                Credit: Boolean(Number(o.Credit_Amt)) ? o.Credit_Amt.toLocaleString('en-IN') : ''
+                                Credit: Boolean(Number(o.Credit_Amt)) ? o.Credit_Amt.toLocaleString('en-IN') : '',
+                                Company: o?.Company_Name,
+                                Ledger: o?.Ledger_Name,
+                                Mobile_Number: o?.Mobile_no
                             }));
                             generateExcel(transformedData);
                         }}
@@ -276,7 +284,7 @@ const SOAComp = () => {
                                 <tr>
                                     <th className="fa-13 tble-hed-stick">-</th>
                                     <th className="fa-13 tble-hed-stick">Date</th>
-                                    <th className="fa-13 tble-hed-stick">Purticular</th>
+                                    <th className="fa-13 tble-hed-stick">Particulars</th>
                                     <th className="fa-13 tble-hed-stick">Invoice No</th>
                                     <th className="fa-13 tble-hed-stick">Dr</th>
                                     <th className="fa-13 tble-hed-stick">Cr</th>
@@ -361,7 +369,7 @@ const SOAComp = () => {
                                         <tr>
                                             <th className="fa-13 tble-hed-stick">-</th>
                                             <th className="fa-13 tble-hed-stick">Date</th>
-                                            <th className="fa-13 tble-hed-stick">Purticular</th>
+                                            <th className="fa-13 tble-hed-stick">Particulars</th>
                                             <th className="fa-13 tble-hed-stick">Invoice No</th>
                                             <th className="fa-13 tble-hed-stick">Dr</th>
                                             <th className="fa-13 tble-hed-stick">Cr</th>
