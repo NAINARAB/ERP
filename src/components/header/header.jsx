@@ -1,5 +1,5 @@
 import './header.css';
-import { Logout, Settings, AccountCircle, Replay } from '@mui/icons-material';
+import { Logout, Settings, AccountCircle } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem, Tooltip } from '@mui/material';
 import { useEffect, useState, useContext } from 'react';
@@ -17,13 +17,13 @@ const Header = ({ setting }) => {
 
   useEffect(() => {
     if (setting === true) {
-      fetch(`${apihost}/api/company`, { headers: { 'Authorization': token } })
+      fetch(`${apihost}/api/myCompanys?Auth=${token}`)
         .then((res) => { return res.json() })
         .then((data) => {
           if (data.status === "Success") {
             setComp(data.data);
           } else {
-
+            setComp([])
           }
         })
         .catch((e) => { console.log(e) })
@@ -32,9 +32,12 @@ const Header = ({ setting }) => {
 
   const companyOnChange = (e) => {
     const id = e.target.value;
-    const matchingCompany = comp.find(obj => obj.Id === id);
-    const name = matchingCompany ? matchingCompany.Company_Name : 'Company Not Found';
-    setCompData({ ...compData, id, Company_Name: name });
+    const matchingCompany = comp.find(obj => obj?.Company_Id === id);
+    setCompData({
+      ...compData,
+      id: matchingCompany?.Company_Id ? matchingCompany.Company_Id : '',
+      Company_Name: matchingCompany?.Company_Name ? matchingCompany.Company_Name : ''
+    });
   };
 
   const logout = () => {
@@ -65,9 +68,9 @@ const Header = ({ setting }) => {
           <h4 className='mb-0 ms-5'>ERP</h4>
         </div>
         <div>
-          <Tooltip title="Refresh">
+          {/* <Tooltip title="Refresh">
             <IconButton sx={{ color: 'white' }} onClick={() => { window.location.reload() }}><Replay /></IconButton>
-          </Tooltip>
+          </Tooltip> */}
           {setting === true
             && (
               <Tooltip title="Settings">
@@ -99,14 +102,27 @@ const Header = ({ setting }) => {
           <hr />
           <div className="row">
             <div className="col-sm-4 p-3">
-              <TextField fullWidth select label="Company" variant="outlined"
-                onChange={(e) => companyOnChange(e)} value={compData.id}
-                InputProps={{ inputProps: { style: { padding: '26px' } } }} >
-                {comp.map((obj) => (
-                  <MenuItem key={obj.Id} value={obj.Id} >
-                    {obj.Company_Name}
-                  </MenuItem>
-                ))}
+              <TextField
+                fullWidth
+                select
+                label="Company"
+                variant="outlined"
+                onChange={(e) => companyOnChange(e)}
+                value={compData?.id}
+                InputProps={{
+                  inputProps: {
+                    style: { padding: '26px' }
+                  }
+                }}
+              >
+                <MenuItem value=''>Select Company</MenuItem>
+                {comp.map((obj, i) =>
+                  Number(obj?.View_Rights) === 1 && (
+                    <MenuItem key={i} value={obj?.Company_Id} >
+                      {obj?.Company_Name}
+                    </MenuItem>
+                  )
+                )}
               </TextField>
             </div>
           </div>

@@ -24,6 +24,7 @@ import PaymentReport from './pages/payments/paymentsReport';
 import TableueComp from './pages/tablu/reporting';
 import StockReport2 from './pages/report/newStockReport';
 import PurchaseReport2 from './pages/report/newPurchaseReport';
+import CompanyAuth from './pages/masters/companyAuth';
 
 
 const navRoutes = [
@@ -126,6 +127,10 @@ const navRoutes = [
     {
       comp: <PurchaseReport2 />,
       path: '/purchasereport'
+    },
+    {
+      comp: <CompanyAuth />,
+      path: '/company_auth'
     }
   ];
 

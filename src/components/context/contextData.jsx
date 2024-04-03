@@ -4,8 +4,8 @@ const CurrentCompany = createContext();
 
 const CompanyProvider = ({ children }) => {
   const [compData, setCompData] = useState({
-    id: 1,
-    Company_Name: 'SHANKAR TRADERS'
+    id: '',
+    Company_Name: ''
   });
 
   return (

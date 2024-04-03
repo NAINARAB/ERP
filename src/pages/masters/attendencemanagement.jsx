@@ -3,7 +3,7 @@ import Header from '../../components/header/header';
 import Sidebar from '../../components/sidenav/sidebar';
 import { apihost } from '../../backendAPI';
 import { pageRights } from '../../components/rightsCheck';
-import { NavigateNext, Logout } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material';
 import DataTable from "react-data-table-component";
 import { customStyles, customSelectStyles, attendanceHistoryColumn } from '../../components/tablecolumn';
 import { Dialog, IconButton, DialogTitle, DialogContent, DialogActions, Button, Tab, Box } from '@mui/material';
