@@ -25,6 +25,7 @@ import TableueComp from './pages/tablu/reporting';
 import StockReport2 from './pages/report/newStockReport';
 import PurchaseReport2 from './pages/report/newPurchaseReport';
 import CompanyAuth from './pages/masters/companyAuth';
+import CustomerSalesReport from './pages/report/customerSalesReport';
 
 
 const navRoutes = [
@@ -131,6 +132,10 @@ const navRoutes = [
     {
       comp: <CompanyAuth />,
       path: '/company_auth'
+    },
+    {
+      comp: <CustomerSalesReport />,
+      path: '/salesReport',
     }
   ];
 

@@ -109,13 +109,15 @@ const Header = ({ setting }) => {
                 variant="outlined"
                 onChange={(e) => companyOnChange(e)}
                 value={compData?.id}
+                
+                placeholder='SELECT COMPANY'
                 InputProps={{
                   inputProps: {
                     style: { padding: '26px' }
                   }
                 }}
               >
-                <MenuItem value=''>Select Company</MenuItem>
+                <MenuItem value=''>SELECT COMPANY</MenuItem>
                 {comp.map((obj, i) =>
                   Number(obj?.View_Rights) === 1 && (
                     <MenuItem key={i} value={obj?.Company_Id} >

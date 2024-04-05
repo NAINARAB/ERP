@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "../../components/header/header";
 import Sidebar from "../../components/sidenav/sidebar"
-import { NavigateNext, LaunchOutlined, CurrencyRupee, ArrowBackIosNew } from '@mui/icons-material';
+import { LaunchOutlined, CurrencyRupee, ArrowBackIosNew, Visibility, Close } from '@mui/icons-material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { apihost } from "../../backendAPI";
@@ -10,7 +10,9 @@ import { IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button, 
 import AppLogo from './ic_launcher.png';
 import QRCode from 'qrcode';
 import ShankarTraderQRC from './staticqrc.jpg';
-import CurrentPage from '../../components/currentPage'
+import CurrentPage from '../../components/currentPage';
+import InvoiceBill from "./billFormat";
+import { useReactToPrint } from 'react-to-print';
 
 
 const BillComponent = ({ props, bankDetails, reloadfun }) => {
@@ -21,7 +23,13 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
     const [paymentType, setPaymentType] = useState(1);
     const [qrCodeURL, setQRCodeURL] = useState('');
     const [bankObj, setBankObj] = useState({});
-    const [TransactionID, setTransactioId] = useState('')
+    const [TransactionID, setTransactioId] = useState('');
+    const printRef = useRef()
+
+    const [companyInfo, setCompanyInfo] = useState({});
+    const [invoieInfo, setInvoiceInfo] = useState([]);
+    const [expencesInfo, setExpencesInfo] = useState([]);
+    const [invoiceDialog, setInvoiceDialog] = useState(false);
 
     useEffect(() => {
         props.CompanyBalanceInfo.sort((itemA, itemB) => {
@@ -124,7 +132,6 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
 
         setDetailsDialog(true);
     };
-
 
     function loadScript(src) {
         return new Promise((resolve) => {
@@ -244,6 +251,35 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
         })
     }
 
+    const fetchInvoiceDetails = (CompanyId, Invoice_No, obj) => {
+        setCompanyInfo({});
+        setInvoiceInfo([]);
+        setExpencesInfo([]);
+        if (CompanyId && Invoice_No) {
+            fetch(`${apihost}/api/invoiceDetails?Company_Id=${CompanyId}&UserId=${localStorage.getItem('UserId')}&Invoice_No=${Invoice_No}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "Success") {
+                        if (data?.data[0]?.length) {
+                            const company = data.data[0]
+                            setCompanyInfo(company[0])
+                        }
+                        if (data?.data[1]?.length) {
+                            setInvoiceInfo(data?.data[1]);
+                            setInvoiceDialog(true);
+                        }
+                        if (data?.data[2].length) {
+                            setExpencesInfo(data?.data[2])
+                        }
+                    }
+                }).catch(e => console.log(e))
+        }
+    }
+
+    const handlePrint = useReactToPrint({
+        content: () => printRef.current,
+    });
+
     // async function chooseQRCode() {
     //     const upiNumber = '7550387880';
     //     const optionalMessage = 'Thank you for your purchase!';
@@ -326,36 +362,40 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th style={{ fontSize: '13px' }}> - </th>
-                                <th style={{ fontSize: '13px' }}>Date</th>
-                                <th style={{ fontSize: '13px' }}>Ledger</th>
-                                <th style={{ fontSize: '13px' }}>InvoiceNo</th>
-                                <th style={{ fontSize: '13px' }}>Amount</th>
+                                <th className="fa-13"> - </th>
+                                <th className="fa-13">Date</th>
+                                <th className="fa-13">Ledger</th>
+                                <th className="fa-13">InvoiceNo</th>
+                                <th className="fa-13">Amount</th>
+                                <th className="fa-13">Open Bill</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {props.CompanyBalanceInfo.map((obj, index) => {
-                                const dateObject = new Date(obj.invoice_date);
-                                const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                                const formattedDate = dateObject.toLocaleDateString('en-IN', options);
-                                return (
-                                    <tr key={index}>
-                                        <td style={{ fontSize: '17px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : 'bg-light'}>
-                                            {Number(obj?.Pay_Status) !== 1 &&
-                                                <input
-                                                    type="checkbox"
-                                                    className="form-check-input shadow-none"
-                                                    checked={selectedBill[index]?.check}
-                                                    disabled={Number(obj?.Pay_Status) === 1}
-                                                    onChange={(e) => handleCheckboxChange(e, index)} />}
-                                        </td>
-                                        <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : ''}>{formattedDate}</td>
-                                        <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : 'bg-light'}>{obj.ledger_name}</td>
-                                        <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : ''}>{obj.invoice_no}</td>
-                                        <td style={{ fontSize: '13px' }} className={Number(obj?.Pay_Status) === 1 ? 'bg-success  text-white' : 'text-primary bg-light'}>{obj.Bal_Amount.toLocaleString('en-IN')}</td>
-                                    </tr>
-                                )
-                            })}
+                            {props.CompanyBalanceInfo.map((obj, index) => (
+                                <tr key={index}>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success text-white fa-17' : 'fa-17 bg-light'}>
+                                        {Number(obj?.Pay_Status) !== 1 &&
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input shadow-none"
+                                                checked={selectedBill[index]?.check}
+                                                disabled={Number(obj?.Pay_Status) === 1}
+                                                onChange={(e) => handleCheckboxChange(e, index)} />}
+                                    </td>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success fa-13 text-white' : 'fa-13'}>
+                                        {new Date(obj.invoice_date).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                                    </td>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success fa-13 text-white' : 'fa-13 bg-light'}>{obj.ledger_name}</td>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success fa-13 text-white' : 'fa-13'}>{obj.invoice_no}</td>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success fa-13 text-white' : 'text-primary fa-13 bg-light'}>{obj.Bal_Amount.toLocaleString('en-IN')}</td>
+                                    <td className={Number(obj?.Pay_Status) === 1 ? 'bg-success fa-13 text-white' : 'text-primary fa-13 bg-light'}>
+                                        <IconButton onClick={() => fetchInvoiceDetails(obj?.Company_Id, obj?.invoice_no, obj)} size="small">
+                                            <Visibility />
+                                        </IconButton>
+                                    </td>
+                                </tr>
+                            )
+                            )}
                         </tbody>
 
                     </table>
@@ -401,6 +441,11 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
                                     <tr key={index}>
                                         <td style={{ fontSize: '13px' }} className=" bg-light">
                                             {/* {formattedDate} */}
+                                            {
+                                                props?.CompanyBalanceInfo[index]?.invoice_date
+                                                    ? new Date(props?.CompanyBalanceInfo[index]?.invoice_date).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                                    : ''
+                                            }
                                         </td>
                                         <td style={{ fontSize: '12px' }}>{props.CompanyBalanceInfo[index].ledger_name}</td>
                                         <td style={{ fontSize: '13px' }} className=" bg-light">{props.CompanyBalanceInfo[index].invoice_no}</td>
@@ -480,6 +525,27 @@ const BillComponent = ({ props, bankDetails, reloadfun }) => {
                         }>{Number(paymentType) === 1 ? 'Submit' : 'Pay'} </Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog
+                open={invoiceDialog}
+                onClose={() => setInvoiceDialog(false)}
+                fullWidth maxWidth='lg'
+            >
+                <DialogTitle className="border-bottom text-primary d-flex align-items-center fa-18">
+                    <span className="flex-grow-1">Invoice Details</span>
+                    <Button
+                        className="fw-bold"
+                        onClick={handlePrint} >
+                            PDF
+                    </Button>
+                    <IconButton size="small" className="bg-light" onClick={() => setInvoiceDialog(false)}>
+                        <Close />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent className="p-0" ref={printRef}>
+                    <InvoiceBill invoieInfo={invoieInfo} companyInfo={companyInfo} expencesInfo={expencesInfo} />
+                </DialogContent>
+            </Dialog>
         </>
     )
 }
@@ -490,7 +556,7 @@ const PendingInvoice = () => {
     const [pageInfo, setPageInfo] = useState({});
     const [isCustomer, setIsCustomer] = useState(false)
     const [bankDetails, setBankDetails] = useState([]);
-    const [reload, setReload] = useState(false)
+    const [reload, setReload] = useState(false);
 
     useEffect(() => {
         pageRights(2, 2017).then(rights => {
@@ -545,8 +611,6 @@ const PendingInvoice = () => {
         setReload(!reload)
     }
 
-
-
     return isCustomer ? (
         <>
             <ToastContainer />
@@ -584,6 +648,7 @@ const PendingInvoice = () => {
                         </div>
 
                     </div>
+
                 </div>
             </div>
         </>

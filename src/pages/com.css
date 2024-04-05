@@ -235,3 +235,9 @@
   display: none !important;
 }
 
+.invoiceLogo {
+  width: 100%;
+  height: max-content;
+  max-width: 100px;
+  min-width: 70px;
+}
