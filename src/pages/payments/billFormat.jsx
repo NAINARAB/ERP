@@ -143,7 +143,7 @@ const InvoiceBill = ({ companyInfo, invoieInfo, expencesInfo }) => {
                                 {expencesInfo.map((o, i) => (
                                     <p className="d-flex mb-0" key={i}>
                                         <span className="flex-grow-1">{o?.ledger_name}</span>
-                                        <span>{Number(o?.amount_value_DR ? o?.amount_value_DR : o?.amount_value_CR).toLocaleString('en-IN')}</span>
+                                        <span>{Number(o?.amount_value_DR || o?.amount_value_CR).toLocaleString('en-IN')}</span>
                                     </p>
                                 ))}
                                 <p className="d-flex mb-0">

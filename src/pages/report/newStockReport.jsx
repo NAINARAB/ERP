@@ -101,11 +101,11 @@ const StockReport2 = () => {
                         {rows.Stock_Group}
                         <span className="text-danger"> ({rows.product_details.length})</span>
                     </td>
-                    <td style={{ fontSize: '13px' }} className="text-primary">{(calcBalQty('Bal_Qty') / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }</td>
+                    <td style={{ fontSize: '13px' }} className="text-primary">{(calcBalQty('Bal_Qty') / 1000).toLocaleString('en-IN', { maximumFractionDigits: 0 }) }</td>
                     <td style={{ fontSize: '13px' }} className="text-primary">{calculateMean().toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                     <td style={{ fontSize: '13px' }} className="text-primary" onClick={() => setLaks(!laks)}>
                         {laks 
-                            ?   (calcBalQty('Stock_Value') / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' (L)'
+                            ?   (calcBalQty('Stock_Value') / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 })
                             :   calcBalQty('Stock_Value').toLocaleString('en-IN', { maximumFractionDigits: 2 })
                         } 
                     </td>
@@ -120,7 +120,7 @@ const StockReport2 = () => {
                                         <th style={{ fontSize: '13px' }}>INM</th>
                                         <th style={{ fontSize: '13px' }}>Quantity</th>
                                         <th style={{ fontSize: '13px' }}>Rate</th>
-                                        <th style={{ fontSize: '13px' }}>Worth(₹)</th>
+                                        <th style={{ fontSize: '13px' }}>Value(₹)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -249,7 +249,7 @@ const StockReport2 = () => {
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Group Name</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Tonnage</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Rate</th>
-                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Value(₹)</th>
+                                        <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Value(L)</th>
                                         <th className="tble-hed-stick" style={{ fontSize: '14px' }}>Quantity</th>
                                     </tr>
                                 </thead>
