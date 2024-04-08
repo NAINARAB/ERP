@@ -22,6 +22,12 @@ const Header = ({ setting }) => {
         .then((data) => {
           if (data.status === "Success") {
             setComp(data.data);
+            if (data?.data[0] && Number(data?.data[0]?.View_Rights) === 1) {
+              setCompData({
+                id: data.data[0].Company_Id,
+                Company_Name: data.data[0].Company_Name
+              })
+            }
           } else {
             setComp([])
           }
