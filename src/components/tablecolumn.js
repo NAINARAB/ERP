@@ -594,7 +594,7 @@ const TaskDone = [
     },
     {
         name: 'Task',
-        selector: (row) => row.Worked_Task,
+        selector: (row) => row.Task_Name,
         sortable: true,
         minWidth: '30%'
     },
@@ -609,7 +609,12 @@ const TaskDone = [
         sortable: true,
     },
     {
-        name: 'Status',
+        name: 'Minutes',
+        selector: (row) => row.Tot_Minutes,
+        sortable: true
+    },
+    {
+        name: 'Description',
         selector: (row) => row.Work_Done,
         sortable: true,
     },

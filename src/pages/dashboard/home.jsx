@@ -262,6 +262,7 @@ const HomeComp = () => {
 
                 </div>
             </div>
+            
             <Dialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
