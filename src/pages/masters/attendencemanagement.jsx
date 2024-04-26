@@ -70,7 +70,7 @@ const AttendanceManagement = () => {
     const [tabValue, setTabValue] = useState('1')
     const [selectEmpHis, setSelEmpHis] = useState({
         User_Mgt_Id: 0,
-        Emp_Name: 'ALL EMPLOYEE',
+        Emp_Name: 'ALL EMPLOYEE'
     });
 
     useEffect(() => {
@@ -101,8 +101,7 @@ const AttendanceManagement = () => {
     }, [refresh])
 
     useEffect(() => {
-        const Mode = Number(selectEmpHis.User_Mgt_Id) === 0 ? 2 : 1
-        fetch(`${apihost}/api/UserAttendanceHistory?UserId=${selectEmpHis.User_Mgt_Id}&Mode=${Mode}`, {
+        fetch(`${apihost}/api/UserAttendanceHistory?UserId=${selectEmpHis.User_Mgt_Id}&From=${search.from}&To=${search.to}`, {
             headers: { 'Authorization': localStorage.getItem('userToken') }
         })
             .then(res => res.json())
@@ -165,19 +164,21 @@ const AttendanceManagement = () => {
             name: 'Action',
             cell: (row) => (
                 <div>
-                    {modify.edit === true && <IconButton onClick={() => {
-                        setRowDetails({ ...rowDetails, Id: row.Id, OutDate: convertDateFormat(row.Start_Date) })
-                        setdopen(true)
-                    }}><Logout sx={{ color: '#FF6865' }} /></IconButton>}
+                    {modify.edit === true && (
+                        <IconButton onClick={() => {
+                            setRowDetails({ ...rowDetails, Id: row.Id, OutDate: convertDateFormat(row.Start_Date) })
+                            setdopen(true)
+                        }}>
+                            <Logout sx={{ color: '#FF6865' }} />
+                        </IconButton>
+                    )}
                 </div>
             ),
         },
     ]
 
     const PostWithoutLocation = () => {
-        if ((selectedEmp.Emp_Name && selectedEmp.Emp_Name !== '')
-            && (selectedEmp.Start_Date && selectedEmp.Start_Date !== '')
-            && (selectedEmp.InTime && selectedEmp.InTime !== '')) {
+        if ((selectedEmp.Emp_Name && selectedEmp.Emp_Name !== '')) {
             fetch(`${apihost}/api/attendance`, {
                 method: 'POST',
                 headers: {
@@ -202,15 +203,7 @@ const AttendanceManagement = () => {
                     }
                 }).catch(e => console.log(e))
         } else {
-            toast.error(
-                (!selectedEmp.Emp_Name || selectedEmp.Emp_Name === '')
-                    ? "Select Employee"
-                    : (!selectedEmp.Start_Date || selectedEmp.Start_Date === '')
-                        ? "Date is Required"
-                        : (!selectedEmp.InTime || selectedEmp.InTime === '')
-                            ? "InTime is Required"
-                            : null
-            );
+            toast.error("Select Employee");
 
         }
     }
@@ -241,28 +234,26 @@ const AttendanceManagement = () => {
                     <Header />
                 </div>
                 <div className="col-md-2">
-                    <Sidebar mainMenuId={'MASTERS'} subMenuId={'ATTENDANCE MANAGEMENT'} />
+                    <Sidebar mainMenuId={'REPORTS'} subMenuId={'EMPLOYEE ATTENDANCE'} />
                 </div>
                 <div className="col-md-10 p-3">
-                    {/* <div className="comhed shadow-lg">
-                        <button className="comadbtn" onClick={() => setAddDialog(true)}>Add Attendance</button>
-                        <h4 className='h5'>ATTENDANCE MANAGEMENT</h4>
-                        <h6>MASTERS &nbsp;<NavigateNext fontSize="small" />&nbsp; ATTENDANCE MANAGEMENT</h6>
-                    </div> */}
 
                     <CurrentPage
-                        SubMenu={'ATTENDANCE MANAGEMENT'}
-                        MainMenu={'MASTERS'}
+                        SubMenu={'EMPLOYEE ATTENDANCE'}
+                        MainMenu={'REPORTS'}
                         Button={<button className="comadbtn mb-0" onClick={() => setAddDialog(true)}>Add Attendance</button>} />
 
                     <div className={((filteredData && filteredData.length) || (activeEmp && activeEmp.length)) ? 'box' : ''}>
+
                         <TabContext value={tabValue}>
+
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList indicatorColor='transparant' onChange={(e, n) => setTabValue(n)} aria-label="lab API tabs example">
                                     <Tab sx={tabValue === '1' ? { backgroundColor: '#c6d7eb' } : {}} label={'Active Employees ( ' + activeEmp.length + ' )'} value="1" />
                                     <Tab sx={tabValue === '2' ? { backgroundColor: '#c6d7eb' } : {}} label="Attendance History" value="2" />
                                 </TabList>
                             </Box>
+
                             <TabPanel value="1" sx={{ p: 0 }}>
                                 <DataTable
                                     columns={TblColumn}
@@ -274,9 +265,12 @@ const AttendanceManagement = () => {
                                     customStyles={customStyles}
                                 />
                             </TabPanel>
+
                             <TabPanel value="2" sx={{ p: 0 }}>
                                 <div style={{ minHeight: '68vh' }}>
+
                                     <div className="row">
+
                                         <div className='col-lg-3 col-md-6 p-2' >
                                             <label>Name</label>
                                             <Select
@@ -288,6 +282,7 @@ const AttendanceManagement = () => {
                                                 onChange={(e) => { setSelEmpHis({ ...selectEmpHis, User_Mgt_Id: e.value, Emp_Name: e.label }) }}
                                             />
                                         </div>
+
                                         <div className='col-lg-3 col-md-6 p-2'>
                                             <label>From</label>
                                             <input
@@ -297,6 +292,7 @@ const AttendanceManagement = () => {
                                                 value={search.from}
                                                 onInput={(e) => handleFromDateChange(e.target.value)} />
                                         </div>
+
                                         <div className='col-lg-3 col-md-6 p-2'>
                                             <label>To</label>
                                             <div className='d-flex justify-content-between align-items-center'>
@@ -308,34 +304,26 @@ const AttendanceManagement = () => {
                                                     onInput={(e) => handleToDateChange(e.target.value)} />
                                             </div>
                                         </div>
-                                        <div className="col-lg-3 col-md-6 p-2 d-flex align-items-end">
-                                            <input
-                                                style={{ padding: '0.7em' }} id="muser"
-                                                className='cus-check m-1'
-                                                type='checkbox'
-                                                checked={search.useDate}
-                                                onChange={(e) => {
-                                                    setSearch({ ...search, useDate: e.target.checked })
-                                                }}
-                                                title="Use Date Filter" />
-                                            <label className="form-check-label ps-2 p-0" htmlFor="muser">Use Date Filter</label>
-                                        </div>
+
                                     </div>
+
                                     <DataTable
                                         columns={attendanceHistoryColumn}
-                                        data={search.useDate ? filteredData : attendanceHistory}
+                                        data={attendanceHistory}
                                         pagination
                                         highlightOnHover={true}
                                         fixedHeader={true}
                                         fixedHeaderScrollHeight={'58vh'}
                                         customStyles={customStyles}
                                     />
+
                                 </div>
                             </TabPanel>
                         </TabContext>
                     </div>
                 </div>
             </div>
+
             <Dialog
                 open={dopen}
                 onClose={() => { setdopen(false) }}
@@ -366,6 +354,7 @@ const AttendanceManagement = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+
             <Dialog
                 open={addDialog}
                 onClose={() => { setAddDialog(false) }}
@@ -376,43 +365,49 @@ const AttendanceManagement = () => {
                 <DialogTitle id="alert-dialog-title">
                     {"Add Employee Attendance"}
                 </DialogTitle>
-                <DialogContent className='pt-3 pb-5 m-2'>
-                    <label>Select Employee</label>
-                    <Select
-                        options={[...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
-                        isSearchable={true}
-                        placeholder={'Select Employee'}
-                        styles={customSelectStyles}
-                        value={{ value: selectedEmp.Emp_Id, label: selectedEmp.Emp_Name }}
-                        onChange={(e) => { setSelectedEmp({ ...selectedEmp, Emp_Id: e.value, Emp_Name: e.label }) }}
-                    />
-                    <label className="p-2 mt-2">Date And Time</label>
-                    <div className="row pb-5 mb-5">
-                        <div className="col-md-6 pe-md-2">
-                            <input
-                                type='date'
-                                className="form-control p-3"
-                                style={{ border: '1px solid lightgrey' }}
-                                onChange={(e) => setSelectedEmp({ ...selectedEmp, Start_Date: e.target.value })}
-                                value={selectedEmp.Start_Date} />
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    PostWithoutLocation()
+                }}>
+                    <DialogContent className='pt-3 pb-5 m-2'>
+                        <label>Select Employee</label>
+                        <Select
+                            options={[...empData.map(obj => ({ value: obj.Emp_Id, label: obj.Emp_Name }))]}
+                            isSearchable={true}
+                            placeholder={'Select Employee'}
+                            styles={customSelectStyles}
+                            value={{ value: selectedEmp.Emp_Id, label: selectedEmp.Emp_Name }}
+                            onChange={(e) => { setSelectedEmp({ ...selectedEmp, Emp_Id: e.value, Emp_Name: e.label }) }}
+                            required
+                        />
+                        <label className="p-2 mt-2">Date And Time</label>
+                        <div className="row pb-5 mb-5">
+                            <div className="col-md-6 pe-md-2">
+                                <input
+                                    type='date'
+                                    className="form-control p-3"
+                                    style={{ border: '1px solid lightgrey' }}
+                                    onChange={(e) => setSelectedEmp({ ...selectedEmp, Start_Date: e.target.value })}
+                                    value={selectedEmp.Start_Date} required />
+                            </div>
+                            <div className="d-md-none d-sm-block p-2"></div>
+                            <div className="col-md-6 ps-md-2">
+                                <input
+                                    type='time'
+                                    className="form-control p-3"
+                                    style={{ border: '1px solid lightgrey' }}
+                                    onChange={(e) => setSelectedEmp({ ...selectedEmp, InTime: e.target.value })}
+                                    value={selectedEmp.InTime} required />
+                            </div>
                         </div>
-                        <div className="d-md-none d-sm-block p-2"></div>
-                        <div className="col-md-6 ps-md-2">
-                            <input
-                                type='time'
-                                className="form-control p-3"
-                                style={{ border: '1px solid lightgrey' }}
-                                onChange={(e) => setSelectedEmp({ ...selectedEmp, InTime: e.target.value })}
-                                value={selectedEmp.InTime} />
-                        </div>
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setdopen(false)}>Cancel</Button>
-                    <Button onClick={PostWithoutLocation} autoFocus sx={{ color: 'red' }}>
-                        Add Attendance
-                    </Button>
-                </DialogActions>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type='button' onClick={() => setdopen(false)}>Cancel</Button>
+                        <Button type='submit' sx={{ color: 'red' }}>
+                            Add Attendance
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </>
     )

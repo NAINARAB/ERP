@@ -661,7 +661,7 @@ const attendanceHistoryColumn = [
     {
         name: 'Date',
         selector: (row) => {
-            return new Date(row.Start_Date).toLocaleDateString('en-IN')
+            return new Date(row.Start_Date).toLocaleDateString('en-IN', { dateStyle: 'short'})
         },
         sortable: true
     },
