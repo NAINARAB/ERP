@@ -41,8 +41,8 @@ const EmpMyAttendance = () => {
                         data.data.map((obj) => {
                             obj.Start_Date = obj.Start_Date ? formatDate(obj.Start_Date) : ' - ';
                             obj.OutDate = obj.OutDate ? formatDate(obj.OutDate) : ' - ';
-                            obj.InTime = obj.InTime ? formatTime(obj.InTime) : ' - ';
-                            obj.OutTime = obj.OutTime ? formatTime(obj.OutTime) : ' - '
+                            // obj.InTime = obj.InTime ? formatTime(obj.InTime) : ' - ';
+                            // obj.OutTime = obj.OutTime ? formatTime(obj.OutTime) : ' - '
                             return obj;
                         });
                         setAttendanceData(data.data);

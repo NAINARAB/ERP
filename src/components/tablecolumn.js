@@ -566,14 +566,36 @@ const empMyAttendance = [
     },
     {
         name: 'In Time',
-        selector: (row) => row.InTime,
+        selector: (row) => {
+            return row.InTime ? formatTime(row.InTime) : ' - '
+        },
         sortable: true,
     },
     {
         name: 'Out TIme',
-        selector: (row) => row.OutTime,
+        selector: (row) => {
+            return row.OutTime ? formatTime(row.OutTime) : ' - '
+        },
         sortable: true,
     },
+    {
+        name: 'Total Time',
+        selector: (row) => {
+            const inTime = new Date(`2000-01-01T${row?.InTime}`);
+            const outTime = new Date(`2000-01-01T${row?.OutTime}`);
+    
+            if (isNaN(inTime.getTime()) || isNaN(outTime.getTime())) {
+                return 'Invalid Time';
+            }
+    
+            const timeDifference = outTime - inTime;
+    
+            const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    
+            return `${padZero(hours)}:${padZero(minutes)}`;
+        },
+    },    
     {
         name: 'Out Date',
         selector: (row) => row.OutDate,
@@ -655,46 +677,64 @@ const CustomerBalance = [
 const attendanceHistoryColumn = [
     {
         name: 'Name',
-        selector: (row) => row.Emp_Name,
+        selector: (row) => row?.Emp_Name,
         sortable: true,
     },
     {
         name: 'Date',
         selector: (row) => {
-            return new Date(row.Start_Date).toLocaleDateString('en-IN', { dateStyle: 'short'})
+            return new Date(row?.Start_Date).toLocaleDateString('en-IN', { dateStyle: 'short' })
         },
         sortable: true
     },
     {
         name: 'IN Time',
-        selector: (row) => getFormattedTime(row.InTime),
+        selector: (row) => getFormattedTime(row?.InTime),
         sortable: true,
     },
     {
         name: 'OUT Time',
-        selector: (row) => getFormattedTime(row.OutTime),
+        selector: (row) => getFormattedTime(row?.OutTime),
         sortable: true,
     },
+    // {
+    //     name: 'Total Hours',
+    //     selector: (row) => {
+    //         const startTime = new Date(`2022-01-01T${row?.InTime}`);
+    //         const endTime = new Date(`2022-01-01T${row?.OutTime}`);
+    //         const Duration = (endTime - startTime) / 1000;
+    //         return formatDuration(Duration)
+    //     },
+    //     sortable: false
+    // },
     {
-        name: 'Total Hours',
+        name: 'Total Time',
         selector: (row) => {
-            const startTime = new Date(`2022-01-01T${row.InTime}`); 
-            const endTime = new Date(`2022-01-01T${row.OutTime}`);
-            const Duration = (endTime - startTime) / 1000;
-            return formatDuration(Duration)
+            const inTime = new Date(`2000-01-01T${row?.InTime}`);
+            const outTime = new Date(`2000-01-01T${row?.OutTime}`);
+    
+            if (isNaN(inTime.getTime()) || isNaN(outTime.getTime())) {
+                return 'Invalid Time';
+            }
+    
+            const timeDifference = outTime - inTime;
+    
+            const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    
+            return `${padZero(hours)}:${padZero(minutes)}`;
         },
-        sortable: false
-    },
+    }, 
     {
         name: 'Summary',
-        selector: (row) => row.Work_Summary,
+        selector: (row) => row?.Work_Summary,
         sortable: false
     }
 ];
 
 const paymentReport = [
     {
-        name: 'Action',  
+        name: 'Action',
     },
     {
         name: 'Date',
@@ -825,6 +865,7 @@ const getFormattedTime = (inputTimeString) => {
 };
 
 function formatDuration(durationInSeconds) {
+    // console.log(durationInSeconds)
     const hours = Math.floor(durationInSeconds / 3600);
     const minutes = Math.floor((durationInSeconds % 3600) / 60);
     const seconds = Math.floor(durationInSeconds % 60);
@@ -835,6 +876,13 @@ function formatDuration(durationInSeconds) {
 
 function padZero(number) {
     return number < 10 ? `0${number}` : `${number}`;
+}
+
+const formatTime = (inputTime) => {
+    const [hours, minutes, seconds] = inputTime.split(':');
+    const dateObj = new Date(2000, 0, 1, hours, minutes, seconds);
+    const formattedTime = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+    return formattedTime;
 }
 
 

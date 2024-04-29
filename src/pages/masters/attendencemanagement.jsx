@@ -57,7 +57,8 @@ const AttendanceManagement = () => {
     })
     const [dopen, setdopen] = useState(false);
     const [addDialog, setAddDialog] = useState(false)
-    const [rowDetails, setRowDetails] = useState({ Id: '', OutDate: '', OutTime: '' });
+    const initialRowValue = { Id: '', OutDate: '', OutTime: '', InTime: '' }
+    const [rowDetails, setRowDetails] = useState(initialRowValue);
     const [empData, setEmpData] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [selectedEmp, setSelectedEmp] = useState({
@@ -79,17 +80,19 @@ const AttendanceManagement = () => {
                 if (data.status === 'Success') {
                     data.data.map(obj => {
                         obj.Start_Date = obj.Start_Date ? formatDate(obj.Start_Date) : ' - ';
-                        obj.InTime = obj.InTime ? formatTime(obj.InTime) : ' - ';
+                        // obj.InTime = obj.InTime ? formatTime(obj.InTime) : ' - ';
                         return obj;
                     })
                     setActiveEmp(data.data)
                 } else { setActiveEmp([]) }
             }).catch(e => console.log(e))
+
             setModify({
                 add: per.permissions.Add_Rights === 1,
                 edit: per.permissions.Edit_Rights === 1,
                 delete: per.permissions.Delete_Rights === 1,
             });
+
             fetch(`${apihost}/api/employeeDropDown`, { headers: { 'Authorization': per.token } })
                 .then((res) => { return res.json() })
                 .then((data) => {
@@ -131,7 +134,7 @@ const AttendanceManagement = () => {
                 body: JSON.stringify({ Id: rowDetails?.Id, OutDate: rowDetails?.OutDate, OutTime: rowDetails?.OutTime })
             }).then(res => { return res.json() }).then(data => {
                 setdopen(false);
-                setRowDetails({ Id: '', OutDate: '', OutTime: '' })
+                setRowDetails(initialRowValue)
                 if (data.status === "Success") {
                     toast.success(data.message)
                     setRefresh(!refresh)
@@ -157,8 +160,10 @@ const AttendanceManagement = () => {
         },
         {
             name: 'In Time',
-            selector: (row) => row.InTime,
-            sortable: true,
+            selector: (row) => {
+                return row.InTime ? formatTime(row.InTime) : ' - ';
+            },
+            sortable: false,
         },
         {
             name: 'Action',
@@ -166,7 +171,15 @@ const AttendanceManagement = () => {
                 <div>
                     {modify.edit === true && (
                         <IconButton onClick={() => {
-                            setRowDetails({ ...rowDetails, Id: row.Id, OutDate: convertDateFormat(row.Start_Date) })
+                            setRowDetails({ 
+                                ...rowDetails, 
+                                Id: row.Id, 
+                                OutDate: convertDateFormat(row.Start_Date), 
+                                InTime: row.InTime ? (() => {
+                                    const val = row.InTime.split(':')
+                                    return val[0] + ":" + val[1]
+                                })() : ''
+                            })
                             setdopen(true)
                         }}>
                             <Logout sx={{ color: '#FF6865' }} />
@@ -326,7 +339,7 @@ const AttendanceManagement = () => {
 
             <Dialog
                 open={dopen}
-                onClose={() => { setdopen(false) }}
+                onClose={() => { setdopen(false); setRowDetails(initialRowValue) }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
                 maxWidth="sm"
@@ -335,24 +348,29 @@ const AttendanceManagement = () => {
                 <DialogTitle id="alert-dialog-title">
                     {"Close Employee Attendance"}
                 </DialogTitle>
-                <DialogContent>
-                    <label className='my-2'>Out Date</label>
-                    <input
-                        type='date'
-                        onChange={(e) => { setRowDetails({ ...rowDetails, OutDate: e.target.value }) }}
-                        className='form-control p-3' value={rowDetails.OutDate} />
-                    <label className='my-2'>Out Time</label>
-                    <input
-                        type='time'
-                        onChange={(e) => { setRowDetails({ ...rowDetails, OutTime: e.target.value }) }}
-                        className='form-control p-3' value={rowDetails.OutTime} />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setdopen(false)}>Cancel</Button>
-                    <Button onClick={closeAttendence} autoFocus sx={{ color: 'red' }}>
-                        Close Attendance
-                    </Button>
-                </DialogActions>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    closeAttendence()
+                }}>
+                    <DialogContent>
+                        <label className='my-2'>Out Date</label>
+                        <input
+                            type='date'
+                            onChange={(e) => { setRowDetails({ ...rowDetails, OutDate: e.target.value }) }}
+                            className='form-control p-3' value={rowDetails.OutDate} required />
+                        <label className='my-2'>Out Time</label>
+                        <input
+                            type='time'
+                            onChange={(e) => { setRowDetails({ ...rowDetails, OutTime: e.target.value }) }}
+                            className='form-control p-3' value={rowDetails.OutTime} min={rowDetails?.InTime} required />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button type='button' onClick={() => {setdopen(false); setRowDetails(initialRowValue)}}>Cancel</Button>
+                        <Button type='submit' autoFocus sx={{ color: 'red' }}>
+                            Close Attendance
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
 
             <Dialog
