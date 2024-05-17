@@ -103,7 +103,7 @@ const PurchaseReport2 = () => {
                     <td style={{ fontSize: '12px' }} className="text-success bg-light">{rowData?.Stock_Group}</td>
                     <td style={{ fontSize: '12px' }} className="text-success">-</td>
                     <td style={{ fontSize: '12px' }} className="text-success bg-light fw-bold">
-                        {(totalTonnage / 1000)?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        {(totalTonnage / 1000)?.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-success fw-bold">
                         {(totalValue / totalTonnage).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
@@ -133,7 +133,7 @@ const PurchaseReport2 = () => {
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-primary">{subRowData?.Item_Name_Modified} (Sum)</td>
                     <td style={{ fontSize: '12px' }} className="text-primary bg-light fw-bold">
-                        {(tonnage / 1000).toLocaleString('en-IN', { maximumFractionDigits: 0 })} 
+                        {(tonnage / 1000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} 
                     </td>
                     <td style={{ fontSize: '12px' }} className="text-primary fw-bold">
                         {(Number(amount) / Number(tonnage)).toLocaleString('en-IN', { maximumFractionDigits: 2 })} 
